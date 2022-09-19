@@ -20,7 +20,7 @@ class Controller:
         if self.repository.get_all() == "empty_file":
             players_names = ["George", "Alex", "Dan", "Robert"]
             players_cards = [[], [], [], []]
-            players_tricks = ["0", "0", "0", "0"]
+            players_tricks = [0, 0, 0, 0]
             board = []
             score_one = 0
             score_two = 0
@@ -127,7 +127,7 @@ class Controller:
 
     def add_trick_to_player(self, winner, players):
         for player in players:
-            if player.name == winner:
+            if player.name == winner.name:
                 player.tricks += 1
         return players
 

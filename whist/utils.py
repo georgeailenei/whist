@@ -7,5 +7,5 @@ from functools import cache
 @cache
 def get_controller():
     card_validator = ValidateCards()
-    repository = GameData()
+    repository = GameData('game_data.txt', 'player_position.txt')
     return Controller(card_validator, repository)

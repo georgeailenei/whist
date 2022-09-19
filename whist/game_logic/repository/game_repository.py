@@ -3,9 +3,9 @@ from operator import pos
 
 
 class GameData:
-    def __init__(self):
-        self.file_name = 'game_data.txt'
-        self.file_positions = 'player_position.txt'
+    def __init__(self, file_name, file_positions):
+        self.file_name = file_name
+        self.file_positions = file_positions
         self.players_names = []
         self.hands = []
         self.removed_players_cards = []
