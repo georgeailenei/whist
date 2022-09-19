@@ -1,0 +1,7 @@
+George : Ah Kc 3d : 0
+Dan : Ah Kc 3d : 3
+Nicu : Ah Kc 3d : 0
+Robert : Ah Kc 3d : 1
+board : Ah Ac Ad
+scores : 3 : 1
+trump : Spades

@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <title>WHIST 4-Players</title>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row border border-dark">
+            <div class="col border border-dark text-center">
+                <h5>Team One Score: {{ team_1_score }}</h5>
+                <p>{{ player1.name }}, {{ player2.name }}</p>
+            </div>
+            <div class="col border border-dark text-center">
+                <h5>Team Two Score: {{ team_2_score }}</h5>
+                <p>{{ player3.name }}, {{ player4.name }}</p>
+            </div>
+        </div>
+        <div class="row border border-dark">
+            <div class="col border border-dark text-center">
+                <h5>{{ player1.name }}</h5>
+                <p>cards: {{ player1.cards }}</p>
+                <p>tricks: {{ player1.tricks }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col border border-dark">
+                <h5>{{ player4.name }}</h5>
+                <p>cards: {{ player4.cards }}</p>
+                <p>tricks: {{ player4.tricks }}</p>
+            </div>
+            <div class="col border border-dark text-center">
+                <p>Board</p>
+                    <p>{{ board }}</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-dark">send card</button>
+                    </form>
+
+                <p>{{ card }}</p>
+                    
+            </div>
+            <div class="col border border-dark">
+                <h5>{{ player2.name }}</h5>
+                <p>cards: {{ player2.cards }}</p>
+                <p>tricks: {{ player2.tricks }}</p>
+            </div>
+        </div>
+        <div class="row border border-dark text-center">
+            <div class="col border border-dark">
+                <h5>{{ player3.name }}</h5>
+                <p>cards: {{ player3.cards }}</p>
+                <p>tricks: {{ player3.tricks }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="row border border-dark text-center">
+        <div class="col border border-dark">
+            <h5>Trump card: {{ trump_card }}</h5>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+</body>
+</html>
