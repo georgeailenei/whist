@@ -6,7 +6,6 @@ class Player(models.Model):
     hand = models.CharField(max_length=50)
     tricks = models.IntegerField()
     played_cards = models.CharField(max_length=50)
-    player_position = models.IntegerField()
 
 
 class GameStats(models.Model):
@@ -14,3 +13,4 @@ class GameStats(models.Model):
     trump_card = models.CharField(max_length=10)
     team_one_score = models.IntegerField()
     team_two_score = models.IntegerField()
+    player_position = models.IntegerField()
