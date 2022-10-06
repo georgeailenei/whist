@@ -1,7 +1,7 @@
 from whist.models import Player
 
 
-class Game:
+class GameData:
     def save_player_stats(self, player_name, hand, tricks, played_cards):
         player = Player(
             name=player_name,
@@ -18,9 +18,9 @@ class Game:
             return None
         else:
             players_names = [p.name for p in players]
-            hands = [p.hand for p in players]
+            hands = [p.hand.split(", ") for p in players]
             tricks = [p.tricks for p in players]
-            played_cards = [p.played_cards for p in players]
+            played_cards = [p.played_cards.split(", ") for p in players]
 
         return [players_names, hands, tricks, played_cards]
 
