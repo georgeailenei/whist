@@ -14,3 +14,4 @@ class GameStats(models.Model):
     team_one_score = models.IntegerField()
     team_two_score = models.IntegerField()
     player_position = models.IntegerField()
+    played_card = models.CharField(max_length=4)

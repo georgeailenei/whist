@@ -33,7 +33,6 @@ class WhistView(TemplateView):
 
         # Game Stats
         board = game_stats['board']
-        trump_card = game_stats['trump_card']
         score_one = game_stats['score1']
         score_two = game_stats['score2']
         player_pos = game_stats['player_pos']
@@ -51,15 +50,14 @@ class WhistView(TemplateView):
             if self.controller.players_cards_count(players) == 0:
                 cards = self.controller.get_shuffled_cards()
                 players = self.controller.spread_cards(cards, players)
-                trump_card = self.controller.find_trump_card(cards)
+                game_stats['trump_card'] = self.controller.find_trump_card(cards)
                 self.controller.save_players_stats(players)
                 self.controller.save_game_stats(game_stats)
 
-        #     elif self.controller.total_tricks_completed(players):
-        #         card = self.controller.get_card()
-        #         trump_card = game['trump_card']
-        #
-        #         if card is not None:
+            # elif self.controller.total_tricks_completed(players):
+            #     card = game_stats['played_card']
+
+                # if card is not "":
         #             the_card = Card(self.controller.get_card_rank(card), self.controller.get_card_suit(card))
         #
         #             if self.controller.correct_card(the_card, players, board, current_player_pos, trump_card):
@@ -86,7 +84,6 @@ class WhistView(TemplateView):
         trump_card = game_stats['trump_card']
         score_one = game_stats['score1']
         score_two = game_stats['score2']
-        player_pos = game_stats['player_pos']
 
         content = {
 

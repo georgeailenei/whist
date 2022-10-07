@@ -20,9 +20,9 @@ class GameData:
             return None
         else:
             players_names = [p.name for p in players]
-            hands = [p.hand.split(", ") for p in players]
+            hands = [p.hand.split() for p in players]
             tricks = [p.tricks for p in players]
-            played_cards = [p.played_cards.split(", ") for p in players]
+            played_cards = [p.played_cards.split() for p in players]
 
         return [players_names, hands, tricks, played_cards]
 
@@ -53,19 +53,25 @@ class GameData:
                 game_stats.trump_card,
                 game_stats.team_one_score,
                 game_stats.team_two_score,
-                game_stats.player_position
+                game_stats.player_position,
+                game_stats.played_card
             ]
 
     def remove_game_stats(self):
         GameStats.objects.all().delete()
 
-    def save_game_stats(self, board, trump_card, team_one_score, team_two_score, player_position):
+    def save_game_stats(self, board, trump_card, team_one_score, team_two_score, player_position, played_card):
         self.remove_game_stats()
         game_stats = GameStats.objects.create(
             board=board,
             trump_card=trump_card,
             team_one_score=team_one_score,
             team_two_score=team_two_score,
-            player_position=player_position
+            player_position=player_position,
+            played_card=played_card
         )
         game_stats.save()
+
+    # def save_played_card(self, card):
+    #     GameStats.objects.remove("")
+

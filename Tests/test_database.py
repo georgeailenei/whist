@@ -92,9 +92,11 @@ class TestDatabaseRepository:
             trump_card="clubs",
             team_one_score=0,
             team_two_score=0,
-            player_position=1
+            player_position=1,
+            played_card=""
         )
-        self.game.save_game_stats("2c 3c", "hearts", 1, 2, 0)
+        self.game.save_game_stats("2c 3c", "hearts", 1, 2, 0, "")
         stats = self.game.get_game_stats()
-        board, trump_card, score1, score2, pos = 0, 1, 2, 3, 4
+        board, trump_card, score1, score2, pos, played_card = 0, 1, 2, 3, 4, 5
         assert stats[board] == ["2c", "3c"]
+        assert stats[played_card] == ""

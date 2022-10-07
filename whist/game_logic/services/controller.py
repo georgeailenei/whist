@@ -47,7 +47,7 @@ class Controller:
 
     def load_game_stats(self):
         game_stats = self.repository.get_game_stats()
-        board, trump_card, score1, score2, pos = 0, 1, 2, 3, 4
+        board, trump_card, score1, score2, pos, played_card = 0, 1, 2, 3, 4, 5
 
         if game_stats is None:
             return {
@@ -56,7 +56,8 @@ class Controller:
                 'trump_card': "UNKNOWN",
                 'score1': 0,
                 'score2': 0,
-                'player_pos': 0
+                'player_pos': 0,
+                'played_card': ""
             }
         else:
             return {
@@ -64,7 +65,8 @@ class Controller:
                 'trump_card': game_stats[trump_card],
                 'score1': game_stats[score1],
                 'score2': game_stats[score2],
-                'player_pos': game_stats[pos]
+                'player_pos': game_stats[pos],
+                'played_card': game_stats[played_card]
             }
 
     def score_limit(self, team_one_score, team_two_score):
@@ -108,18 +110,29 @@ class Controller:
     # Save players stats and save game stats must be tested before moving forward;
     def save_players_stats(self, players):
         names = [p.name for p in players]
-        hands = [p.cards for p in players]
+        hands = [" ".join(p.cards) for p in players]
         tricks = [p.tricks for p in players]
         played_cards = [p.remove_cards for p in players]
         self.repository.save_all_players_stats(names, hands, tricks, played_cards)
 
     def save_game_stats(self, game_stats):
-        board = game_stats['board']
+        board = " ".join(game_stats['board'])
         trump_card = game_stats['trump_card']
         team_one_score = game_stats['score1']
         team_two_score = game_stats['score2']
         player_position = game_stats['player_pos']
-        self.repository.save_game_stats(board, trump_card, team_one_score, team_two_score, player_position)
+        played_card = game_stats['played_card']
+        self.repository.save_game_stats(board, trump_card, team_one_score, team_two_score, player_position, played_card)
+
+    def total_tricks_completed(self, players):
+        all_tricks = [player.tricks for player in players]
+        if sum(all_tricks) != 13:
+            return True
+        elif sum(all_tricks) == 13:
+            return False
+
+    def save_card(self, card):
+        self.repository.save_played_card(card)
 
     # def save_game(self, players, board, score_one, score_two, trump_card):
     #     player1, player2, player3, player4 = 0, 1, 2, 3
@@ -134,11 +147,6 @@ class Controller:
     #     self.repository.save_all(players_names, players_cards, players_tricks, board, score_one, score_two, trump_card,
     #                              players_removed_cards)
 
-    # def save_card(self, card):
-    #     self.repository.save_played_card(card)
-    #
-    # def get_card(self):
-    #     return self.repository.get_played_card()
     #
     # def save_player_pos(self, current_position):
     #     self.repository.save_player_pos(current_position)
@@ -223,12 +231,6 @@ class Controller:
     #     elif team_two_score_result > 0:
     #         team_two_score = team_two_score_result
     #     return team_one_score, team_two_score
-    #
-
-    # def total_tricks_completed(self, players):
-    #     all_tricks = [player.tricks for player in players]
-    #     if sum(all_tricks) != 13:
-    #         return True
     #
 
     # def compare_cards_rank(self, board, trump_card):

@@ -19,10 +19,10 @@ class TestController:
         assert players_stats['removed_players_cards'] == [[], [], [], []]
 
     def test_load_players_stats_from_db_when_loading_from_populated_db_return_the_current_data_from_db(self):
-        player1 = Player.objects.create(name="Alex", hand="Ah, Kc, 2c", tricks=0, played_cards="2c, 3c")
-        player2 = Player.objects.create(name="Gicu", hand="Ac, 3c, 5c", tricks=2, played_cards="Jh, Jc")
-        player3 = Player.objects.create(name="NeaCaiSa", hand="10h, 7c, 6c", tricks=1, played_cards="Qc, Qh")
-        player4 = Player.objects.create(name="Carlos", hand="2h, 3h, 4h", tricks=0, played_cards="8c, 8h")
+        player1 = Player.objects.create(name="Alex", hand="Ah Kc 2c", tricks=0, played_cards="2c 3c")
+        player2 = Player.objects.create(name="Gicu", hand="Ac 3c 5c", tricks=2, played_cards="Jh Jc")
+        player3 = Player.objects.create(name="NeaCaiSa", hand="10h 7c 6c", tricks=1, played_cards="Qc Qh")
+        player4 = Player.objects.create(name="Carlos", hand="2h 3h 4h", tricks=0, played_cards="8c 8h")
 
         players_stats = self.controller.load_players_stats()
         assert players_stats['players_names'] == ["Alex", "Gicu", "NeaCaiSa", "Carlos"]
@@ -40,10 +40,10 @@ class TestController:
         assert players[player_three].remove_cards == []
 
     def test_load_players_when_db_is_populated_returns_current_players_data(self):
-        player1 = Player.objects.create(name="Alex", hand="Ah, Kc, 2c", tricks=0, played_cards="2c, 3c")
-        player2 = Player.objects.create(name="Gicu", hand="Ac, 3c, 5c", tricks=2, played_cards="Jh, Jc")
-        player3 = Player.objects.create(name="NeaCaiSa", hand="10h, 7c, 6c", tricks=1, played_cards="Qc, Qh")
-        player4 = Player.objects.create(name="Carlos", hand="2h, 3h, 4h", tricks=0, played_cards="8c, 8h")
+        player1 = Player.objects.create(name="Alex", hand="Ah Kc 2c", tricks=0, played_cards="2c 3c")
+        player2 = Player.objects.create(name="Gicu", hand="Ac 3c 5c", tricks=2, played_cards="Jh Jc")
+        player3 = Player.objects.create(name="NeaCaiSa", hand="10h 7c 6c", tricks=1, played_cards="Qc Qh")
+        player4 = Player.objects.create(name="Carlos", hand="2h 3h 4h", tricks=0, played_cards="8c 8h")
 
         players = self.controller.load_players()
         player_one, player_two, player_three, player_four = 0, 1, 2, 3
@@ -141,3 +141,18 @@ class TestController:
         assert trump_card2 == "clubs"
         assert trump_card3 == "hearts"
         assert trump_card4 == "spades"
+
+    def test_total_tricks_completed_when_tricks_are_below_13_returns_true(self):
+        players = self.controller.load_players()
+        tricks_completed = self.controller.total_tricks_completed(players)
+        assert tricks_completed is True
+
+    def test_total_tricks_completed_when_tricks_are_equal_13_returns_false(self):
+        player1 = Player.objects.create(name="Alex", hand="Ah, Kc, 2c", tricks=4, played_cards="2c, 3c")
+        player2 = Player.objects.create(name="Gicu", hand="Ac, 3c, 5c", tricks=4, played_cards="Jh, Jc")
+        player3 = Player.objects.create(name="NeaCaiSa", hand="10h, 7c, 6c", tricks=2, played_cards="Qc, Qh")
+        player4 = Player.objects.create(name="Carlos", hand="2h, 3h, 4h", tricks=3, played_cards="8c, 8h")
+
+        players = [player1, player2, player3, player4]
+        tricks_completed = self.controller.total_tricks_completed(players)
+        assert tricks_completed is False
