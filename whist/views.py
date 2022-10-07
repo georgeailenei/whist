@@ -29,32 +29,32 @@ class WhistView(TemplateView):
     def get(self, request):
         form = GameForm()
         players = self.controller.load_players()
-        # game_stats = self.controller.load_game_stats()
+        game_stats = self.controller.load_game_stats()
 
-        # # Board OBJ
-        # current_board = game['board']
-        # board = []
-        #
+        # Game Stats
+        board = game_stats['board']
+        trump_card = game_stats['trump_card']
+        score_one = game_stats['score1']
+        score_two = game_stats['score2']
+        player_pos = game_stats['player_pos']
+
         # for card in current_board:
         #     board.append(Card(self.controller.get_card_rank(card), self.controller.get_card_suit(card)))
-        #
-        # # The Score
-        # scores = game['scores']
-        # score_one = scores[0]
-        # score_two = scores[1]
-        #
+
         # # Player position & reset if it goes above 3;
         # current_player_pos = self.controller.get_player_pos()
         # if current_player_pos == 4:
         #     current_player_pos = 0
         #
-        # if self.controller.score_limit(score_one, score_two):
-        #     if self.controller.players_hand(players) == 0:
-        #         cards = self.controller.mix_cards(Deck.cards)
-        #         players = self.controller.spread_cards(cards, players)
-        #         trump_card = self.controller.find_trump_card(cards)
-        #         self.controller.save_game(players, board, score_one, score_two, trump_card)
-        #
+
+        if self.controller.score_limit(score_one, score_two):
+            if self.controller.players_cards_count(players) == 0:
+                cards = self.controller.get_shuffled_cards()
+                players = self.controller.spread_cards(cards, players)
+                trump_card = self.controller.find_trump_card(cards)
+                self.controller.save_players_stats(players)
+                self.controller.save_game_stats(game_stats)
+
         #     elif self.controller.total_tricks_completed(players):
         #         card = self.controller.get_card()
         #         trump_card = game['trump_card']
@@ -78,9 +78,15 @@ class WhistView(TemplateView):
         #         self.controller.save_player_pos(current_player_pos)
         #         self.controller.save_game(players, board, score_one, score_two, trump_card)
         #
-        #     game_results = self.controller.load_game()
-        #     current_board = game_results['board']
-        #     trump_card = game_results['trump_card']
+
+        # RESULTS
+        players = self.controller.load_players()
+        game_stats = self.controller.load_game_stats()
+        board = game_stats['board']
+        trump_card = game_stats['trump_card']
+        score_one = game_stats['score1']
+        score_two = game_stats['score2']
+        player_pos = game_stats['player_pos']
 
         content = {
 
@@ -93,13 +99,10 @@ class WhistView(TemplateView):
             'player3': players[2],
             'player4': players[3],
 
-            # # Board & Trump Card
-            # 'board': current_board,
-            # 'trump_card': trump_card,
-            #
-            # # The Score
-            # 'team_1_score': score_one,
-            # 'team_2_score': score_two
+            # GAME STATS
+            'board': board,
+            'trump_card': trump_card,
+            'team_1_score': score_one,
+            'team_2_score': score_two
         }
-
         return render(request, self.template_name, content)

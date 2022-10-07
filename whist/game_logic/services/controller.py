@@ -1,5 +1,5 @@
 import random
-from whist.game_logic.domain.entity import Player
+from whist.game_logic.domain.entity import Player, Deck
 
 
 class Controller:
@@ -7,7 +7,7 @@ class Controller:
         self.card_validator = card_validator
         self.repository = repository
 
-    def load_players_stats_from_db(self):
+    def load_players_stats(self):
         players = self.repository.get_all_players_stats()
         names, hands, tricks, played_hands = 0, 1, 2, 3
 
@@ -28,7 +28,7 @@ class Controller:
             }
 
     def load_players(self):
-        player_stats = self.load_players_stats_from_db()
+        player_stats = self.load_players_stats()
 
         # Players OBJ
         names = player_stats['players_names']
@@ -46,7 +46,80 @@ class Controller:
         return players
 
     def load_game_stats(self):
-        pass
+        game_stats = self.repository.get_game_stats()
+        board, trump_card, score1, score2, pos = 0, 1, 2, 3, 4
+
+        if game_stats is None:
+            return {
+                # START AN EMPTY GAME
+                'board': [],
+                'trump_card': "UNKNOWN",
+                'score1': 0,
+                'score2': 0,
+                'player_pos': 0
+            }
+        else:
+            return {
+                'board': game_stats[board],
+                'trump_card': game_stats[trump_card],
+                'score1': game_stats[score1],
+                'score2': game_stats[score2],
+                'player_pos': game_stats[pos]
+            }
+
+    def score_limit(self, team_one_score, team_two_score):
+        if team_one_score < 5 and team_two_score < 5:
+            return True
+        elif team_one_score >= 5 or team_two_score >= 5:
+            return False
+
+    def players_cards_count(self, players):
+        total = 0
+        for player in players:
+            total += len(player.cards)
+        return total
+
+    def mix_cards(self, cards):
+        deck = cards.copy()
+        random.shuffle(deck)
+        return deck
+
+    def get_shuffled_cards(self):
+        return self.mix_cards(Deck.cards)
+
+    def spread_cards(self, cards, players):
+        i = 0
+        for card in cards:
+            if len(players[i].cards) != 13:
+                players[i].cards.append(card)
+            else:
+                i += 1
+                players[i].cards.append(card)
+        return players
+
+    def find_trump_card(self, cards):
+        suits = {"hearts": "h", "clubs": "c", "diamonds": "d", "spades": "s"}
+        last_suit = cards[-1][-1]
+
+        for suit_name, suit_abv in suits.items():
+            if last_suit == suit_abv:
+                return suit_name
+
+    # Save players stats and save game stats must be tested before moving forward;
+    def save_players_stats(self, players):
+        names = [p.name for p in players]
+        hands = [p.cards for p in players]
+        tricks = [p.tricks for p in players]
+        played_cards = [p.remove_cards for p in players]
+        self.repository.save_all_players_stats(names, hands, tricks, played_cards)
+
+    def save_game_stats(self, game_stats):
+        board = game_stats['board']
+        trump_card = game_stats['trump_card']
+        team_one_score = game_stats['score1']
+        team_two_score = game_stats['score2']
+        player_position = game_stats['player_pos']
+        self.repository.save_game_stats(board, trump_card, team_one_score, team_two_score, player_position)
 
     # def save_game(self, players, board, score_one, score_two, trump_card):
     #     player1, player2, player3, player4 = 0, 1, 2, 3
@@ -85,29 +158,6 @@ class Controller:
     # def get_card_suit(self, card):
     #     card_properties = self.card_rank_and_suit(card)
     #     return card_properties[1]
-    #
-    # def mix_cards(self, cards):
-    #     deck = cards.copy()
-    #     random.shuffle(deck)
-    #     return deck
-    #
-    # def spread_cards(self, cards, players):
-    #     i = 0
-    #     for card in cards:
-    #         if len(players[i].cards) != 13:
-    #             players[i].cards.append(card)
-    #         else:
-    #             i += 1
-    #             players[i].cards.append(card)
-    #     return players
-    #
-    # def find_trump_card(self, cards):
-    #     suits = {"hearts": "h", "clubs": "c", "diamonds": "d", "spades": "s"}
-    #     last_suit = cards[-1][-1]
-    #
-    #     for suit_name, suit_abv in suits.items():
-    #         if last_suit == suit_abv:
-    #             return suit_name
     #
     # def reset_players_cards_and_tricks(self, players):
     #     for player in players:
@@ -174,21 +224,13 @@ class Controller:
     #         team_two_score = team_two_score_result
     #     return team_one_score, team_two_score
     #
-    # def score_limit(self, team_one_score, team_two_score):
-    #     if team_one_score != 5 or team_two_score != 5:
-    #         return True
-    #
+
     # def total_tricks_completed(self, players):
     #     all_tricks = [player.tricks for player in players]
     #     if sum(all_tricks) != 13:
     #         return True
     #
-    # def players_hand(self, players):
-    #     total = 0
-    #     for player in players:
-    #         total += len(player.cards)
-    #     return total
-    #
+
     # def compare_cards_rank(self, board, trump_card):
     #     suits = [card.suit for card in board]
     #     ranks = [str(card.rank) for card in board]

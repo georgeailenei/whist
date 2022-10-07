@@ -1,7 +1,8 @@
 import pytest
-from whist.models import Player
+from whist.models import Player, GameStats
 from whist.game_logic.services.controller import Controller
 from whist.game_logic.domain.validate import ValidateCards
+from whist.game_logic.domain.entity import Deck
 from src.database_repository import GameData
 
 
@@ -10,7 +11,7 @@ class TestController:
     controller = Controller(ValidateCards(), GameData())
 
     def test_load_players_stats_from_db_when_loading_from_empty_db_returns_empty_lists_and_zeros(self):
-        players_stats = self.controller.load_players_stats_from_db()
+        players_stats = self.controller.load_players_stats()
 
         assert players_stats['players_names'] == ["George", "Alex", "Dan", "Robert"]
         assert players_stats['players_cards'] == [[], [], [], []]
@@ -23,7 +24,7 @@ class TestController:
         player3 = Player.objects.create(name="NeaCaiSa", hand="10h, 7c, 6c", tricks=1, played_cards="Qc, Qh")
         player4 = Player.objects.create(name="Carlos", hand="2h, 3h, 4h", tricks=0, played_cards="8c, 8h")
 
-        players_stats = self.controller.load_players_stats_from_db()
+        players_stats = self.controller.load_players_stats()
         assert players_stats['players_names'] == ["Alex", "Gicu", "NeaCaiSa", "Carlos"]
         assert players_stats['players_cards'] == [["Ah", "Kc", "2c"], ["Ac", "3c", "5c"], ["10h", "7c", "6c"], ["2h", "3h", "4h"]]
         assert players_stats['players_tricks'] == [0, 2, 1, 0]
@@ -51,3 +52,92 @@ class TestController:
         assert players[player_four].tricks == 0
         assert players[player_two].cards == ["Ac", "3c", "5c"]
         assert players[player_three].remove_cards == ["Qc", "Qh"]
+
+    def test_load_game_stats_when_db_is_empty_returns_a_new_game(self):
+        game_stats = self.controller.load_game_stats()
+        assert game_stats["board"] == []
+        assert game_stats["trump_card"] == "UNKNOWN"
+        assert game_stats["score1"] == 0
+        assert game_stats["score2"] == 0
+        assert game_stats["player_pos"] == 0
+
+    def test_load_game_stats_when_db_is_populated_returns_current_db_data(self):
+        GameStats.objects.create(
+            board="Ah Kc",
+            trump_card="clubs",
+            team_one_score=0,
+            team_two_score=0,
+            player_position=1
+        )
+        game_stats = self.controller.load_game_stats()
+        assert game_stats["board"] == ["Ah", "Kc"]
+        assert game_stats["trump_card"] == "clubs"
+        assert game_stats["score1"] == 0
+        assert game_stats["score2"] == 0
+        assert game_stats["player_pos"] == 1
+
+    def test_score_limit_when_score_is_below_five_returns_true(self):
+        score_limit = self.controller.score_limit(4, 3)
+        score_limit2 = self.controller.score_limit(0, 4)
+        assert score_limit is True
+        assert score_limit2 is True
+
+    def test_score_limit_when_score_is_equal_or_above_five_returns_false(self):
+        score_limit = self.controller.score_limit(5, 3)
+        score_limit2 = self.controller.score_limit(7, 3)
+        assert score_limit is False
+        assert score_limit2 is False
+
+    def test_players_cards_count_when_players_dont_have_cards_returns_zero(self):
+        players = self.controller.load_players()
+        total_cards = self.controller.players_cards_count(players)
+        assert total_cards == 0
+
+    def test_players_cards_count_when_players_have_cards_returns_total_count(self):
+        player1 = Player.objects.create(name="Alex", hand="Ah, Kc, 2c", tricks=0, played_cards="2c, 3c")
+        player2 = Player.objects.create(name="Gicu", hand="Ac, 3c, 5c", tricks=2, played_cards="Jh, Jc")
+        player3 = Player.objects.create(name="NeaCaiSa", hand="10h, 7c, 6c", tricks=1, played_cards="Qc, Qh")
+        player4 = Player.objects.create(name="Carlos", hand="2h, 3h, 4h", tricks=0, played_cards="8c, 8h")
+
+        players = self.controller.load_players()
+        total_cards = self.controller.players_cards_count(players)
+        assert total_cards == 12
+
+    def test_mix_cards_when_given_a_deck_of_cards_in_order_return_shuffled_deck(self):
+        cards = Deck.cards
+        shuffled_cards = self.controller.mix_cards(cards)
+        another_shuffled = self.controller.mix_cards(cards)
+        assert shuffled_cards != cards
+        assert shuffled_cards != another_shuffled
+
+    def test_get_shuffled_cards_when_asked_to_shuffle_again_returns_another_shuffled_deck(self):
+        deck1 = self.controller.get_shuffled_cards()
+        deck2 = self.controller.get_shuffled_cards()
+        assert deck1 != deck2
+
+    def test_spread_cards_when_players_have_no_cards_returns_13_cards_for_each_player(self):
+        players = self.controller.load_players()
+        cards = self.controller.get_shuffled_cards()
+        players = self.controller.spread_cards(cards, players)
+        player1, player2, player3, player4 = 0, 1, 2, 3
+
+        assert len(players[player1].cards) == 13
+        assert len(players[player2].cards) == 13
+        assert len(players[player3].cards) == 13
+        assert len(players[player4].cards) == 13
+
+    def test_find_trump_card_when_cards_are_spread_returns_the_last_suit_from_deck(self):
+        deck_example = ["Ah", "2c", "Jd"]
+        deck_example2 = ["Ah", "2c", "Jc"]
+        deck_example3 = ["Ah", "2c", "Jh"]
+        deck_example4 = ["Ah", "2c", "Js"]
+
+        trump_card1 = self.controller.find_trump_card(deck_example)
+        trump_card2 = self.controller.find_trump_card(deck_example2)
+        trump_card3 = self.controller.find_trump_card(deck_example3)
+        trump_card4 = self.controller.find_trump_card(deck_example4)
+
+        assert trump_card1 == "diamonds"
+        assert trump_card2 == "clubs"
+        assert trump_card3 == "hearts"
+        assert trump_card4 == "spades"
