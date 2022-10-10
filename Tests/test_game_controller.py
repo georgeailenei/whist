@@ -156,3 +156,30 @@ class TestController:
         players = [player1, player2, player3, player4]
         tricks_completed = self.controller.total_tricks_completed(players)
         assert tricks_completed is False
+
+    def test_card_rank_and_suit_when_the_card_is_ten_return_the_given_suit_and_rank(self):
+        card1, card2, card3 = "10h", "10c", "Ac"
+        assert self.controller.card_rank_and_suit(card1) == ["10", "h"]
+        assert self.controller.card_rank_and_suit(card2) == ["10", "c"]
+        assert self.controller.card_rank_and_suit(card3) == ["A", "c"]
+
+    def test_get_card_rank_return_the_first_letter_unless_is_ten(self):
+        card1, card2, card3, card4 = "2h", "Kd", "Ah", "10c"
+        assert self.controller.get_card_rank(card1) == "2"
+        assert self.controller.get_card_rank(card2) == "K"
+        assert self.controller.get_card_rank(card3) == "A"
+        assert self.controller.get_card_rank(card4) == "10"
+
+    def test_get_card_suit_always_return_the_last_letter(self):
+        card1, card2, card3, card4 = "2h", "Kd", "Ah", "10c"
+        assert self.controller.get_card_suit(card1) == "h"
+        assert self.controller.get_card_suit(card2) == "d"
+        assert self.controller.get_card_suit(card3) == "h"
+        assert self.controller.get_card_suit(card4) == "c"
+
+    def test_add_to_board_when_receiving_new_card_return_the_list_of_cards_in_the_board(self):
+        card1, card2, card3, card4 = "2h", "Kd", "Ah", "10c"
+        board, board2, board3 = [], ["Ah"], ["Ad", "Ac"]
+        assert self.controller.add_to_board(card1, board) == ["2h"]
+        assert self.controller.add_to_board(card2, board2) == ["Ah", "Kd"]
+        assert self.controller.add_to_board(card3, board3) == ["Ad", "Ac", "Ah"]

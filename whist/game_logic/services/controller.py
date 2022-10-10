@@ -1,5 +1,5 @@
 import random
-from whist.game_logic.domain.entity import Player, Deck
+from whist.game_logic.domain.entity import Player, Deck, Card
 
 
 class Controller:
@@ -134,6 +134,50 @@ class Controller:
     def save_card(self, card):
         self.repository.save_played_card(card)
 
+    def card_rank_and_suit(self, card):
+        if len(card) == 3:
+            return ["10", card[-1]]
+        return list(card)
+
+    def get_card_rank(self, card):
+        card_properties = self.card_rank_and_suit(card)
+        return card_properties[0]
+
+    def get_card_suit(self, card):
+        card_properties = self.card_rank_and_suit(card)
+        return card_properties[1]
+
+    def get_card(self, card):
+        card_rank = self.get_card_rank(card)
+        card_suit = self.get_card_suit(card)
+        return Card(card_rank, card_suit)
+
+    def correct_card(self, card, players, board, current_player, trump_card):
+        first_card_suit = None
+        trump_card_suit = trump_card[0]
+
+        if len(board) > 0:
+            first_card_suit = board[0].suit
+
+        if self.card_validator.check_card(str(card)):
+            if self.card_validator.check_players_cards(str(card), players[current_player].cards):
+                if self.card_validator.check_right_suit(str(card), players[current_player].cards, first_card_suit, trump_card_suit):
+                    return True
+                else:
+                    return False
+
+    def add_to_board(self, card, board):
+        current_board = board
+        current_board.append(card)
+        return current_board
+
+    def remove_card_from_player(self, card, players):
+        for player in players:
+            if str(card) in player.cards:
+                player.remove_cards.append(str(card))
+                player.cards.remove(str(card))
+        return players
+
     # def save_game(self, players, board, score_one, score_two, trump_card):
     #     player1, player2, player3, player4 = 0, 1, 2, 3
     #
@@ -150,47 +194,15 @@ class Controller:
     #
     # def save_player_pos(self, current_position):
     #     self.repository.save_player_pos(current_position)
-    #
-    # def get_player_pos(self):
-    #     return int(self.repository.get_player_pos())
-    #
-    # def card_rank_and_suit(self, card):
-    #     if len(card) == 3:
-    #         return [10, card[-1]]
-    #     return list(card)
-    #
-    # def get_card_rank(self, card):
-    #     card_properties = self.card_rank_and_suit(card)
-    #     return card_properties[0]
-    #
-    # def get_card_suit(self, card):
-    #     card_properties = self.card_rank_and_suit(card)
-    #     return card_properties[1]
-    #
+
     # def reset_players_cards_and_tricks(self, players):
     #     for player in players:
     #         player.tricks = 0
     #         player.cards.clear()
     #     return players
     #
-    # def correct_card(self, card:object, players:list, board:list, current_player: int, trump_card):
-    #     first_card_suit = None
-    #     trump_card_suit = trump_card[0]
-    #
-    #     if len(board) > 0:
-    #         first_card_suit = board[0].suit
-    #
-    #     if self.card_validator.check_card(str(card)):
-    #         if self.card_validator.check_players_cards(str(card), players[current_player].cards):
-    #             if self.card_validator.check_right_suit(str(card), players[current_player].cards, first_card_suit, trump_card_suit):
-    #                 return True
-    #             else:
-    #                 return False
-    #
-    # def add_to_board(self, card, board):
-    #     current_board = board
-    #     current_board.append(card)
-    #
+
+
     # def winner_table_position(self, winner, players):
     #     current_players_name = [player.name for player in players]
     #     return current_players_name.index(winner)
@@ -205,13 +217,7 @@ class Controller:
     #     winner = [player.name for player in players if winner_card in player.remove_cards]
     #     return winner[0]
     #
-    # def remove_card_from_player(self, card, players):
-    #     for player in players:
-    #         if str(card) in player.cards:
-    #             player.remove_cards.append(str(card))
-    #             player.cards.remove(str(card))
-    #     return players
-    #
+
     # # if the board contains 4 cards, return TRUE;
     # def board_full(self, board):
     #     if len(board) == 4:

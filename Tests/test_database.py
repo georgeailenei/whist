@@ -100,3 +100,18 @@ class TestDatabaseRepository:
         board, trump_card, score1, score2, pos, played_card = 0, 1, 2, 3, 4, 5
         assert stats[board] == ["2c", "3c"]
         assert stats[played_card] == ""
+
+    def test_save_played_card_when_another_card_is_saved_returns_the_new_card(self):
+        GameStats.objects.create(
+            board="Ah Kc",
+            trump_card="clubs",
+            team_one_score=0,
+            team_two_score=0,
+            player_position=1,
+            played_card="Kh"
+        )
+        new_card = "2c"
+        self.game.save_played_card(new_card)
+        game_stats = GameStats.objects.first()
+        assert game_stats.played_card == "2c"
+

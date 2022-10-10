@@ -72,6 +72,7 @@ class GameData:
         )
         game_stats.save()
 
-    # def save_played_card(self, card):
-    #     GameStats.objects.remove("")
-
+    def save_played_card(self, card):
+        game_stats = GameStats.objects.first()
+        game_stats.played_card = card
+        game_stats.save()

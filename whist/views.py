@@ -19,15 +19,16 @@ class WhistView(TemplateView):
         form = GameForm(request.POST)
         if form.is_valid():
             card = form.cleaned_data['input']
-
             if self.controller.card_validator.check_card(card):
                 self.controller.save_card(card)
-
             form = GameForm()
             return redirect('whist')
 
     def get(self, request):
+        # Card Receiver
         form = GameForm()
+
+        # Load Players & Game Stats
         players = self.controller.load_players()
         game_stats = self.controller.load_game_stats()
 
@@ -40,12 +41,11 @@ class WhistView(TemplateView):
         # for card in current_board:
         #     board.append(Card(self.controller.get_card_rank(card), self.controller.get_card_suit(card)))
 
-        # # Player position & reset if it goes above 3;
-        # current_player_pos = self.controller.get_player_pos()
-        # if current_player_pos == 4:
-        #     current_player_pos = 0
-        #
+        current_player_pos = player_pos
+        if current_player_pos == 4:
+            current_player_pos = 0
 
+        # Run Game
         if self.controller.score_limit(score_one, score_two):
             if self.controller.players_cards_count(players) == 0:
                 cards = self.controller.get_shuffled_cards()
@@ -54,16 +54,17 @@ class WhistView(TemplateView):
                 self.controller.save_players_stats(players)
                 self.controller.save_game_stats(game_stats)
 
-            # elif self.controller.total_tricks_completed(players):
-            #     card = game_stats['played_card']
+            elif self.controller.total_tricks_completed(players):
+                card = game_stats['played_card']
+                trump_card = game_stats['trump_card']
 
-                # if card is not "":
-        #             the_card = Card(self.controller.get_card_rank(card), self.controller.get_card_suit(card))
-        #
-        #             if self.controller.correct_card(the_card, players, board, current_player_pos, trump_card):
-        #                 self.controller.add_to_board(the_card, board)
-        #                 self.controller.remove_card_from_player(the_card, players)
-        #                 current_player_pos += 1
+                if card is not "":
+                    the_card = self.controller.get_card(card)
+
+                    if self.controller.correct_card(the_card, players, board, current_player_pos, trump_card):
+                        board = self.controller.add_to_board(the_card, board)
+                        self.controller.remove_card_from_player(the_card, players)
+                        current_player_pos += 1
         #
         #                 if self.controller.board_full(board):
         #                     winner_card = self.controller.compare_cards_rank(board, trump_card)
