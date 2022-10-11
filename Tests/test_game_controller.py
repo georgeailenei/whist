@@ -2,7 +2,7 @@ import pytest
 from whist.models import Player, GameStats
 from whist.game_logic.services.controller import Controller
 from whist.game_logic.domain.validate import ValidateCards
-from whist.game_logic.domain.entity import Deck
+from whist.game_logic.domain.entity import Deck, Card
 from src.database_repository import GameData
 
 
@@ -70,7 +70,7 @@ class TestController:
             player_position=1
         )
         game_stats = self.controller.load_game_stats()
-        assert game_stats["board"] == ["Ah", "Kc"]
+        assert game_stats["board"] == [Card("A", "h"), Card("K", "c")]
         assert game_stats["trump_card"] == "clubs"
         assert game_stats["score1"] == 0
         assert game_stats["score2"] == 0
@@ -183,3 +183,40 @@ class TestController:
         assert self.controller.add_to_board(card1, board) == ["2h"]
         assert self.controller.add_to_board(card2, board2) == ["Ah", "Kd"]
         assert self.controller.add_to_board(card3, board3) == ["Ad", "Ac", "Ah"]
+
+    def test_board_full_when_board_is_empty_return_false(self):
+        board = []
+        board_state = self.controller.board_full(board)
+        assert board_state is False
+
+    def test_board_full_when_board_is_full_return_true(self):
+        board = ["Ah", "Ac", "Ad", "As"]
+        board_state = self.controller.board_full(board)
+        assert board_state is True
+
+    def test_compare_cards_rank_when_the_board_has_no_trump_card_returns_the_highest_card(self):
+        trump_card = "clubs"
+        card1, card2, card3, card4 = Card("A", "h"), Card("2", "h"), Card("K", "h"), Card("8", "h")
+        board = [card1, card2, card3, card4]
+        winner = self.controller.compare_cards_rank(board, trump_card)
+        assert winner == "Ah"
+
+    def test_compare_cards_rank_when_board_has_a_trump_card_returns_the_trump_card_as_winner(self):
+        trump_card = "clubs"
+        card1, card2, card3, card4 = Card("A", "h"), Card("2", "c"), Card("K", "h"), Card("8", "h")
+        board = [card1, card2, card3, card4]
+        winner = self.controller.compare_cards_rank(board, trump_card)
+        assert winner == "2c"
+
+    def test_compare_cards_rank_when_board_has_more_trump_cards_returns_the_highest_trump_card(self):
+        trump_card = "clubs"
+        card1, card2, card3, card4 = Card("A", "h"), Card("2", "c"), Card("K", "h"), Card("5", "c")
+        board = [card1, card2, card3, card4]
+        winner = self.controller.compare_cards_rank(board, trump_card)
+        assert winner == "5c"
+
+# ASK DAN ABOUT THIS TEST - WHY IS RECEIVING NONE INSTEAD OF [] - EMPTY LIST
+    # def test_clear_board_returns_an_empty_list(self):
+    #     board = ["Ah", "Kc", "2c", "3c"]
+    #     current_board = self.controller.clear_board(board)
+    #     assert current_board == []

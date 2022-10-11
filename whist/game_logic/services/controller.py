@@ -60,14 +60,20 @@ class Controller:
                 'played_card': ""
             }
         else:
+            board = [self.get_card(card) for card in game_stats[board]]
             return {
-                'board': game_stats[board],
+                'board': board,
                 'trump_card': game_stats[trump_card],
                 'score1': game_stats[score1],
                 'score2': game_stats[score2],
                 'player_pos': game_stats[pos],
                 'played_card': game_stats[played_card]
             }
+
+    # THIS METHOD IS NOT TESTED
+    def display_board(self, board):
+        the_board = [str(card) for card in board]
+        return " ".join(the_board)
 
     def score_limit(self, team_one_score, team_two_score):
         if team_one_score < 5 and team_two_score < 5:
@@ -112,11 +118,11 @@ class Controller:
         names = [p.name for p in players]
         hands = [" ".join(p.cards) for p in players]
         tricks = [p.tricks for p in players]
-        played_cards = [p.remove_cards for p in players]
+        played_cards = [" ".join(p.remove_cards) for p in players]
         self.repository.save_all_players_stats(names, hands, tricks, played_cards)
 
     def save_game_stats(self, game_stats):
-        board = " ".join(game_stats['board'])
+        board = " ".join(str(card) for card in game_stats['board'])
         trump_card = game_stats['trump_card']
         team_one_score = game_stats['score1']
         team_two_score = game_stats['score2']
@@ -178,22 +184,30 @@ class Controller:
                 player.cards.remove(str(card))
         return players
 
-    # def save_game(self, players, board, score_one, score_two, trump_card):
-    #     player1, player2, player3, player4 = 0, 1, 2, 3
-    #
-    #     players_names = [players[player1].name, players[player2].name, players[player3].name, players[player4].name]
-    #     players_cards = [players[player1].cards, players[player2].cards, players[player3].cards, players[player4].cards]
-    #     players_tricks = [players[player1].tricks, players[player2].tricks, players[player3].tricks,
-    #                       players[player4].tricks]
-    #     players_removed_cards = [players[player1].remove_cards, players[player2].remove_cards,
-    #                              players[player3].remove_cards, players[player4].remove_cards]
-    #
-    #     self.repository.save_all(players_names, players_cards, players_tricks, board, score_one, score_two, trump_card,
-    #                              players_removed_cards)
+    def board_full(self, board):
+        if len(board) == 4:
+            return True
+        elif len(board) < 4:
+            return False
 
-    #
-    # def save_player_pos(self, current_position):
-    #     self.repository.save_player_pos(current_position)
+    def find_winner(self, winner_card, players):
+        winner = [player.name for player in players if winner_card in player.remove_cards]
+        return winner[0]
+
+    def add_trick_to_player(self, winner, players):
+        for player in players:
+            if player.name == winner:
+                player.tricks += 1
+        return players
+
+    def winner_table_position(self, winner, players):
+        current_players_name = [player.name for player in players]
+        return current_players_name.index(winner)
+
+    # THIS METHOD IS NOT TESTED
+    def clear_board(self, board):
+        new_board = board.clear()
+        return new_board
 
     # def reset_players_cards_and_tricks(self, players):
     #     for player in players:
@@ -202,30 +216,6 @@ class Controller:
     #     return players
     #
 
-
-    # def winner_table_position(self, winner, players):
-    #     current_players_name = [player.name for player in players]
-    #     return current_players_name.index(winner)
-    #
-    # def add_trick_to_player(self, winner, players):
-    #     for player in players:
-    #         if player.name == winner.name:
-    #             player.tricks += 1
-    #     return players
-    #
-    # def find_winner(self, winner_card, players):
-    #     winner = [player.name for player in players if winner_card in player.remove_cards]
-    #     return winner[0]
-    #
-
-    # # if the board contains 4 cards, return TRUE;
-    # def board_full(self, board):
-    #     if len(board) == 4:
-    #         return True
-    #
-    # def clear_board(self, board):
-    #     return board.clear()
-    #
     # def update_score(self, team_one_score, team_two_score, players):
     #     team_one = [players[0].tricks, players[2].tricks]
     #     team_two = [players[1].tricks, players[3].tricks]
@@ -239,88 +229,88 @@ class Controller:
     #     return team_one_score, team_two_score
     #
 
-    # def compare_cards_rank(self, board, trump_card):
-    #     suits = [card.suit for card in board]
-    #     ranks = [str(card.rank) for card in board]
-    #     J, Q, K, A = 11, 12, 13, 14
-    #     winner_card = 0
-    #     compare = 0
-    #     first_suit = str(board[0].suit)
-    #
-    #     if trump_card[0] in suits:
-    #         trump_cards = [index for index, suit in enumerate(suits) if suit == trump_card[0]]
-    #         if len(trump_cards) == 1:
-    #             winner_card = str(board[trump_cards[0]])
-    #             return winner_card
-    #
-    #         elif len(trump_cards) > 1:
-    #             for card in trump_cards:
-    #                 if ranks[card] == "J":
-    #                     compare = J
-    #                     if compare > winner_card:
-    #                         winner_card = compare
-    #                 elif ranks[card] == "Q":
-    #                     compare = Q
-    #                     if compare > winner_card:
-    #                         winner_card = compare
-    #                 elif ranks[card] == "K":
-    #                     compare = K
-    #                     if compare > winner_card:
-    #                         winner_card = compare
-    #                 elif ranks[card] == "A":
-    #                     compare = A
-    #                     if compare > winner_card:
-    #                         winner_card = compare
-    #                 elif int(ranks[card]) > winner_card:
-    #                     winner_card = int(ranks[card])
-    #
-    #             if winner_card == 11:
-    #                 winner_card = f"J{trump_card[0]}"
-    #             elif winner_card == 12:
-    #                 winner_card = f"Q{trump_card[0]}"
-    #             elif winner_card == 13:
-    #                 winner_card = f"K{trump_card[0]}"
-    #             elif winner_card == 14:
-    #                 winner_card = f"A{trump_card[0]}"
-    #             else:
-    #                 winner_card = f"{winner_card}{trump_card[0]}"
-    #             return winner_card
-    #
-    #     elif suits.count(first_suit) == 1:
-    #         winner_card = str(board[0])
-    #         return winner_card
-    #
-    #     elif suits.count(first_suit) > 1:
-    #         first_suit_cards = [index for index, suit in enumerate(suits) if suit == first_suit]
-    #         for card in first_suit_cards:
-    #             if ranks[card] == "J":
-    #                 compare = J
-    #                 if compare > winner_card:
-    #                     winner_card = compare
-    #             elif ranks[card] == "Q":
-    #                 compare = Q
-    #                 if compare > winner_card:
-    #                     winner_card = compare
-    #             elif ranks[card] == "K":
-    #                 compare = K
-    #                 if compare > winner_card:
-    #                     winner_card = compare
-    #             elif ranks[card] == "A":
-    #                 compare = A
-    #                 if compare > winner_card:
-    #                     winner_card = compare
-    #             elif int(ranks[card]) > winner_card:
-    #                 winner_card = int(ranks[card])
-    #
-    #         if winner_card == 11:
-    #             winner_card = f"J{first_suit}"
-    #         elif winner_card == 12:
-    #             winner_card = f"Q{first_suit}"
-    #         elif winner_card == 13:
-    #             winner_card = f"K{first_suit}"
-    #         elif winner_card == 14:
-    #             winner_card = f"A{first_suit}"
-    #         else:
-    #             winner_card = f"{winner_card}{first_suit}"
-    #         return winner_card
-    #
+    def compare_cards_rank(self, board, trump_card):
+        suits = [card.suit for card in board]
+        ranks = [str(card.rank) for card in board]
+        J, Q, K, A = 11, 12, 13, 14
+        winner_card = 0
+        compare = 0
+        first_suit = str(board[0].suit)
+
+        if trump_card[0] in suits:
+            trump_cards = [index for index, suit in enumerate(suits) if suit == trump_card[0]]
+            if len(trump_cards) == 1:
+                winner_card = str(board[trump_cards[0]])
+                return winner_card
+
+            elif len(trump_cards) > 1:
+                for card in trump_cards:
+                    if ranks[card] == "J":
+                        compare = J
+                        if compare > winner_card:
+                            winner_card = compare
+                    elif ranks[card] == "Q":
+                        compare = Q
+                        if compare > winner_card:
+                            winner_card = compare
+                    elif ranks[card] == "K":
+                        compare = K
+                        if compare > winner_card:
+                            winner_card = compare
+                    elif ranks[card] == "A":
+                        compare = A
+                        if compare > winner_card:
+                            winner_card = compare
+                    elif int(ranks[card]) > winner_card:
+                        winner_card = int(ranks[card])
+
+                if winner_card == 11:
+                    winner_card = f"J{trump_card[0]}"
+                elif winner_card == 12:
+                    winner_card = f"Q{trump_card[0]}"
+                elif winner_card == 13:
+                    winner_card = f"K{trump_card[0]}"
+                elif winner_card == 14:
+                    winner_card = f"A{trump_card[0]}"
+                else:
+                    winner_card = f"{winner_card}{trump_card[0]}"
+                return winner_card
+
+        elif suits.count(first_suit) == 1:
+            winner_card = str(board[0])
+            return winner_card
+
+        elif suits.count(first_suit) > 1:
+            first_suit_cards = [index for index, suit in enumerate(suits) if suit == first_suit]
+            for card in first_suit_cards:
+                if ranks[card] == "J":
+                    compare = J
+                    if compare > winner_card:
+                        winner_card = compare
+                elif ranks[card] == "Q":
+                    compare = Q
+                    if compare > winner_card:
+                        winner_card = compare
+                elif ranks[card] == "K":
+                    compare = K
+                    if compare > winner_card:
+                        winner_card = compare
+                elif ranks[card] == "A":
+                    compare = A
+                    if compare > winner_card:
+                        winner_card = compare
+                elif int(ranks[card]) > winner_card:
+                    winner_card = int(ranks[card])
+
+            if winner_card == 11:
+                winner_card = f"J{first_suit}"
+            elif winner_card == 12:
+                winner_card = f"Q{first_suit}"
+            elif winner_card == 13:
+                winner_card = f"K{first_suit}"
+            elif winner_card == 14:
+                winner_card = f"A{first_suit}"
+            else:
+                winner_card = f"{winner_card}{first_suit}"
+            return winner_card
+

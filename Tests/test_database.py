@@ -26,7 +26,7 @@ class TestDatabaseRepository:
         assert players_stats is None
 
     def test_get_all_players_stats_when_database_is_populated_returns_the_current_data(self):
-        self.game.save_player_stats("George", "Ac", 2, "2c")
+        self.game.save_player_stats("George", "Ac", 2, "2c Ah")
         self.game.save_player_stats("Robert", "Kh", 3, "5c")
 
         players_stats = self.game.get_all_players_stats()
@@ -34,7 +34,7 @@ class TestDatabaseRepository:
         assert players_stats[name] == ["George", "Robert"]
         assert players_stats[hand] == [["Ac"], ["Kh"]]
         assert players_stats[tricks] == [2, 3]
-        assert players_stats[played_hands] == [["2c"], ["5c"]]
+        assert players_stats[played_hands] == [["2c", "Ah"], ["5c"]]
 
     def test_remove_all_player_stats_when_database_is_populated_returns_empty_database(self):
         self.game.save_player_stats("George", "Ac", 2, "2c")

@@ -63,25 +63,28 @@ class WhistView(TemplateView):
 
                     if self.controller.correct_card(the_card, players, board, current_player_pos, trump_card):
                         board = self.controller.add_to_board(the_card, board)
-                        self.controller.remove_card_from_player(the_card, players)
+                        players = self.controller.remove_card_from_player(the_card, players)
                         current_player_pos += 1
-        #
-        #                 if self.controller.board_full(board):
-        #                     winner_card = self.controller.compare_cards_rank(board, trump_card)
-        #                     winner = self.controller.find_winner(winner_card, players)
-        #                     self.controller.add_trick_to_player(winner, players)
-        #                     current_player_pos = self.controller.winner_table_position(winner, players)
-        #                     self.controller.clear_board(board)
-        #
-        #         # save player pos and game
-        #         self.controller.save_player_pos(current_player_pos)
-        #         self.controller.save_game(players, board, score_one, score_two, trump_card)
-        #
+
+                        if self.controller.board_full(board):
+                            winner_card = self.controller.compare_cards_rank(board, trump_card)
+                            winner = self.controller.find_winner(winner_card, players)
+                            players = self.controller.add_trick_to_player(winner, players)
+                            current_player_pos = self.controller.winner_table_position(winner, players)
+                            self.controller.clear_board(board)
+
+                        # save player pos and game
+                        self.controller.save_players_stats(players)
+                        game_stats['board'] = board
+                        game_stats['score1'] = score_one
+                        game_stats['score2'] = score_two
+                        game_stats['player_pos'] = current_player_pos
+                        self.controller.save_game_stats(game_stats)
 
         # RESULTS
         players = self.controller.load_players()
         game_stats = self.controller.load_game_stats()
-        board = game_stats['board']
+        board = self.controller.display_board(game_stats['board'])
         trump_card = game_stats['trump_card']
         score_one = game_stats['score1']
         score_two = game_stats['score2']
