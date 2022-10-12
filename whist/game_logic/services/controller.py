@@ -133,9 +133,9 @@ class Controller:
     def total_tricks_completed(self, players):
         all_tricks = [player.tricks for player in players]
         if sum(all_tricks) != 13:
-            return True
-        elif sum(all_tricks) == 13:
             return False
+        elif sum(all_tricks) == 13:
+            return True
 
     def save_card(self, card):
         self.repository.save_played_card(card)
@@ -209,25 +209,23 @@ class Controller:
         new_board = board.clear()
         return new_board
 
-    # def reset_players_cards_and_tricks(self, players):
-    #     for player in players:
-    #         player.tricks = 0
-    #         player.cards.clear()
-    #     return players
-    #
+    def reset_players_cards_and_tricks(self, players):
+        for player in players:
+            player.tricks = 0
+            player.remove_cards.clear()
+        return players
 
-    # def update_score(self, team_one_score, team_two_score, players):
-    #     team_one = [players[0].tricks, players[2].tricks]
-    #     team_two = [players[1].tricks, players[3].tricks]
-    #     team_one_score_result = sum(team_one) - 6
-    #     team_two_score_result = sum(team_two) - 6
-    #
-    #     if team_one_score_result > 0:
-    #         team_one_score = team_one_score_result
-    #     elif team_two_score_result > 0:
-    #         team_two_score = team_two_score_result
-    #     return team_one_score, team_two_score
-    #
+    def update_score(self, team_one_score, team_two_score, players):
+        team_one = [players[0].tricks, players[2].tricks]
+        team_two = [players[1].tricks, players[3].tricks]
+        team_one_score_result = sum(team_one) - 6
+        team_two_score_result = sum(team_two) - 6
+
+        if team_one_score_result > 0:
+            team_one_score += team_one_score_result
+        elif team_two_score_result > 0:
+            team_two_score += team_two_score_result
+        return team_one_score, team_two_score
 
     def compare_cards_rank(self, board, trump_card):
         suits = [card.suit for card in board]

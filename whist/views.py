@@ -38,9 +38,6 @@ class WhistView(TemplateView):
         score_two = game_stats['score2']
         player_pos = game_stats['player_pos']
 
-        # for card in current_board:
-        #     board.append(Card(self.controller.get_card_rank(card), self.controller.get_card_suit(card)))
-
         current_player_pos = player_pos
         if current_player_pos == 4:
             current_player_pos = 0
@@ -54,7 +51,7 @@ class WhistView(TemplateView):
                 self.controller.save_players_stats(players)
                 self.controller.save_game_stats(game_stats)
 
-            elif self.controller.total_tricks_completed(players):
+            elif self.controller.total_tricks_completed(players) is False:
                 card = game_stats['played_card']
                 trump_card = game_stats['trump_card']
 
@@ -72,14 +69,34 @@ class WhistView(TemplateView):
                             players = self.controller.add_trick_to_player(winner, players)
                             current_player_pos = self.controller.winner_table_position(winner, players)
                             self.controller.clear_board(board)
-
-                        # save player pos and game
+                        # SAVE
                         self.controller.save_players_stats(players)
                         game_stats['board'] = board
                         game_stats['score1'] = score_one
                         game_stats['score2'] = score_two
                         game_stats['player_pos'] = current_player_pos
                         self.controller.save_game_stats(game_stats)
+
+        if self.controller.total_tricks_completed(players) is True:
+            scores = self.controller.update_score(score_one, score_one, players)
+            self.controller.reset_players_cards_and_tricks(players)
+            # SAVE
+            self.controller.save_players_stats(players)
+            game_stats['board'] = board
+            game_stats['score1'] = scores[0]
+            game_stats['score2'] = scores[1]
+            game_stats['player_pos'] = current_player_pos
+            self.controller.save_game_stats(game_stats)
+
+            if self.controller.players_cards_count(players) == 0 and self.controller.score_limit(score_one, score_two):
+                cards = self.controller.get_shuffled_cards()
+                players = self.controller.spread_cards(cards, players)
+                game_stats['trump_card'] = self.controller.find_trump_card(cards)
+                self.controller.save_players_stats(players)
+                self.controller.save_game_stats(game_stats)
+            else:
+                #  SHOW WINNER
+                pass
 
         # RESULTS
         players = self.controller.load_players()
@@ -90,7 +107,6 @@ class WhistView(TemplateView):
         score_two = game_stats['score2']
 
         content = {
-
             # Form
             'form': form,
 

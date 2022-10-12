@@ -145,7 +145,7 @@ class TestController:
     def test_total_tricks_completed_when_tricks_are_below_13_returns_true(self):
         players = self.controller.load_players()
         tricks_completed = self.controller.total_tricks_completed(players)
-        assert tricks_completed is True
+        assert tricks_completed is False
 
     def test_total_tricks_completed_when_tricks_are_equal_13_returns_false(self):
         player1 = Player.objects.create(name="Alex", hand="Ah, Kc, 2c", tricks=4, played_cards="2c, 3c")
@@ -155,7 +155,7 @@ class TestController:
 
         players = [player1, player2, player3, player4]
         tricks_completed = self.controller.total_tricks_completed(players)
-        assert tricks_completed is False
+        assert tricks_completed is True
 
     def test_card_rank_and_suit_when_the_card_is_ten_return_the_given_suit_and_rank(self):
         card1, card2, card3 = "10h", "10c", "Ac"

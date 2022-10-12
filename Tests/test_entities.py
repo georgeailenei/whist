@@ -65,3 +65,30 @@ class TestControllerAndEntities:
         assert player_pos2 == 1
         assert player_pos3 == 2
         assert player_pos4 == 3
+
+    def test_reset_players_cards_and_tricks_when_list_is_populated_returns_an_empty_list(self):
+        player1, player2, player3, player4 = Player("George"), Player("Dan"), Player("Robert"), Player("Nicu")
+        players = [player1, player2, player3, player4]
+
+        player3.remove_cards.append("Ah")
+        player3.remove_cards.append("Kh")
+        self.controller.reset_players_cards_and_tricks(players)
+        assert player3.remove_cards == []
+
+    def test_update_score_when_tricks_are_completed_return_the_right_score(self):
+        player1, player2, player3, player4 = Player("George"), Player("Dan"), Player("Robert"), Player("Nicu")
+        players = [player1, player2, player3, player4]
+
+        score1, score2 = 0, 0
+        player1.tricks, player2.tricks, player3.tricks, player4.tricks = 4, 4, 2, 3
+        scores = self.controller.update_score(score1, score2, players)
+        assert scores == (0, 1)
+
+    def test_update_score_when_tricks_are_completed_but_score_is_higher_than_one_return_the_right_score(self):
+        player1, player2, player3, player4 = Player("George"), Player("Dan"), Player("Robert"), Player("Nicu")
+        players = [player1, player2, player3, player4]
+
+        score1, score2 = 0, 2
+        player1.tricks, player2.tricks, player3.tricks, player4.tricks = 4, 4, 2, 3
+        scores = self.controller.update_score(score1, score2, players)
+        assert scores == (0, 3)
