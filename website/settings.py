@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'whist',
     'registration',
     'userauth',
+    'room',
 ]
 
 AUTH_USER_MODEL = 'userauth.User'
