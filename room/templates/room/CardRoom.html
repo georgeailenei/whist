@@ -22,7 +22,8 @@
                     <li>Username 4</li>
                 </ul>
                 <!-- This is the place where users can join the card room -->
-                <form>
+                <form method="post">
+                    {% csrf_token %}
                     <input type="submit" value="Join Table">
                 </form>
             </div>
