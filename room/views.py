@@ -13,9 +13,9 @@ class CardRooms(TemplateView):
     def post(self, request):
         if request.method == 'POST':
             if request.user.is_authenticated:
-                username = request.user
+                user = request.user
                 # SAVE THE PLAYER IN CardRoom DB
-                self.controller.add_player(username)
+                self.controller.add_player(user)
                 # YOU MUST IMPLEMENT USER VALIDATION
                 # EXAMPLE: IF THE USER IS IN THE LIST; CANNOT JOIN AGAIN
             else:
