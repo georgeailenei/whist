@@ -7,7 +7,6 @@ from whist.utils import get_controller
 class GamesView(TemplateView):
     template_name = 'whist/games.html'
 
-
 class WhistView(TemplateView):
     template_name = 'whist/whist.html'
 

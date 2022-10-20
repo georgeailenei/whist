@@ -2,15 +2,23 @@ from room.models import CardRoom
 
 
 class Controller:
-    def check_user(self, user):
-        users = CardRoom.objects.all()
-        players = [p.players for p in users]
+    def check_user(self, user, card_room):
+        players = card_room.players.all()
         print(len(players))
-        return False if user.get_username() in players else True
+        return user not in players
 
-    def add_player(self, user):
-        if self.check_user(user):
-            p = CardRoom()
-            p.save()
-            p.players.add(user)
+    def add_player(self, user, card_room):
+        if not self.check_user(user, card_room):
+            raise ValueError('fa ceva inca cazu asta')
+    
+        card_room.players.add(user)
 
+    
+"""
+
+        CARD ROOM
+
+        1                 2    
+Dan Sandu Robert Constatinescu    Nicu Lenuta
+
+"""
