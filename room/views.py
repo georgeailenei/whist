@@ -1,13 +1,12 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.generic import TemplateView
-
+from django.views.generic import TemplateView, ListView
 from room.models import CardRoom
 from .utils import get_controller
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class CardRooms(LoginRequiredMixin, TemplateView):
-    template_name = 'room/CardRoom.html'
+class Room(LoginRequiredMixin, TemplateView):
+    template_name = 'room/Room.html'
 
     def __init__(self):
         super().__init__()
@@ -18,12 +17,21 @@ class CardRooms(LoginRequiredMixin, TemplateView):
 
         if request.method == 'POST':
             user = request.user
-            # SAVE THE PLAYER IN CardRoom DB
-            self.controller.add_player(user, card_room)
-            # YOU MUST IMPLEMENT USER VALIDATION
-            # EXAMPLE: IF THE USER IS IN THE LIST; CANNOT JOIN AGAIN
-        
+            try:
+                self.controller.add_player(user, card_room)
+            except ValueError as p:
+                return render(request, self.template_name, {'error': p})
         return redirect('card_rooms', pk=pk)
 
     def get(self, request, pk):
-        return render(request, self.template_name)
+        card_room = get_object_or_404(CardRoom, pk=pk)
+        players_waiting = self.controller.numbers_of_players_waiting(card_room)
+        content = {
+            'players': players_waiting,
+        }
+        return render(request, self.template_name, content)
+
+
+class CardRooms(LoginRequiredMixin, ListView):
+    model = CardRoom
+    context_object_name = 'rooms'

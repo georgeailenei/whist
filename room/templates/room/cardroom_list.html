@@ -1,0 +1,12 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+<div align="center">
+<h6>CARD ROOMS</h6>
+<ul class="list-unstyled">
+{% for room in rooms %}
+<li>Room: {{room.id}} - Status: {{room.started}} - <a href="{% url 'room' room.id %}">Open</a></li>
+{% endfor %}
+</ul>
+</div>
+{% endblock %}
