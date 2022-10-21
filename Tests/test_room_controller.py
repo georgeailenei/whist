@@ -23,26 +23,6 @@ def test_room_controller_adds_user_to_room_raises_error_when_user_already_in_roo
         controller.add_player(admin_user, card_room)
 
 
-def test_room_controller_players_waiting_when_users_already_in_room(admin_user):
-    controller = Controller()
-    card_room = CardRoom.objects.create(status=False, players_count=0)
-    controller.add_player(admin_user, card_room)
-    rooms = CardRoom.objects.all()
-    count = controller.players_waiting(rooms)
-    assert count == [1]
-
-
-def test_room_controller_players_waiting_when_users_already_in_rooms(admin_user):
-    controller = Controller()
-    card_room = CardRoom.objects.create(status=False, players_count=0)
-    controller.add_player(admin_user, card_room)
-    card_room = CardRoom.objects.create(players_count=0)
-    controller.add_player(admin_user, card_room)
-    rooms = CardRoom.objects.all()
-    count = controller.players_waiting(rooms)
-    assert count == [1, 1]
-
-
 def test_room_controller_add_player_when_adding_players_it_updates_players_count_too(admin_user):
     controller = Controller()
     card_room = CardRoom.objects.create(players_count=0)
@@ -63,3 +43,19 @@ def test_room_controller_add_player_when_adding_players_it_updates_seats_too(adm
     card_room = CardRoom.objects.create()
     controller.add_player(admin_user, card_room)
     assert card_room.seats == "Available"
+
+
+def test_room_controller_get_players_names_when_players_are_in_db(admin_user):
+    controller = Controller()
+    card_room = CardRoom.objects.create()
+    controller.add_player(admin_user, card_room)
+    players = controller.get_players_names(card_room)
+    assert players == [admin_user]
+
+
+def test_room_controller_remove_player_when_in_db(admin_user):
+    controller = Controller()
+    card_room = CardRoom.objects.create()
+    controller.add_player(admin_user, card_room)
+    controller.remove_player(admin_user, card_room)
+    assert card_room.players.count() == 0

@@ -22,6 +22,14 @@ class Controller:
             card_room.seats = "Not Available"
             card_room.save()
 
-    def players_waiting(self, card_rooms):
-        players_count = [room.players.count() for room in card_rooms]
-        return players_count
+    def check_players_num(self, card_rooms):
+        return card_rooms.players.count()
+
+    def get_players_names(self, card_room):
+        players = [player for player in card_room.players.all()]
+        return players
+
+    def remove_player(self, user, card_room):
+        card_room.players.remove(user)
+        card_room.players_count = card_room.players.count()
+        card_room.save()

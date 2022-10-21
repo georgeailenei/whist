@@ -4,20 +4,39 @@
 <div class="container vh-100">
 <div class="row align-items-center text-center h-100">
 <div class="col ">
-<h5>CARD ROOM</h5>
-<h6>Players Waiting {{ players }}</h6>
+<h5>CARD ROOM {{room_nr}}</h5>
+<h6>Players</h6>
+
 <ul class="list-unstyled">
-<li>Username 1</li>
-<li>Username 2</li>
-<li>Username 3</li>
-<li>Username 4</li>
+{% for player in players %}
+    <li>{{player.username}}</li>
+{% endfor %}
 </ul>
 
+{% if register %}
 <form method="post">
 {% csrf_token %}
-<input type="submit" value="Join Table">
+<input type="submit" name="Join" value="Join Table">
 </form>
+{% endif %}
+
+
+{% if cancel %}
+<form method="post">
+{% csrf_token %}
+<input type="submit" name="Cancel" value="Leave Table">
+</form>
+{% endif %}
 <p>{{ error }}</p>
+
+
+{% if room_full %}
+<form method="post">
+{% csrf_token %}
+<input type="submit" name="GameReady" value="READY">
+</form>
+{% endif %}
+<p>{{ starting_game }}</p>
 
 </div>
 </div>
