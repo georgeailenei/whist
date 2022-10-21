@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, DetailView, ListView
 from room.models import CardRoom
 from .utils import get_controller
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -21,17 +21,13 @@ class Room(LoginRequiredMixin, TemplateView):
                 self.controller.add_player(user, card_room)
             except ValueError as p:
                 return render(request, self.template_name, {'error': p})
-        return redirect('card_rooms', pk=pk)
+        return redirect('room', pk=pk)
 
     def get(self, request, pk):
-        card_room = get_object_or_404(CardRoom, pk=pk)
-        players_waiting = self.controller.numbers_of_players_waiting(card_room)
-        content = {
-            'players': players_waiting,
-        }
-        return render(request, self.template_name, content)
+        return render(request, self.template_name)
 
 
 class CardRooms(LoginRequiredMixin, ListView):
     model = CardRoom
     context_object_name = 'rooms'
+    template_name = 'room/cardroom_list.html'

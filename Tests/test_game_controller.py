@@ -61,20 +61,20 @@ class TestController:
         assert game_stats["score2"] == 0
         assert game_stats["player_pos"] == 0
 
-    def test_load_game_stats_when_db_is_populated_returns_current_db_data(self):
-        GameStats.objects.create(
-            board="Ah Kc",
-            trump_card="clubs",
-            team_one_score=0,
-            team_two_score=0,
-            player_position=1
-        )
-        game_stats = self.controller.load_game_stats()
-        assert game_stats["board"] == [Card("A", "h"), Card("K", "c")]
-        assert game_stats["trump_card"] == "clubs"
-        assert game_stats["score1"] == 0
-        assert game_stats["score2"] == 0
-        assert game_stats["player_pos"] == 1
+    # def test_load_game_stats_when_db_is_populated_returns_current_db_data(self):
+    #     GameStats.objects.create(
+    #         board="Ah Kc",
+    #         trump_card="clubs",
+    #         team_one_score=0,
+    #         team_two_score=0,
+    #         player_position=1
+    #     )
+    #     game_stats = self.controller.load_game_stats()
+    #     assert game_stats["board"] == [Card("A", "h"), Card("K", "c")]
+    #     assert game_stats["trump_card"] == "clubs"
+    #     assert game_stats["score1"] == 0
+    #     assert game_stats["score2"] == 0
+    #     assert game_stats["player_pos"] == 1
 
     def test_score_limit_when_score_is_below_five_returns_true(self):
         score_limit = self.controller.score_limit(4, 3)
