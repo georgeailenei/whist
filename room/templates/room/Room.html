@@ -1,4 +1,4 @@
-{% extends 'base_template.html' %}
+{% extends "base_template.html" %}
 {% block content %}
 
 <div class="container vh-100">
@@ -29,14 +29,7 @@
 {% endif %}
 <p>{{ error }}</p>
 
-
-{% if room_full %}
-<form method="post">
-{% csrf_token %}
-<input type="submit" name="GameReady" value="READY">
-</form>
-{% endif %}
-<p>{{ starting_game }}</p>
+<p>{{ message }}</p>
 
 </div>
 </div>

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>HOME PAGE</title>
-</head>
-<body>
-<p>THIS IS WHERE TO USER SHOULD BE REDIRECTED WHEN SUCCESSFULLY LOGGED</p>
-</body>
-</html>
+{% extends 'base_template.html' %}
+{% block content %}
+<center xmlns="http://www.w3.org/1999/html">
+<p>This is where the users are going to be directed. When logged in.</br>
+    This is the where you will list the games available on the website</p>
+
+<h6>Whist</h6>
+<a href="{% url 'card_rooms'%}">PLAY</a>
+</center>
+{% endblock %}

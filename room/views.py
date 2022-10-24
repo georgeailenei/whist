@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.generic import TemplateView, DetailView, ListView
+from django.views.generic import TemplateView, ListView
 from room.models import CardRoom
 from .utils import get_controller
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -48,40 +48,30 @@ class Room(LoginRequiredMixin, TemplateView):
             }
             return render(request, self.template_name, content)
 
-        elif 'GameReady' in request.POST:
-            players = self.controller.get_players_names(card_room)
-            message = "STARTING GAME"
-            content = {
-                'players': players,
-                'room_nr': pk,
-                'starting_game': message,
-            }
-            return render(request, self.template_name, content)
-        return redirect('room', pk=pk)
-
     def get(self, request, pk):
         card_room = get_object_or_404(CardRoom, pk=pk)
         players = self.controller.get_players_names(card_room)
 
-        message = "Press Ready to start the game"
-        room_full = False
         register = self.controller.check_user(request.user, card_room)
         cancel = not register
 
         players_count = self.controller.check_players_num(card_room)
+        seconds = 1
+        message = ""
 
         if players_count == 4:
             register = False
             cancel = False
-            room_full = True
+            seconds = 5
+            message = "The game will start shortly"
 
         content = {
             'players': players,
             'room_nr': pk,
             'register': register,
             'cancel': cancel,
-            'message_for_players': message,
-            'room_full': room_full,
+            'seconds': seconds,
+            'message': message,
         }
         return render(request, self.template_name, content)
 
