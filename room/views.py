@@ -17,21 +17,18 @@ class Room(LoginRequiredMixin, TemplateView):
 
         if 'Join' in request.POST:
             user = request.user
-            try:
-                self.controller.add_player(user, card_room)
-            except ValueError as p:
-                cancel = True
-                register = False
-                players = self.controller.get_players_names(card_room)
+            self.controller.add_player(user, card_room)
+            cancel = True
+            register = False
+            players = self.controller.get_players_names(card_room)
 
-                content = {
-                    'players': players,
-                    'room_nr': pk,
-                    'error': p,
-                    'cancel': cancel,
-                    'register': register,
-                }
-                return render(request, self.template_name, content)
+            content = {
+                'players': players,
+                'room_nr': pk,
+                'cancel': cancel,
+                'register': register,
+            }
+            return render(request, self.template_name, content)
 
         elif 'Cancel' in request.POST:
             user = request.user

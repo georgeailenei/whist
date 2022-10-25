@@ -5,7 +5,7 @@
 <h6>LIST OF CARD ROOMS</h6>
 <ul class="list-unstyled">
 {% for room in rooms %}
-<li>Room {{room.id}} - Table Seats: {{room.seats}} - Waiting: {{room.players_count}} - <a href="{% url 'room' room.id %}">Open</a></li>
+<li>Room {{room.id}} - Table Seats: {{room.seats}} - Waiting: {{room.players_count}} - <a href="{% url 'the_room' room.id %}">Open</a></li>
 {% endfor %}
 </ul>
 </div>
