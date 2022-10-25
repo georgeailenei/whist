@@ -1,3 +1,4 @@
+<meta http-equiv="refresh" content="2">
 {% extends "base_template.html" %}
 {% block content %}
 
@@ -28,6 +29,10 @@
 </form>
 {% endif %}
 <p>{{ message }}</p>
+
+{% for count in time %}
+<p>{{count}}</p>
+{% endfor %}
 
 </div>
 </div>

@@ -53,13 +53,11 @@ class Room(LoginRequiredMixin, TemplateView):
         cancel = not register
 
         players_count = self.controller.check_players_num(card_room)
-        seconds = 1
         message = ""
 
         if players_count == 4:
             register = False
             cancel = False
-            seconds = 5
             message = "The game will start shortly"
 
         content = {
@@ -67,7 +65,6 @@ class Room(LoginRequiredMixin, TemplateView):
             'room_nr': pk,
             'register': register,
             'cancel': cancel,
-            'seconds': seconds,
             'message': message,
         }
         return render(request, self.template_name, content)
