@@ -1,5 +1,3 @@
-from room.models import CardRoom
-from userauth.models import User
 from src.room_controller import Controller
 from room.models import CardRoom
 import pytest
@@ -59,3 +57,21 @@ def test_room_controller_remove_player_when_in_db(admin_user):
     controller.add_player(admin_user, card_room)
     controller.remove_player(admin_user, card_room)
     assert card_room.players.count() == 0
+
+
+def test_room_controller_get_room_status_when_new_room_returns_true(admin_user):
+    controller = Controller()
+    card_room = CardRoom.objects.create()
+    controller.add_player(admin_user, card_room)
+    the_room = CardRoom.objects.all().first()
+    status = controller.get_room_status(the_room)
+    assert status is True
+
+
+def test_room_controller_change_status_to_false_when_room_is_full(admin_user):
+    controller = Controller()
+    card_room = CardRoom.objects.create()
+    controller.add_player(admin_user, card_room)
+    the_room = CardRoom.objects.all().first()
+    controller.change_status_to_false(the_room)
+    assert the_room.status is False

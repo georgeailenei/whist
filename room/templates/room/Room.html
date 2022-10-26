@@ -8,8 +8,8 @@
 
 {% if table_status %}
 <h5>CARD ROOM {{room_nr}}</h5>
-<h6>Players</h6>
 
+<h6>Players</h6>
 <ul class="list-unstyled">
 {% for player in players %}
     <li>{{player.username}}</li>
@@ -31,6 +31,7 @@
 </form>
 {% endif %}
 <p>{{ message }}</p>
+
 {% endif %}
 
 {% if countdown %}

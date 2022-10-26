@@ -22,28 +22,26 @@ class Room(LoginRequiredMixin, TemplateView):
             except ValueError:
                 return redirect('the_room', pk=pk)
 
-            cancel = True
-            register = False
             players = self.controller.get_players_names(card_room)
             content = {
+                'table_status': True,
                 'players': players,
                 'room_nr': pk,
-                'cancel': cancel,
-                'register': register,
+                'cancel': True,
+                'register': False,
             }
             return render(request, self.template_name, content)
 
         elif 'Cancel' in request.POST:
             user = request.user
-            cancel = False
-            register = True
             self.controller.remove_player(user, card_room)
             players = self.controller.get_players_names(card_room)
             content = {
+                'table_status': True,
                 'players': players,
                 'room_nr': pk,
-                'cancel': cancel,
-                'register': register,
+                'cancel': False,
+                'register': True,
             }
             return render(request, self.template_name, content)
 
@@ -51,7 +49,7 @@ class Room(LoginRequiredMixin, TemplateView):
         card_room = get_object_or_404(CardRoom, pk=pk)
         players = self.controller.get_players_names(card_room)
         card_room_status = self.controller.get_room_status(card_room)
-
+        print(card_room_status)
         register = self.controller.check_user(request.user, card_room)
         cancel = not register
 
@@ -59,21 +57,18 @@ class Room(LoginRequiredMixin, TemplateView):
         countdown = False
         seconds = "0"
 
-        if players_count == 4 and card_room_status:
-            register, cancel = False, False
-            countdown = True
+        if players_count == 4:
+            self.controller.change_status_to_false(card_room)
+            register, cancel, countdown = False, False, True
             seconds = "6"
             content = {
-                'table_status': card_room_status,
+                'table_status': False,
                 'register': register,
                 'cancel': cancel,
                 'countdown': countdown,
                 'timer': seconds,
             }
-            self.controller.change_status_to_false(card_room)
-            return render(request, self.template_name, content)
-        elif card_room_status is False:
-            print("This is where the game is going to run")
+            return render(request, self.template_name, content), redirect('the_game')
 
         content = {
             'players': players,
@@ -91,3 +86,10 @@ class CardRooms(LoginRequiredMixin, ListView):
     model = CardRoom
     context_object_name = 'rooms'
     template_name = 'room/cardroom_list.html'
+
+
+class TheGame(LoginRequiredMixin, TemplateView):
+    template_name = 'room/game.html'
+
+    def get(self, request):
+        return render(request, self.template_name)

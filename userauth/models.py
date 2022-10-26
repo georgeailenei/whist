@@ -3,6 +3,4 @@ from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserM
 
 
 class User(AbstractUser, PermissionsMixin):
-    hand = models.CharField(max_length=50)
-    tricks = models.IntegerField()
-    played_cards = models.CharField(max_length=50)
+    pass
