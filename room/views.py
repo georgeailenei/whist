@@ -17,11 +17,14 @@ class Room(LoginRequiredMixin, TemplateView):
 
         if 'Join' in request.POST:
             user = request.user
-            self.controller.add_player(user, card_room)
+            try:
+                self.controller.add_player(user, card_room)
+            except ValueError:
+                return redirect('the_room', pk=pk)
+
             cancel = True
             register = False
             players = self.controller.get_players_names(card_room)
-
             content = {
                 'players': players,
                 'room_nr': pk,
@@ -53,19 +56,22 @@ class Room(LoginRequiredMixin, TemplateView):
         cancel = not register
 
         players_count = self.controller.check_players_num(card_room)
-        message = ""
+        countdown = False
+        time = "0"
 
         if players_count == 4:
             register = False
             cancel = False
-            message = "The game will start shortly"
+            countdown = True
+            time = 6
 
         content = {
             'players': players,
             'room_nr': pk,
             'register': register,
             'cancel': cancel,
-            'message': message,
+            'countdown': countdown,
+            'timer': time,
         }
         return render(request, self.template_name, content)
 
