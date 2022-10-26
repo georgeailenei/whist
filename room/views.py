@@ -39,7 +39,6 @@ class Room(LoginRequiredMixin, TemplateView):
             register = True
             self.controller.remove_player(user, card_room)
             players = self.controller.get_players_names(card_room)
-
             content = {
                 'players': players,
                 'room_nr': pk,
@@ -51,19 +50,30 @@ class Room(LoginRequiredMixin, TemplateView):
     def get(self, request, pk):
         card_room = get_object_or_404(CardRoom, pk=pk)
         players = self.controller.get_players_names(card_room)
+        card_room_status = self.controller.get_room_status(card_room)
 
         register = self.controller.check_user(request.user, card_room)
         cancel = not register
 
         players_count = self.controller.check_players_num(card_room)
         countdown = False
-        time = "0"
+        seconds = "0"
 
-        if players_count == 4:
-            register = False
-            cancel = False
+        if players_count == 4 and card_room_status:
+            register, cancel = False, False
             countdown = True
-            time = 6
+            seconds = "6"
+            content = {
+                'table_status': card_room_status,
+                'register': register,
+                'cancel': cancel,
+                'countdown': countdown,
+                'timer': seconds,
+            }
+            self.controller.change_status_to_false(card_room)
+            return render(request, self.template_name, content)
+        elif card_room_status is False:
+            print("This is where the game is going to run")
 
         content = {
             'players': players,
@@ -71,7 +81,8 @@ class Room(LoginRequiredMixin, TemplateView):
             'register': register,
             'cancel': cancel,
             'countdown': countdown,
-            'timer': time,
+            'timer': seconds,
+            'table_status': card_room_status,
         }
         return render(request, self.template_name, content)
 

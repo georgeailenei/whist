@@ -14,6 +14,7 @@ function counter () {
         if (time == -1) {
             clearInterval(the_interval);
             countdown_element.innerHTML = "Game is starting";
+            const one_refresh = setTimeout(window.location.reload(), 1000);
         }
     }
     time--;

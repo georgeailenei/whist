@@ -14,11 +14,9 @@ class Controller:
             card_room.save()
 
         if not card_room.players_count == 4:
-            card_room.status = True
             card_room.seats = "Available"
             card_room.save()
         else:
-            card_room.status = False
             card_room.seats = "Not Available"
             card_room.save()
 
@@ -32,4 +30,11 @@ class Controller:
     def remove_player(self, user, card_room):
         card_room.players.remove(user)
         card_room.players_count = card_room.players.count()
+        card_room.save()
+
+    def get_room_status(self, card_room):
+        return card_room.status
+
+    def change_status_to_false(self, card_room):
+        card_room.status = False
         card_room.save()
