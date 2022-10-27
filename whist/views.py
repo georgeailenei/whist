@@ -27,7 +27,6 @@ class WhistView(TemplateView):
     def get(self, request):
         # Card Receiver
         form = GameForm()
-
         # RUN GAME
         content = self.controller.run_game(form)
         return render(request, self.template_name, content)

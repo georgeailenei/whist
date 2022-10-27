@@ -64,15 +64,16 @@ class Room(LoginRequiredMixin, TemplateView):
         card_room = get_object_or_404(CardRoom, pk=pk)
         players = self.controller.get_players_names(card_room)
 
-        # ROOM STATUS
+        # ROOM & ELEMENTS STATUS
         card_room_status = self.controller.get_room_status(card_room)
-        print(card_room_status)
-
         register = self.controller.check_user(request.user, card_room)
         cancel = not register
         countdown = False
+
+        # THE NAME OF THE VAR DOES NOT MAKE SENSE - AND THE BOOLEAN MUST BE FALSE FIRST
+        # TO MAKE SENSE. CHANGE THIS NEXT TIME YOU WORK.
         if not card_room_status:
-            print("the game will start")
+            print("Game Runs Here")
             content = {
                 'table_status': False,
                 'game_status': True,
@@ -99,10 +100,3 @@ class CardRooms(LoginRequiredMixin, ListView):
     model = CardRoom
     context_object_name = 'rooms'
     template_name = 'room/cardroom_list.html'
-
-
-class TheGame(LoginRequiredMixin, TemplateView):
-    template_name = 'room/game.html'
-
-    def get(self, request):
-        return render(request, self.template_name)
