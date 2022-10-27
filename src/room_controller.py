@@ -38,3 +38,7 @@ class Controller:
     def change_status_to_false(self, card_room):
         card_room.status = False
         card_room.save()
+
+    def change_status_to_true(self, card_room):
+        card_room.status = True
+        card_room.save()

@@ -22,7 +22,21 @@ class Room(LoginRequiredMixin, TemplateView):
             except ValueError:
                 return redirect('the_room', pk=pk)
 
+            card_room_status = self.controller.get_room_status(card_room)
             players = self.controller.get_players_names(card_room)
+            players_count = self.controller.check_players_num(card_room)
+
+            if players_count == 4 and card_room_status:
+                self.controller.change_status_to_false(card_room)
+                content = {
+                    'table_status': False,
+                    'register': False,
+                    'cancel': False,
+                    'countdown': True,
+                    'timer': "6",
+                }
+                return render(request, self.template_name, content)
+
             content = {
                 'table_status': True,
                 'players': players,
@@ -46,29 +60,28 @@ class Room(LoginRequiredMixin, TemplateView):
             return render(request, self.template_name, content)
 
     def get(self, request, pk):
+        # ROOM & PLAYERS & COUNT
         card_room = get_object_or_404(CardRoom, pk=pk)
         players = self.controller.get_players_names(card_room)
+
+        # ROOM STATUS
         card_room_status = self.controller.get_room_status(card_room)
         print(card_room_status)
+
         register = self.controller.check_user(request.user, card_room)
         cancel = not register
-
-        players_count = self.controller.check_players_num(card_room)
         countdown = False
-        seconds = "0"
-
-        if players_count == 4:
-            self.controller.change_status_to_false(card_room)
-            register, cancel, countdown = False, False, True
-            seconds = "6"
+        if not card_room_status:
+            print("the game will start")
             content = {
                 'table_status': False,
-                'register': register,
-                'cancel': cancel,
-                'countdown': countdown,
-                'timer': seconds,
+                'game_status': True,
+                'register': False,
+                'cancel': False,
+                'countdown': False,
+                'timer': "0",
             }
-            return render(request, self.template_name, content), redirect('the_game')
+            return render(request, self.template_name, content)
 
         content = {
             'players': players,
@@ -76,7 +89,7 @@ class Room(LoginRequiredMixin, TemplateView):
             'register': register,
             'cancel': cancel,
             'countdown': countdown,
-            'timer': seconds,
+            'timer': "0",
             'table_status': card_room_status,
         }
         return render(request, self.template_name, content)
