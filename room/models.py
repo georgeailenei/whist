@@ -11,9 +11,9 @@ class CardRoom(models.Model):
 
 class Stats(models.Model):
     room = models.ForeignKey(CardRoom, on_delete=models.CASCADE)
-    board = models.CharField(max_length=20)
-    trump_card = models.CharField(max_length=10)
-    team_one_score = models.IntegerField()
-    team_two_score = models.IntegerField()
-    player_position = models.IntegerField()
-    played_card = models.CharField(max_length=4)
+    board = models.CharField(max_length=20, blank=True)
+    trump_card = models.CharField(max_length=10, blank=True)
+    team_one_score = models.IntegerField(default=0)
+    team_two_score = models.IntegerField(default=0)
+    player_position = models.IntegerField(default=0)
+    played_card = models.CharField(max_length=4, blank=True)

@@ -2,7 +2,9 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import TemplateView, ListView
 from room.models import CardRoom
 from .utils import get_controller
+from .utils import game_controller
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .forms import GameForm
 
 
 class Room(LoginRequiredMixin, TemplateView):
@@ -11,6 +13,7 @@ class Room(LoginRequiredMixin, TemplateView):
     def __init__(self):
         super().__init__()
         self.controller = get_controller()
+        self.game_controller = game_controller()
 
     def post(self, request, pk):
         card_room = get_object_or_404(CardRoom, pk=pk)
@@ -59,7 +62,18 @@ class Room(LoginRequiredMixin, TemplateView):
             }
             return render(request, self.template_name, content)
 
+        elif 'Post_Card' in request.POST:
+            form = GameForm(request.POST)
+            if form.is_valid():
+                card = form.cleaned_data['input']
+                # Work on these two;
+                if self.game_controller.check_card(card):
+                    self.game_controller.save_card(card)
+                form = GameForm()
+                redirect('the_room')
+
     def get(self, request, pk):
+        form = GameForm()
         # ROOM & PLAYERS & COUNT
         card_room = get_object_or_404(CardRoom, pk=pk)
         players = self.controller.get_players_names(card_room)
@@ -74,7 +88,9 @@ class Room(LoginRequiredMixin, TemplateView):
         # TO MAKE SENSE. CHANGE THIS NEXT TIME YOU WORK.
         if not card_room_status:
             print("Game Runs Here")
+            # run(form)
             content = {
+                'form': form,
                 'table_status': False,
                 'game_status': True,
                 'register': False,
@@ -85,6 +101,7 @@ class Room(LoginRequiredMixin, TemplateView):
             return render(request, self.template_name, content)
 
         content = {
+            'form': form,
             'players': players,
             'room_nr': pk,
             'register': register,

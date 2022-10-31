@@ -2,16 +2,16 @@ from whist.models import Player, GameStats
 
 
 class GameData:
-
-    # PLAYER STATS
-    def save_player_stats(self, player_name, hand, tricks, played_cards):
-        player = Player(
-            name=player_name,
-            hand=hand,
-            tricks=tricks,
-            played_cards=played_cards,
-        )
-        player.save()
+    #
+    # # PLAYER STATS
+    # def save_player_stats(self, player_name, hand, tricks, played_cards):
+    #     player = Player(
+    #         name=player_name,
+    #         hand=hand,
+    #         tricks=tricks,
+    #         played_cards=played_cards,
+    #     )
+    #     player.save()
 
     def get_all_players_stats(self):
         players = Player.objects.all()
