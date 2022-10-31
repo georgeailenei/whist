@@ -24,4 +24,4 @@ class GameController:
         return self.card_validator.check_card(card)
 
     def save_card(self, card):
-        pass
+        self.repository.save_played_card(card)

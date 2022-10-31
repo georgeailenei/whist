@@ -2,8 +2,19 @@ from room.models import Stats
 
 
 class GameData:
+    def get_room_stats(self, room):
+        stats = Stats.objects.all()
+        all_room_stats = [room.room for room in stats]
+
+        if room not in all_room_stats:
+            room_stats = Stats.objects.create(room=room)
+        else:
+            room_stats = Stats.objects.all().filter(room=room)
+
+        return room_stats
+
     def load_game_stats(self, room):
-        room_stats = Stats.objects.create(room=room)
+        room_stats = self.get_room_stats(room)
         players = room_stats.room.players.all()
         names = [p.username for p in players]
         hands = [p.hand.split() for p in players]
@@ -22,7 +33,7 @@ class GameData:
                 'removed_players_cards': played_hands,
                 }
 
-    # def save_played_card(self, card):
-    #     game_stats = GameStats.objects.first()
-    #     game_stats.played_card = card
-    #     game_stats.save()
+    def save_played_card(self, card, room):
+        room_stats = self.get_room_stats(room)
+        room_stats.played_card = card
+        room_stats.save()

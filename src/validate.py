@@ -1,4 +1,4 @@
-from . import Deck
+from src.entity import Deck
 
 
 class ValidateCards:
