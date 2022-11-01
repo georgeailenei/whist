@@ -13,5 +13,5 @@ def get_controller():
 @cache
 def game_controller():
     repository = GameData()
-    validator = ValidateCards
+    validator = ValidateCards()
     return GameController(validator, repository)

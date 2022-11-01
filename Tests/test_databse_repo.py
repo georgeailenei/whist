@@ -13,6 +13,7 @@ def test_load_game_stats_when_database_is_empty_returns_default_model_settings(a
     assert room_stats['player_pos'] == 0
     assert room_stats['board'] == ""
     assert room_stats['players_tricks'] == [0]
+    assert room_stats['players_names'] == ['admin']
 
 
 def test_save_played_card_when_database_receives_data_returns_the_given_data(admin_user):
@@ -23,5 +24,24 @@ def test_save_played_card_when_database_receives_data_returns_the_given_data(adm
     repo.save_played_card("Ah", card_room)
 
 
+def test_get_room_stats_with_new_room_returns_stats_for_that_room(admin_user):
+    repo = GameData()
+    card_room = CardRoom.objects.create()
+    card_room.players.add(admin_user)
+    card_room = CardRoom.objects.all().first()
+
+    room_stats = repo.get_room_stats(card_room)
+    assert room_stats.room.players.all()[0] == admin_user
+    assert room_stats.played_card == ""
 
 
+@pytest.mark.django_db
+def test_save_played_card_when_receiving_new_data_saves_received_data():
+    repo = GameData()
+    CardRoom.objects.create()
+    card_room = CardRoom.objects.all().first()
+    room_stats = repo.get_room_stats(card_room)
+
+    card = "Ah"
+    repo.save_played_card(card, room_stats)
+    assert room_stats.played_card == "Ah"

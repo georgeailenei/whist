@@ -13,7 +13,7 @@ class Room(LoginRequiredMixin, TemplateView):
     def __init__(self):
         super().__init__()
         self.controller = get_controller()
-        self.game_controller = game_controller()
+        self.game = game_controller()
 
     def post(self, request, pk):
         card_room = get_object_or_404(CardRoom, pk=pk)
@@ -66,9 +66,8 @@ class Room(LoginRequiredMixin, TemplateView):
             form = GameForm(request.POST)
             if form.is_valid():
                 card = form.cleaned_data['input']
-                # Work on these two;
-                if self.game_controller.check_card(card):
-                    self.game_controller.save_card(card)
+                if self.game.check_card(card):
+                    self.game.save_card(card)
                 form = GameForm()
                 redirect('the_room')
 
@@ -87,17 +86,7 @@ class Room(LoginRequiredMixin, TemplateView):
         # THE NAME OF THE VAR DOES NOT MAKE SENSE - AND THE BOOLEAN MUST BE FALSE FIRST
         # TO MAKE SENSE. CHANGE THIS NEXT TIME YOU WORK.
         if not card_room_status:
-            print("Game Runs Here")
-            # run(form)
-            content = {
-                'form': form,
-                'table_status': False,
-                'game_status': True,
-                'register': False,
-                'cancel': False,
-                'countdown': False,
-                'timer': "0",
-            }
+            content = self.game.run(form, card_room)
             return render(request, self.template_name, content)
 
         content = {
