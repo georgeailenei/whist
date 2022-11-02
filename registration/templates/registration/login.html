@@ -1,16 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>This is the log in page</title>
-</head>
-<body>
+{% extends "base_template.html" %}
+{% load static %}
+{% block content %}
 
-<p>This is the login page - just some text for testing</p>
-<form method="post">{% csrf_token %}
-    {{form.as_p}}
-    <input type="submit">
-</form>
+<div class="container-fluid h-100">
+    <div class="row row h-100 justify-content-center align-items-center">
+        <div class="col align-items-center text-center">
 
-</body>
-</html>
+            <form method="post">{% csrf_token %}
+                {{form.as_p}}
+            <input class="btn btn-success" type="submit">
+            </form>
+            <a href="{% url 'signup' %}">Don't have an account, signup here</a>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

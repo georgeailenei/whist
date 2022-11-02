@@ -23,7 +23,7 @@ class SignupInterfaceView(CreateView):
     # DOES NOT ALLOW THEM TO SIGN UP AGAIN WHILE LOGGED IN
     def get(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
-            return redirect('')
+            return redirect('home_page')
         return super().get(request,  *args, **kwargs)
 
 

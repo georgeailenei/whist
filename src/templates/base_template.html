@@ -5,12 +5,13 @@
 </head>
 <body>
 
+<section>
 <nav class="navbar navbar-dark bg-dark">
 <div class="container-fluid">
   <span class="navbar-brand mb-0 h1">doizece</span>
     <ul class="nav ml-auto">
       <li class="nav-item">
-        <a class="nav-link text-light" href="#">Home</a>
+        <a class="nav-link text-light" href="{% url 'home_page' %}">Home</a>
       </li>
       <li class="nav-item">
         <a class="nav-link text-light" href="#">How to play</a>
@@ -20,14 +21,15 @@
       </li>
   <li>
   <form>
-    <button class="btn btn-sm btn-outline-light" type="button">Login</button>
-    <button class="btn btn-sm btn-success" type="button">Join</button>
+    <a href="{% url 'login' %}"><button class="btn btn-sm btn-outline-light" type="button">Login</button></a>
+    <a href="{% url 'signup' %}"><button class="btn btn-sm btn-success" type="button">Join</button></a>
+    <a href="{% url 'logout' %}"><button class="btn btn-sm btn-danger" type="button">Logout</button></a>
   </form>
   </li>
   </ul>
 </div>
 </nav>
-
+</section>
 
 {% block content %}
 {% endblock %}
