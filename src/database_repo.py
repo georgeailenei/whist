@@ -26,6 +26,49 @@ class GameData:
                 'removed_players_cards': played_hands,
                 }
 
-    def save_played_card(self, card, room_stats):
-        room_stats.played_card = card
+    def save_game_stats(self,
+                        room, board, trump_card, team_one_score, team_two_score,
+                        player_position, played_card, hands, tricks, played_cards
+                        ):
+        self.remove_all_stats(room)
+        room_stats = self.get_room_stats(room)
+        players = room_stats.room.players.all()
+        room_stats.board = board
+        room_stats.trump_card = trump_card
+        room_stats.team_one_score = team_one_score
+        room_stats.team_two_score = team_two_score
+        room_stats.player_position = player_position
+        room_stats.played_card = played_card
+
+        i = 0
+        for player in players:
+            player.hand = hands[i]
+            player.tricks = tricks[i]
+            player.played_hand = played_cards[i]
+            player.save()
+            i += 1
+
         room_stats.save()
+
+    def save_played_card(self, card, room):
+        room = self.get_room_stats(room)
+        room.played_card = card
+        room.save()
+
+    def remove_all_stats(self, room):
+        room_stats = self.get_room_stats(room)
+        players = room_stats.room.players.all()
+
+        for player in players:
+            player.hand = ""
+            player.tricks = 0
+            player.played_hand = ""
+
+        room_stats.board = ""
+        room_stats.trump_card = ""
+        room_stats.team_one_score = 0
+        room_stats.team_two_score = 0
+        room_stats.player_position = 0
+        room_stats.played_card = ""
+        room_stats.save()
+

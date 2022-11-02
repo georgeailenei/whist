@@ -70,22 +70,22 @@ class Controller:
                 'played_card': game_stats[played_card]
             }
 
-    # THIS METHOD IS NOT TESTED
-    def display_board(self, board):
-        the_board = [str(card) for card in board]
-        return " ".join(the_board)
+    # # THIS METHOD IS NOT TESTED
+    # def display_board(self, board):
+    #     the_board = [str(card) for card in board]
+    #     return " ".join(the_board)
 
-    def score_limit(self, team_one_score, team_two_score):
-        if team_one_score < 5 and team_two_score < 5:
-            return True
-        elif team_one_score >= 5 or team_two_score >= 5:
-            return False
+    # def score_limit(self, team_one_score, team_two_score):
+    #     if team_one_score < 5 and team_two_score < 5:
+    #         return True
+    #     elif team_one_score >= 5 or team_two_score >= 5:
+    #         return False
 
-    def players_cards_count(self, players):
-        total = 0
-        for player in players:
-            total += len(player.cards)
-        return total
+    # def players_cards_count(self, players):
+    #     total = 0
+    #     for player in players:
+    #         total += len(player.cards)
+    #     return total
 
     def mix_cards(self, cards):
         deck = cards.copy()
@@ -114,21 +114,21 @@ class Controller:
                 return suit_name
 
     # Save players stats and save game stats must be tested before moving forward;
-    def save_players_stats(self, players):
-        names = [p.name for p in players]
-        hands = [" ".join(p.cards) for p in players]
-        tricks = [p.tricks for p in players]
-        played_cards = [" ".join(p.remove_cards) for p in players]
-        self.repository.save_all_players_stats(names, hands, tricks, played_cards)
+    # def save_players_stats(self, players):
+    #     names = [p.name for p in players]
+    #     hands = [" ".join(p.cards) for p in players]
+    #     tricks = [p.tricks for p in players]
+    #     played_cards = [" ".join(p.remove_cards) for p in players]
+    #     self.repository.save_all_players_stats(names, hands, tricks, played_cards)
 
-    def save_game_stats(self, game_stats):
-        board = " ".join(str(card) for card in game_stats['board'])
-        trump_card = game_stats['trump_card']
-        team_one_score = game_stats['score1']
-        team_two_score = game_stats['score2']
-        player_position = game_stats['player_pos']
-        played_card = game_stats['played_card']
-        self.repository.save_game_stats(board, trump_card, team_one_score, team_two_score, player_position, played_card)
+    # def save_game_stats(self, game_stats):
+    #     board = " ".join(str(card) for card in game_stats['board'])
+    #     trump_card = game_stats['trump_card']
+    #     team_one_score = game_stats['score1']
+    #     team_two_score = game_stats['score2']
+    #     player_position = game_stats['player_pos']
+    #     played_card = game_stats['played_card']
+    #     self.repository.save_game_stats(board, trump_card, team_one_score, team_two_score, player_position, played_card)
 
     def total_tricks_completed(self, players):
         all_tricks = [player.tricks for player in players]
@@ -184,30 +184,29 @@ class Controller:
                 player.cards.remove(str(card))
         return players
 
-    def board_full(self, board):
-        if len(board) == 4:
-            return True
-        elif len(board) < 4:
-            return False
+    # def board_full(self, board):
+    #     if len(board) == 4:
+    #         return True
+    #     elif len(board) < 4:
+    #         return False
 
-    def find_winner(self, winner_card, players):
-        winner = [player.name for player in players if winner_card in player.remove_cards]
-        return winner[0]
+    # def find_winner(self, winner_card, players):
+    #     winner = [player.name for player in players if winner_card in player.remove_cards]
+    #     return winner[0]
 
-    def add_trick_to_player(self, winner, players):
-        for player in players:
-            if player.name == winner:
-                player.tricks += 1
-        return players
+    # def add_trick_to_player(self, winner, players):
+    #     for player in players:
+    #         if player.name == winner:
+    #             player.tricks += 1
+    #     return players
 
-    def winner_table_position(self, winner, players):
-        current_players_name = [player.name for player in players]
-        return current_players_name.index(winner)
+    # def winner_table_position(self, winner, players):
+    #     current_players_name = [player.name for player in players]
+    #     return current_players_name.index(winner)
 
     # THIS METHOD IS NOT TESTED
-    def clear_board(self, board):
-        new_board = board.clear()
-        return new_board
+    # def clear_board(self, board):
+    #     return board.clear()
 
     def reset_players_cards_and_tricks(self, players):
         for player in players:
@@ -215,17 +214,17 @@ class Controller:
             player.remove_cards.clear()
         return players
 
-    def update_score(self, team_one_score, team_two_score, players):
-        team_one = [players[0].tricks, players[2].tricks]
-        team_two = [players[1].tricks, players[3].tricks]
-        team_one_score_result = sum(team_one) - 6
-        team_two_score_result = sum(team_two) - 6
-
-        if team_one_score_result > 0:
-            team_one_score += team_one_score_result
-        elif team_two_score_result > 0:
-            team_two_score += team_two_score_result
-        return team_one_score, team_two_score
+    # def update_score(self, team_one_score, team_two_score, players):
+    #     team_one = [players[0].tricks, players[2].tricks]
+    #     team_two = [players[1].tricks, players[3].tricks]
+    #     team_one_score_result = sum(team_one) - 6
+    #     team_two_score_result = sum(team_two) - 6
+    #
+    #     if team_one_score_result > 0:
+    #         team_one_score += team_one_score_result
+    #     elif team_two_score_result > 0:
+    #         team_two_score += team_two_score_result
+    #     return team_one_score, team_two_score
 
     def compare_cards_rank(self, board, trump_card):
         suits = [card.suit for card in board]

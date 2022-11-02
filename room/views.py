@@ -1,9 +1,11 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import TemplateView, ListView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
+import userauth.models
 from room.models import CardRoom
 from .utils import get_controller
 from .utils import game_controller
-from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import GameForm
 
 
@@ -67,9 +69,9 @@ class Room(LoginRequiredMixin, TemplateView):
             if form.is_valid():
                 card = form.cleaned_data['input']
                 if self.game.check_card(card):
-                    self.game.save_card(card)
+                    self.game.save_card(card, card_room)
                 form = GameForm()
-                redirect('the_room')
+                return redirect('the_room', pk=pk)
 
     def get(self, request, pk):
         form = GameForm()
@@ -86,7 +88,7 @@ class Room(LoginRequiredMixin, TemplateView):
         # THE NAME OF THE VAR DOES NOT MAKE SENSE - AND THE BOOLEAN MUST BE FALSE FIRST
         # TO MAKE SENSE. CHANGE THIS NEXT TIME YOU WORK.
         if not card_room_status:
-            content = self.game.run(form, card_room)
+            content = self.game.run(form, card_room, user=request.user)
             return render(request, self.template_name, content)
 
         content = {

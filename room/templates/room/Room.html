@@ -54,14 +54,22 @@
         <div class="row border border-dark">
             <div class="col border border-dark text-center">
                 <h5>{{ player1 }}</h5>
-                <p>cards: {{ player1.cards }}</p>
+                {% if permission1 %}
+                <p>cards: {{ player1.hand }}</p>
+                {% else %}
+                <p>CARDS</p>
+                {% endif %}
                 <p>tricks: {{ player1.tricks }}</p>
             </div>
         </div>
         <div class="row">
             <div class="col border border-dark">
                 <h5>{{ player4 }}</h5>
-                <p>cards: {{ player4.cards }}</p>
+                {% if permission4 %}
+                <p>cards: {{ player4.hand }}</p>
+                {% else %}
+                <p>CARDS</p>
+                {% endif %}
                 <p>tricks: {{ player4.tricks }}</p>
             </div>
             <div class="col border border-dark text-center">
@@ -76,14 +84,22 @@
             </div>
             <div class="col border border-dark">
                 <h5>{{ player2 }}</h5>
-                <p>cards: {{ player2.cards }}</p>
+                {% if permission2 %}
+                <p>cards: {{ player2.hand }}</p>
+                {% else %}
+                <p>CARDS</p>
+                {% endif %}
                 <p>tricks: {{ player2.tricks }}</p>
             </div>
         </div>
         <div class="row border border-dark text-center">
             <div class="col border border-dark">
                 <h5>{{ player3 }}</h5>
-                <p>cards: {{ player3.cards }}</p>
+                {% if permission3 %}
+                <p>cards: {{ player3.hand }}</p>
+                {% else %}
+                <p>CARDS</p>
+                {% endif %}
                 <p>tricks: {{ player3.tricks }}</p>
             </div>
         </div>
@@ -100,5 +116,5 @@
 </div>
 </div>
 </div>
-<script src="{% static 'js_files/card_room_utilities.js' %}"></script>
+<!--<script src="{% static 'js_files/card_room_utilities.js' %}"></script>-->
 {% endblock %}
