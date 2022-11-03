@@ -40,7 +40,6 @@ INSTALLED_APPS = [
 
     # Apps
     'home',
-    'whist',
     'registration',
     'userauth',
     'room',

@@ -1,10 +1,16 @@
 {% extends 'base_template.html' %}
 {% block content %}
-<center xmlns="http://www.w3.org/1999/html">
-<p>This is where the users are going to be directed. When logged in.</br>
-    This is the where you will list the games available on the website</p>
 
-<h6>Whist</h6>
-<a href="{% url 'card_rooms'%}">PLAY</a>
-</center>
+<div class="container-fluid h-100">
+    <div class="row row h-100 justify-content-center align-items-center">
+        <div class="col align-items-center text-center">
+{% if not ceva %}
+<a href="{% url 'login'%}"><button type="button" class="btn btn-outline-success btn-lg">PLAY</button></a>
+{% else %}
+<a href="{% url 'card_rooms'%}"><button type="button" class="btn btn-outline-success btn-lg">PLAY</button></a>
+{% endif %}
+        </div>
+    </div>
+</div>
+
 {% endblock %}

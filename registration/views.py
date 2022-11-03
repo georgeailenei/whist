@@ -9,9 +9,19 @@ from django.shortcuts import redirect
 class LoginInterfaceView(LoginView):
     template_name = 'registration/login.html'
 
+    def get(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return redirect('home_page')
+        return super().get(request,  *args, **kwargs)
+
 
 class LogoutInterfaceView(LogoutView):
     template_name = 'registration/logout.html'
+
+    def get(self, request, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return redirect('home_page')
+        return super().get(request,  *args, **kwargs)
 
 
 class SignupInterfaceView(CreateView):
@@ -19,8 +29,6 @@ class SignupInterfaceView(CreateView):
     template_name = 'registration/register.html'
     success_url = '/success'
 
-    # THE GET METHOD REDIRECTS AUTHENTICATED USERS TO HOME PAGE
-    # DOES NOT ALLOW THEM TO SIGN UP AGAIN WHILE LOGGED IN
     def get(self, request, *args, **kwargs):
         if self.request.user.is_authenticated:
             return redirect('home_page')

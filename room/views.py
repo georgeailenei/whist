@@ -108,3 +108,4 @@ class CardRooms(LoginRequiredMixin, ListView):
     model = CardRoom
     context_object_name = 'rooms'
     template_name = 'room/cardroom_list.html'
+
