@@ -1,9 +1,11 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import TemplateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from rest_framework.generics import RetrieveAPIView
 
 import userauth.models
 from room.models import CardRoom
+from .serializers import RoomSerializer
 from .utils import get_controller
 from .utils import game_controller
 from .forms import GameForm
@@ -109,3 +111,8 @@ class CardRooms(LoginRequiredMixin, ListView):
     context_object_name = 'rooms'
     template_name = 'room/cardroom_list.html'
 
+
+class RoomApiView(RetrieveAPIView):
+    serializer_class = RoomSerializer
+
+    queryset = CardRoom.objects.all()
