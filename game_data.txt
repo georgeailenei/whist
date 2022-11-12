@@ -1,7 +1,0 @@
-George : 3s 10s Ah Kc 3d Jd Ac Jc Qs 7d Jh 10h 2h : 0 : 
-Alex : 6h 5c 4s 6s As 5h 9c 7c 6d 8c 2d 7h 8h : 0 : 
-Dan : 3c Kd Qc Qd 4h Kh 8d Ks 5d 9d 2s 8s 9h : 0 : 
-Robert : 10c Js 10d 4c 7s 9s 3h 5s Ad 4d Qh 2c 6c : 0 : 
-board : 
-scores : 0 : 0
-trump : clubs
