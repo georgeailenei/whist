@@ -2,10 +2,11 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import TemplateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView
+from rest_framework.response import Response
 
 from room.models import CardRoom
-from .serializers import RoomSerializer
+from .serializers import RoomSerializer, CardSerializer
 from .utils import get_controller
 from .utils import game_controller
 from .forms import GameForm
@@ -72,21 +73,19 @@ class Room(LoginRequiredMixin, TemplateView):
                 card = form.cleaned_data['input']
                 if self.game.check_card(card):
                     self.game.save_card(card, card_room)
-                form = GameForm()
+                
+                self.game.run(card_room, request.user)
                 return redirect('the_room', pk=pk)
 
     def get(self, request, pk):
         form = GameForm()
 
         card_room = get_object_or_404(CardRoom, pk=pk)
+        room_stats = self.game.repository.get_room_stats(card_room)
         players = card_room.players.all()
         is_registered = self.controller.check_user(request.user, card_room)
 
         if not card_room.status:
-            self.game.run(card_room, request.user)
-            card_room.refresh_from_db()
-            room_stats = self.game.repository.get_room_stats(card_room)
-
             context = {
                 # Players
                 'player1': players[0],
@@ -131,6 +130,15 @@ class CardRooms(LoginRequiredMixin, ListView):
 
 
 class RoomApiView(RetrieveAPIView):
+    queryset = CardRoom.objects.all()
+
     serializer_class = RoomSerializer
 
-    queryset = CardRoom.objects.all()
+    def patch(self, *args, **kwargs):
+        card_room = self.get_object()
+        serializer = CardSerializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+
+        played_card = serializer.data['card']
+        game_controller().run(card_room, self.request.user, played_card)
+        return Response(serializer.data)

@@ -1,28 +1,43 @@
 <script setup>
 import { ref } from 'vue';
 import Player from './Player.vue'
+import {server_client} from '../client';
 
 const room = ref(null);
 const loaded_data = ref(false);
 
-fetch('http://localhost:8000/rooms/8/')
-.then((response) => response.json())
+server_client.get_room_details(1)
 .then((data) => {
-    room.value = data; 
+    room.value = data;
     loaded_data.value = true;
 })
 </script>
 
 <template>
-    <div v-if="loaded_data">
-        <div v-for="player in room.players">
-            <Player :player=player />
-        </div>
 
+    <div v-if="loaded_data" class="container">
+        <div class="team_container">
+            <Player :player=room.players[0] />
+            <Player :player=room.players[1] />
+        </div>
+        <div class="team_container">
+            <Player :player=room.players[2] />
+            <Player :player=room.players[3] />
+        </div>
     </div>
-  
+
 </template>
 
 <style scoped>
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
 
+.team_container {
+    display: flex;
+    justify-content: space-between;
+}
 </style>

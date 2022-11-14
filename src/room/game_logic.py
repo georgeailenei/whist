@@ -223,9 +223,11 @@ class GameController:
             player.played_hand = ""
         return players
 
-    def run(self, room, user):
+    def run(self, room, user, played_card):
         # game_stats = self.load_game(room)
         room_stats = self.repository.get_room_stats(room)
+        room_stats.played_card = played_card
+        room_stats.save()
         players = room.players.all()
         board = room_stats.board.split()
 

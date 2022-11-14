@@ -1,4 +1,5 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework import fields
+from rest_framework.serializers import ModelSerializer, Serializer
 
 from room.models import CardRoom
 from userauth.models import User
@@ -16,3 +17,7 @@ class RoomSerializer(ModelSerializer):
         fields = '__all__'
 
     players = PlayerSerializer(many=True)
+
+
+class CardSerializer(Serializer):
+    card = fields.CharField()
