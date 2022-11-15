@@ -238,15 +238,10 @@ class GameController:
             room_stats.player_position = 0
 
         if self.game_ended(room_stats.team_one_score, room_stats.team_two_score):
-            game_not_started = self.players_cards_count(players) == 0
             one_set_is_finished = self.total_tricks_completed(players) is False
 
-            if game_not_started:
-                cards = Deck().cards
-                players = self.spread_cards(cards, players)
-                room_stats.trump_card = self.find_trump_card(cards)
 
-            elif one_set_is_finished:
+            if one_set_is_finished:
                 if (
                         room_stats.played_card != ""
                         and self.correct_card(room_stats.played_card, players, board, room_stats.player_position, room_stats.trump_card)

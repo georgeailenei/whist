@@ -4,6 +4,7 @@ from django.views.generic import TemplateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
+from room.entities import Deck
 
 from room.models import CardRoom
 from .serializers import RoomSerializer, CardSerializer
@@ -30,8 +31,20 @@ class Room(LoginRequiredMixin, TemplateView):
             except ValueError:
                 return redirect('the_room', pk=pk)
 
-            players = card_room.players.all()
+            players = list(card_room.players.all())
             players_count = self.controller.check_players_num(card_room)
+
+            if players_count == 4:
+                cards = Deck().cards
+                players = self.game.spread_cards(cards, players)
+                stats = self.game.repository.get_room_stats(room=card_room)
+                stats.trump_card = self.game.find_trump_card(cards)
+                card_room.status = True
+                card_room.save()
+                stats.save()
+                for p in players:
+                    p.hand = ' '.join(str(e) for e in p.hand)
+                    p.save()
 
             if players_count == 4 and card_room.status:
                 self.controller.change_status_to_false(card_room)
@@ -67,15 +80,15 @@ class Room(LoginRequiredMixin, TemplateView):
             }
             return render(request, self.template_name, content)
 
-        elif 'Post_Card' in request.POST:
-            form = GameForm(request.POST)
-            if form.is_valid():
-                card = form.cleaned_data['input']
-                if self.game.check_card(card):
-                    self.game.save_card(card, card_room)
+        # elif 'Post_Card' in request.POST:
+        #     form = GameForm(request.POST)
+        #     if form.is_valid():
+        #         card = form.cleaned_data['input']
+        #         if self.game.check_card(card):
+        #             self.game.save_card(card, card_room)
                 
-                self.game.run(card_room, request.user)
-                return redirect('the_room', pk=pk)
+        #         self.game.run(card_room, request.user)
+        #         return redirect('the_room', pk=pk)
 
     def get(self, request, pk):
         form = GameForm()

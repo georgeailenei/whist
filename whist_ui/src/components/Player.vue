@@ -2,8 +2,7 @@
 import Card from './Card.vue';
 const props = defineProps(['player']);
 const player = props.player;
-player.hand = ['Ah', 'Ac', '10h', '9c'];
-console.log(props.player);
+console.log(player.hand[0])
 
 </script>
 

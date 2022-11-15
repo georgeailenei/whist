@@ -5,10 +5,16 @@ from room.models import CardRoom
 from userauth.models import User
 
 
+
 class PlayerSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+    hand = fields.SerializerMethodField()
+
+    def get_hand(self, object):
+        return object.hand.split()
 
 
 class RoomSerializer(ModelSerializer):

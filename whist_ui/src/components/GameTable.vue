@@ -6,11 +6,14 @@ import {server_client} from '../client';
 const room = ref(null);
 const loaded_data = ref(false);
 
-server_client.get_room_details(1)
-.then((data) => {
-    room.value = data;
-    loaded_data.value = true;
-})
+setInterval(() => {
+    server_client.get_room_details(2)
+    .then((data) => {
+        room.value = data;
+        loaded_data.value = true;
+    })
+}, 2000)
+
 </script>
 
 <template>
