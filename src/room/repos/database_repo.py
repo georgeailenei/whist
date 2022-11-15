@@ -10,6 +10,7 @@ class GameData:
         elif room in all_room_stats:
             values = Stats.objects.filter(room=room).values()
             return Stats.objects.get(pk=values[0]['id'])
+
     def convert_board(self, board):
         return " ".join(str(card) for card in board)
 

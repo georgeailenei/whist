@@ -224,7 +224,6 @@ class GameController:
         return players
 
     def run(self, room, user, played_card):
-        # game_stats = self.load_game(room)
         room_stats = self.repository.get_room_stats(room)
         room_stats.played_card = played_card
         room_stats.save()
@@ -239,7 +238,6 @@ class GameController:
 
         if self.game_ended(room_stats.team_one_score, room_stats.team_two_score):
             one_set_is_finished = self.total_tricks_completed(players) is False
-
 
             if one_set_is_finished:
                 if (

@@ -42,12 +42,12 @@ class Room(LoginRequiredMixin, TemplateView):
                 card_room.status = True
                 card_room.save()
                 stats.save()
+
                 for p in players:
                     p.hand = ' '.join(str(e) for e in p.hand)
                     p.save()
 
             if players_count == 4 and card_room.status:
-                self.controller.change_status_to_false(card_room)
                 content = {
                     'table_status': False,
                     'register': False,
@@ -80,15 +80,15 @@ class Room(LoginRequiredMixin, TemplateView):
             }
             return render(request, self.template_name, content)
 
-        # elif 'Post_Card' in request.POST:
-        #     form = GameForm(request.POST)
-        #     if form.is_valid():
-        #         card = form.cleaned_data['input']
-        #         if self.game.check_card(card):
-        #             self.game.save_card(card, card_room)
+        elif 'Post_Card' in request.POST:
+            form = GameForm(request.POST)
+            if form.is_valid():
+                card = form.cleaned_data['input']
+                if self.game.check_card(card):
+                    self.game.save_card(card, card_room)
                 
-        #         self.game.run(card_room, request.user)
-        #         return redirect('the_room', pk=pk)
+                self.game.run(card_room, request.user, card)
+                return redirect('the_room', pk=pk)
 
     def get(self, request, pk):
         form = GameForm()
@@ -98,7 +98,7 @@ class Room(LoginRequiredMixin, TemplateView):
         players = card_room.players.all()
         is_registered = self.controller.check_user(request.user, card_room)
 
-        if not card_room.status:
+        if card_room.status:
             context = {
                 # Players
                 'player1': players[0],
