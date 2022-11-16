@@ -29,7 +29,7 @@ console.log(board)
             <Player :player=room.players[1] />
         </div>
 
-        <div class="board_container"><p>Board:</p> <p>{{ room.board}}</p></div>
+        <div class="board_container"><p>Board:</p> <p>{{ room.players_count }}</p></div>
 
         <div class="team_container">
             <Player :player=room.players[2] />

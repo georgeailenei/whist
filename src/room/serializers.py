@@ -1,15 +1,13 @@
 from rest_framework import fields
 from rest_framework.serializers import ModelSerializer, Serializer
-
-from room.models import CardRoom
+from .models import CardRoom
 from userauth.models import User
-
 
 
 class PlayerSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = 'id', 'hand', 'username', 'tricks', 'played_hand'
 
     hand = fields.SerializerMethodField()
 
