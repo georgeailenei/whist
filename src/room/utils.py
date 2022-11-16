@@ -1,7 +1,7 @@
-from room.controllers.room_controller import Controller
-from room.game_logic import GameController
-from room.repos.database_repo import GameData
-from room.validators import ValidateCards
+from .controllers.room_controller import Controller
+from .game_logic import GameController
+from .repos.database_repo import GameData
+from .validators import ValidateCards
 from functools import cache
 
 

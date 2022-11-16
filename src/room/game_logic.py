@@ -1,4 +1,4 @@
-from room.entities import Deck, Card
+from .entities import Deck, Card
 
 
 class GameController:
@@ -91,8 +91,9 @@ class GameController:
     def remove_card_from_player(self, card, players):
         for player in players:
             if str(card) in player.hand:
-                player.played_hand += str(card)
+                player.played_hand += " " + str(card)
                 player.hand = player.hand.replace(str(card), "")
+                player.save()
         return players
 
     def board_full(self, board):
@@ -195,6 +196,7 @@ class GameController:
         for player in players:
             if player.username == winner:
                 player.tricks += 1
+                player.save()
         return players
 
     def winner_table_position(self, winner, players):
@@ -221,17 +223,15 @@ class GameController:
             player.hand = ""
             player.tricks = 0
             player.played_hand = ""
+            player.save()
         return players
 
-    def run(self, room, user, played_card):
+    def run(self, room, played_card):
         room_stats = self.repository.get_room_stats(room)
         room_stats.played_card = played_card
         room_stats.save()
-        players = room.players.all()
+        players = list(room.players.all())
         board = room_stats.board.split()
-
-        if board == [""]:
-            self.clear_board(board)
 
         if room_stats.player_position == 4:
             room_stats.player_position = 0
@@ -240,10 +240,7 @@ class GameController:
             one_set_is_finished = self.total_tricks_completed(players) is False
 
             if one_set_is_finished:
-                if (
-                        room_stats.played_card != ""
-                        and self.correct_card(room_stats.played_card, players, board, room_stats.player_position, room_stats.trump_card)
-                ):
+                if self.correct_card(room_stats.played_card, players, board, room_stats.player_position, room_stats.trump_card):
                     board = self.add_to_board(room_stats.played_card, board)
                     players = self.remove_card_from_player(room_stats.played_card, players)
                     room_stats.player_position += 1
@@ -262,16 +259,5 @@ class GameController:
             room_stats.team_one_score = scores[0]
             room_stats.team_two_score = scores[1]
 
-            if self.players_cards_count(players) == 0 and self.game_ended(room_stats.team_one_score, room_stats.team_two_score):
-                cards = Deck().cards
-                players = self.spread_cards(cards, players)
-                room_stats.trump_card = self.find_trump_card(cards)
-            else:
-                #  SHOW WINNER
-                pass
-
         # RESULTS
-        self.repository.save_game_stats(
-            room_stats, board
-        )
-
+        self.repository.save_game_stats(room_stats, board)

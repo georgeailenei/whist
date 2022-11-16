@@ -8,7 +8,7 @@ const cards = {
     "10d": "10_of_diamonds.png",
     "10h": "10_of_hearts.png",
     "10s": "10_of_spades.png",
-    "10c": "2_of_clubs.png",
+    "2c": "2_of_clubs.png",
     "2d": "2_of_diamonds.png",
     "2h": "2_of_hearts.png",
     "2s": "2_of_spades.png",
@@ -24,7 +24,7 @@ const cards = {
     "5d": "5_of_diamonds.png",
     "5h": "5_of_hearts.png",
     "5s": "5_of_spades.png",
-    "5c": "6_of_clubs.png",
+    "6c": "6_of_clubs.png",
     "6d": "6_of_diamonds.png",
     "6h": "6_of_hearts.png",
     "6s": "6_of_spades.png",
@@ -44,39 +44,27 @@ const cards = {
     "Ad": "ace_of_diamonds.png",
     "Ah": "ace_of_hearts.png",
     "As": "ace_of_spades.png",
-
-
-    "jc": "jack_of_clubs.png",
-
-    "jd": "jack_of_diamonds.png",
-
-    "jh": "jack_of_hearts.png",
-
-    "js": "jack_of_spades.png",
-
-    "kc": "king_of_clubs.png",
-
-    "kd": "king_of_diamonds.png",
-
-    "kh": "king_of_hearts.png",
-
-    "ks": "king_of_spades.png",
-
-    "qc": "queen_of_clubs.png",
-    "qd": "queen_of_diamonds.png",
-    "qh": "queen_of_hearts.png",
-    "qs": "queen_of_spades.png",
-    "not_permited": "back_of_card.png",
+    "Jc": "jack_of_clubs.png",
+    "Jd": "jack_of_diamonds.png",
+    "Jh": "jack_of_hearts.png",
+    "Js": "jack_of_spades.png",
+    "Kc": "king_of_clubs.png",
+    "Kd": "king_of_diamonds.png",
+    "Kh": "king_of_hearts.png",
+    "Ks": "king_of_spades.png",
+    "Qc": "queen_of_clubs.png",
+    "Qd": "queen_of_diamonds.png",
+    "Qh": "queen_of_hearts.png",
+    "Qs": "queen_of_spades.png",
+    "not_permitted": "back_of_card.png",
 }
-
 
 
 const card_url = `http://localhost:8000/static/images/cards/${cards[props.card_value]}`;
 
-
 const send_played_card = (event) => {
     console.log(props.card_value);
-    server_client.send_card_to_server(1, props.card_value);
+    server_client.send_card_to_server(8, props.card_value);
 }
 </script>
 

@@ -87,7 +87,7 @@ class Room(LoginRequiredMixin, TemplateView):
                 if self.game.check_card(card):
                     self.game.save_card(card, card_room)
                 
-                self.game.run(card_room, request.user, card)
+                self.game.run(card_room, card)
                 return redirect('the_room', pk=pk)
 
     def get(self, request, pk):
@@ -95,10 +95,24 @@ class Room(LoginRequiredMixin, TemplateView):
 
         card_room = get_object_or_404(CardRoom, pk=pk)
         room_stats = self.game.repository.get_room_stats(card_room)
-        players = card_room.players.all()
+        players = list(card_room.players.all())
+        players_count = self.controller.check_players_num(card_room)
         is_registered = self.controller.check_user(request.user, card_room)
 
-        if card_room.status:
+        if card_room.status and players_count == 4:
+            if self.game.players_cards_count(players) == 0:
+                cards = Deck().cards
+                players = self.game.spread_cards(cards, players)
+                stats = self.game.repository.get_room_stats(room=card_room)
+                stats.trump_card = self.game.find_trump_card(cards)
+                card_room.status = True
+                card_room.save()
+                stats.save()
+
+                for p in players:
+                    p.hand = ' '.join(str(e) for e in p.hand)
+                    p.save()
+
             context = {
                 # Players
                 'player1': players[0],
@@ -144,7 +158,6 @@ class CardRooms(LoginRequiredMixin, ListView):
 
 class RoomApiView(RetrieveAPIView):
     queryset = CardRoom.objects.all()
-
     serializer_class = RoomSerializer
 
     def patch(self, *args, **kwargs):
@@ -153,5 +166,5 @@ class RoomApiView(RetrieveAPIView):
         serializer.is_valid(raise_exception=True)
 
         played_card = serializer.data['card']
-        game_controller().run(card_room, self.request.user, played_card)
+        game_controller().run(card_room, played_card)
         return Response(serializer.data)

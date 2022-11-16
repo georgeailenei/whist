@@ -1,5 +1,3 @@
-from random import shuffle
-
 from django.db import models
 from userauth.models import User
 
