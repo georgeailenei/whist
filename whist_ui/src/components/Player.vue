@@ -6,14 +6,18 @@ const props = defineProps(['player']);
 </script>
 
 <template>
-    <div class="container">
-        <h1>{{player.username}}</h1>
-        <h1>{{player.tricks}}</h1>
+    <div class="container-fluid">
+        <div>
         <img 
             src="http://localhost:8000/static/images/placeholder_avatar.png"
             height="100"
             width="100"
         />
+        <ul class="no-bullets">
+        <li><b>{{player.username}}</b></li>
+        <li><b>Tricks:{{player.tricks}}</b></li>
+        </ul>
+        </div>
         <div class="card-container">
             <div v-for="(card, index) in player.hand" :key="card">
                 <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
@@ -37,5 +41,11 @@ const props = defineProps(['player']);
 }
 .empty{
 
+}
+
+ul.no-bullets {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }
 </style>
