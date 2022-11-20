@@ -25,16 +25,10 @@ class GameController:
         return total
 
     def spread_cards(self, cards, players):
-        i = 0
-        hands = [[], [], [], []]
-        for card in cards:
-            if len(hands[i]) != 13:
-                hands[i].append(card)
-                players[i].hand = hands[i]
-            else:
-                i += 1
-                hands[i].append(card)
-                players[i].hand = hands[i]
+        players[0].hand = cards[:13]
+        players[1].hand = cards[13 : 13 + 13]
+        players[2].hand = cards[26 : 26 + 13]
+        players[3].hand = cards[39:]
         return players
 
     def find_trump_card(self, cards):
@@ -77,12 +71,22 @@ class GameController:
         if len(board) > 0:
             first_card_suit = board[0][-1]
 
-        if self.card_validator.check_card(str(card)):
-            if self.card_validator.check_players_cards(str(card), players[current_player].hand):
-                if self.card_validator.check_right_suit(str(card), players[current_player].hand, first_card_suit, trump_card_suit):
-                    return True
-                else:
-                    return False
+        card_is_valid = self.card_validator.check_card(str(card))
+
+        player_has_card = self.card_validator.check_players_cards(
+            str(card), players[current_player].hand
+        )
+        player_played_right_suit = self.card_validator.check_right_suit(
+            str(card),
+            players[current_player].hand,
+            first_card_suit,
+            trump_card_suit,
+        )
+
+        if card_is_valid and player_has_card and player_played_right_suit:
+            return True
+
+        return False
 
     def add_to_board(self, card, board):
         board.append(card)
@@ -112,7 +116,9 @@ class GameController:
         first_suit = board[0][-1]
 
         if trump_card[0] in suits:
-            trump_cards = [index for index, suit in enumerate(suits) if suit == trump_card[0]]
+            trump_cards = [
+                index for index, suit in enumerate(suits) if suit == trump_card[0]
+            ]
             if len(trump_cards) == 1:
                 winner_card = str(board[trump_cards[0]])
                 return winner_card
@@ -155,7 +161,9 @@ class GameController:
             return winner_card
 
         elif suits.count(first_suit) > 1:
-            first_suit_cards = [index for index, suit in enumerate(suits) if suit == first_suit]
+            first_suit_cards = [
+                index for index, suit in enumerate(suits) if suit == first_suit
+            ]
             for card in first_suit_cards:
                 if ranks[card] == "J":
                     compare = J
@@ -189,7 +197,9 @@ class GameController:
             return winner_card
 
     def find_winner(self, winner_card, players):
-        winner = [player.username for player in players if winner_card in player.played_hand]
+        winner = [
+            player.username for player in players if winner_card in player.played_hand
+        ]
         return winner[0]
 
     def add_trick_to_player(self, winner, players):
@@ -226,6 +236,20 @@ class GameController:
             player.save()
         return players
 
+    def setup_room(self, card_room, cards):
+        players = list(card_room.players.all())
+
+        players = self.spread_cards(cards, players)
+        stats = self.repository.get_room_stats(room=card_room)
+        stats.trump_card = self.find_trump_card(cards)
+        card_room.status = True
+        card_room.save()
+        stats.save()
+
+        for p in players:
+            p.hand = " ".join(str(e) for e in p.hand)
+            p.save()
+
     def run(self, room, played_card):
         room_stats = self.repository.get_room_stats(room)
         room_stats.played_card = played_card
@@ -233,27 +257,39 @@ class GameController:
         players = list(room.players.all())
         board = room_stats.board.split()
 
-        if room_stats.player_position == 4:
-            room_stats.player_position = 0
-
         if self.game_ended(room_stats.team_one_score, room_stats.team_two_score):
             one_set_is_finished = self.total_tricks_completed(players) is False
-
-            if one_set_is_finished:
-                if self.correct_card(room_stats.played_card, players, board, room_stats.player_position, room_stats.trump_card):
+            is_correct_card = self.correct_card(
+                    room_stats.played_card,
+                    players,
+                    board,
+                    room_stats.player_position,
+                    room_stats.trump_card,
+                )
+            if one_set_is_finished and is_correct_card:
                     board = self.add_to_board(room_stats.played_card, board)
-                    players = self.remove_card_from_player(room_stats.played_card, players)
+                    players = self.remove_card_from_player(
+                        room_stats.played_card, players
+                    )
                     room_stats.player_position += 1
+                    if room_stats.player_position == 4:
+                        room_stats.player_position = 0
 
                     if self.board_full(board):
-                        winner_card = self.compare_cards_rank(board, room_stats.trump_card)
+                        winner_card = self.compare_cards_rank(
+                            board, room_stats.trump_card
+                        )
                         winner = self.find_winner(winner_card, players)
                         players = self.add_trick_to_player(winner, players)
-                        room_stats.player_position = self.winner_table_position(winner, players)
+                        room_stats.player_position = self.winner_table_position(
+                            winner, players
+                        )
                         self.clear_board(board)
 
         if self.total_tricks_completed(players):
-            scores = self.update_score(room_stats.team_one_score, room_stats.team_one_score, players)
+            scores = self.update_score(
+                room_stats.team_one_score, room_stats.team_one_score, players
+            )
             self.reset_players_cards_and_tricks(players)
 
             room_stats.team_one_score = scores[0]

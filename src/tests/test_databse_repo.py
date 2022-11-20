@@ -3,7 +3,9 @@ from room.repos.database_repo import GameData
 import pytest
 
 
-def test_save_played_card_when_database_receives_data_returns_the_given_data(admin_user):
+def test_save_played_card_when_database_receives_data_returns_the_given_data(
+    admin_user,
+):
     repo = GameData()
     CardRoom.objects.create()
     card_room = CardRoom.objects.all().first()

@@ -5,7 +5,7 @@ class Controller:
 
     def add_player(self, user, card_room):
         if not self.check_user(user, card_room):
-            raise ValueError('You are registered!')
+            raise ValueError("You are registered!")
         else:
             card_room.players.add(user)
             card_room.players_count = card_room.players.count()

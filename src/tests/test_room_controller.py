@@ -13,7 +13,9 @@ def test_room_controller_adds_user_to_room_works(admin_user):
     assert room_users[0] == admin_user
 
 
-def test_room_controller_adds_user_to_room_raises_error_when_user_already_in_room(admin_user):
+def test_room_controller_adds_user_to_room_raises_error_when_user_already_in_room(
+    admin_user,
+):
     controller = Controller()
     card_room = CardRoom.objects.create(status=False, players_count=0)
     controller.add_player(admin_user, card_room)
@@ -21,21 +23,27 @@ def test_room_controller_adds_user_to_room_raises_error_when_user_already_in_roo
         controller.add_player(admin_user, card_room)
 
 
-def test_room_controller_add_player_when_adding_players_it_updates_players_count_too(admin_user):
+def test_room_controller_add_player_when_adding_players_it_updates_players_count_too(
+    admin_user,
+):
     controller = Controller()
     card_room = CardRoom.objects.create(players_count=0)
     controller.add_player(admin_user, card_room)
     assert card_room.players_count == 1
 
 
-def test_room_controller_add_player_when_adding_players_it_updates_status_too(admin_user):
+def test_room_controller_add_player_when_adding_players_it_updates_status_too(
+    admin_user,
+):
     controller = Controller()
     card_room = CardRoom.objects.create(players_count=0)
     controller.add_player(admin_user, card_room)
     assert card_room.status is True
 
 
-def test_room_controller_add_player_when_adding_players_it_updates_seats_too(admin_user):
+def test_room_controller_add_player_when_adding_players_it_updates_seats_too(
+    admin_user,
+):
     # Ask Dan about how you can add more users in db to tests.
     controller = Controller()
     card_room = CardRoom.objects.create()

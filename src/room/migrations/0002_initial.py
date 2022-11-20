@@ -9,14 +9,14 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('room', '0001_initial'),
+        ("room", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='cardroom',
-            name='players',
+            model_name="cardroom",
+            name="players",
             field=models.ManyToManyField(to=settings.AUTH_USER_MODEL),
         ),
     ]

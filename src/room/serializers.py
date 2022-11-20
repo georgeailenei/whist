@@ -7,7 +7,7 @@ from userauth.models import User
 class PlayerSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = 'id', 'hand', 'username', 'tricks', 'played_hand'
+        fields = "id", "hand", "username", "tricks", "played_hand"
 
     hand = fields.SerializerMethodField()
 
@@ -18,13 +18,17 @@ class PlayerSerializer(ModelSerializer):
 class StatsSerializer(ModelSerializer):
     class Meta:
         model = Stats
-        fields = '__all__'
+        fields = "__all__"
 
+    board = fields.SerializerMethodField()
+
+    def get_board(self, object):
+        return object.board.split()
 
 class RoomSerializer(ModelSerializer):
     class Meta:
         model = CardRoom
-        fields = '__all__'
+        fields = "__all__"
 
     players = PlayerSerializer(many=True)
     stats = StatsSerializer()

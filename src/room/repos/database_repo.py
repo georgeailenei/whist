@@ -3,7 +3,7 @@ from room.models import Stats
 
 class GameData:
     def get_room_stats(self, room):
-        if hasattr(room, 'stats') is False:
+        if hasattr(room, "stats") is False:
             return Stats.objects.create(room=room)
         else:
             return room.stats

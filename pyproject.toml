@@ -17,6 +17,7 @@ djangorestframework = "^3.14.0"
 django-cors-headers = "^3.13.0"
 pytest-xdist = "^3.0.2"
 django-extensions = "^3.2.1"
+black = "^22.10.0"
 
 
 [build-system]
