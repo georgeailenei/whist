@@ -1,9 +1,13 @@
 <script setup>
+
+import { toRef } from 'vue';
 import Card from './Card.vue';
 const props = defineProps(['player']);
-const player = props.player;
-console.log(player.hand[0])
 
+console.log(props.player);
+const player = toRef(props.player);
+
+console.log('value', player)
 </script>
 
 <template>

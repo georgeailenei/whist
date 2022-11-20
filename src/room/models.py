@@ -10,7 +10,7 @@ class CardRoom(models.Model):
 
 
 class Stats(models.Model):
-    room = models.ForeignKey(CardRoom, on_delete=models.CASCADE)
+    room = models.OneToOneField(CardRoom, on_delete=models.CASCADE, related_name='stats')
     board = models.CharField(max_length=20, blank=True)
     trump_card = models.CharField(max_length=10, blank=True)
     team_one_score = models.IntegerField(default=0)

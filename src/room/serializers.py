@@ -1,6 +1,6 @@
 from rest_framework import fields
 from rest_framework.serializers import ModelSerializer, Serializer
-from .models import CardRoom
+from .models import CardRoom, Stats
 from userauth.models import User
 
 
@@ -15,12 +15,19 @@ class PlayerSerializer(ModelSerializer):
         return object.hand.split()
 
 
+class StatsSerializer(ModelSerializer):
+    class Meta:
+        model = Stats
+        fields = '__all__'
+
+
 class RoomSerializer(ModelSerializer):
     class Meta:
         model = CardRoom
         fields = '__all__'
 
     players = PlayerSerializer(many=True)
+    stats = StatsSerializer()
 
 
 class CardSerializer(Serializer):

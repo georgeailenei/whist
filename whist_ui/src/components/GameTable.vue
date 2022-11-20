@@ -1,23 +1,21 @@
 <script setup>
 import { ref } from 'vue';
-import Player from './Player.vue'
+import Player from './Player.vue';
 import {server_client} from '../client';
+
 
 const room = ref(null);
 const loaded_data = ref(false);
-// const reload_the_page = setInterval('window.location.reload()', 5000);
 
-setInterval(() => {
-    server_client.get_room_details(8)
+// setInterval(() => {
+    server_client.get_room_details(2)
     .then((data) => {
+        console.log(data);
         room.value = data;
         loaded_data.value = true;
     })
-}, 2000)
+// }, 2000);
 
-
-const board = room.board
-console.log(board)
 
 </script>
 

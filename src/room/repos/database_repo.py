@@ -3,13 +3,10 @@ from room.models import Stats
 
 class GameData:
     def get_room_stats(self, room):
-        stats = Stats.objects.all()
-        all_room_stats = [room.room for room in stats]
-        if room not in all_room_stats:
+        if hasattr(room, 'stats') is False:
             return Stats.objects.create(room=room)
-        elif room in all_room_stats:
-            values = Stats.objects.filter(room=room).values()
-            return Stats.objects.get(pk=values[0]['id'])
+        else:
+            return room.stats
 
     def convert_board(self, board):
         return " ".join(str(card) for card in board)
