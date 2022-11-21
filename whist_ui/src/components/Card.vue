@@ -69,11 +69,18 @@ const send_played_card = (event) => {
 </script>
 
 <template>
-    <div @click="send_played_card">
+    <div class="card" @click="send_played_card">
         <img :src="card_url" width="75" height="100" />
     </div>
 </template>
 
 <style scoped>
 
+.card{
+    transition: 0.5s;
+}
+
+.card:hover{
+    transform: translateY(-20px) scale(1.2);
+}
 </style>

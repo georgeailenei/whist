@@ -43,7 +43,7 @@ setInterval(() => {
                     <div class="player-3"><Player :player=room.players[2] /></div>
                     <div class="player-4"><Player :player=room.players[3] /></div>
                     <div class="board">
-                        <div class="card" v-for="card in room.stats.board" :key="card">
+                        <div class="board-cards" v-for="card in room.stats.board" :key="card">
                             <Card  :card_value="card" />
                         </div>
                     </div>
@@ -78,8 +78,7 @@ setInterval(() => {
     left:28%;
 }
 
-
-.card{
+.board-cards{
     display:inline-block;
 	position: relative;
     margin-left: 5px;
@@ -111,11 +110,20 @@ setInterval(() => {
     left: 75%;
 }
 
+@keyframes players-turn {
+    0% {transform: scale(1.4);}
+    85% {transform: scale(1.2);}
+    100% {transform: scale(1);}
+}
+
+
 #players-turn{
     color: white;
     position: absolute;
     top: 25%;
     left: 40%;
+    animation-name: players-turn;
+    animation-duration: 2s;
 }
 
 </style>
