@@ -64,13 +64,13 @@ const card_url = `http://localhost:8000/static/images/cards/${cards[props.card_v
 
 const send_played_card = (event) => {
     console.log(props.card_value);
-    server_client.send_card_to_server(1, props.card_value);
+    server_client.send_card_to_server(8, props.card_value);
 }
 </script>
 
 <template>
     <div @click="send_played_card">
-        <img :src="card_url" width="103" height="138" />
+        <img :src="card_url" width="75" height="100" />
     </div>
 </template>
 

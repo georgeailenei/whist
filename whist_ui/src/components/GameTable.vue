@@ -9,7 +9,7 @@ const room = ref(null);
 const loaded_data = ref(false);
 
 setInterval(() => {
-    server_client.get_room_details(1)
+    server_client.get_room_details(8)
     .then((data) => {
         console.log(data);
         room.value = data;
@@ -40,14 +40,9 @@ setInterval(() => {
             </div>
         </div>
 
-        <div class="row justify-content-center">
-            <div class="col">
-                <div class="player-1"><Player :player=room.players[0] /></div>
-            </div>
-        </div>
-
         <div class="row m-5 justify-content-center">
                 <div class="whist-table">
+                    <div class="player-1"><Player :player=room.players[0] /></div>
                     <div class="board">
                         <div class="card" v-for="card in room.stats.board" :key="card">
                             <Card  :card_value="card" />
@@ -98,4 +93,10 @@ setInterval(() => {
     display:inline-block;
 	position:relative;
 }
+
+.player-1{
+    position: absolute;
+    top: -20%;
+}
+
 </style>
