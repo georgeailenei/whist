@@ -9,7 +9,7 @@ const room = ref(null);
 const loaded_data = ref(false);
 
 setInterval(() => {
-    server_client.get_room_details(8)
+    server_client.get_room_details(1)
     .then((data) => {
         console.log(data);
         room.value = data;
@@ -56,10 +56,10 @@ setInterval(() => {
 
 <style scoped>
 .whist-table {
-    width: 800px;
-    height: 400px;
+    width: 1024px;
+    height: 570px;
     background: #346751;
-    border-radius: 200px;
+    border-radius: 300px;
     border-style: solid;
     border-width: 20px;
     border-color: #161616;
@@ -75,39 +75,39 @@ setInterval(() => {
     border-radius:10px;
     padding:10px;
     top: 35%;
-    left:28%;
+    left:33%;
 }
 
 .board-cards{
     display:inline-block;
 	position: relative;
     margin-left: 5px;
-    top: -7px;
+    top: -3px;
     left: -8px;
 }
 
 .player-1{
     position: absolute;
-    top: -20%;
-    left: 5%;
+    top: -28%;
+    left: 20%;
 }
 
 .player-2{
     position: absolute;
-    top: -20%;
-    left: 75%;
+    top: -28%;
+    left: 65%;
 }
 
 .player-3{
     position: absolute;
-    top: 85%;
-    left: 5%;
+    top: 106%;
+    left: 20%;
 }
 
 .player-4{
     position: absolute;
-    top: 85%;
-    left: 75%;
+    top: 106%;
+    left: 65%;
 }
 
 @keyframes players-turn {
@@ -121,7 +121,7 @@ setInterval(() => {
     color: white;
     position: absolute;
     top: 25%;
-    left: 40%;
+    left: 43%;
     animation-name: players-turn;
     animation-duration: 2s;
 }

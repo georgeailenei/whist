@@ -91,17 +91,7 @@ class Room(LoginRequiredMixin, TemplateView):
 
         if card_room.status and players_count == 4:
             if self.game.players_cards_count(players) == 0:
-                cards = Deck().cards
-                players = self.game.spread_cards(cards, players)
-                stats = self.game.repository.get_room_stats(room=card_room)
-                stats.trump_card = self.game.find_trump_card(cards)
-                card_room.status = True
-                card_room.save()
-                stats.save()
-
-                for p in players:
-                    p.hand = " ".join(str(e) for e in p.hand)
-                    p.save()
+                self.game.setup_room(card_room, Deck().cards)
 
             context = {
                 # Players
