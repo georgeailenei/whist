@@ -34,15 +34,14 @@ setInterval(() => {
                 <p>{{ room.players[1].username}} , {{ room.players[3].username }}</p>
             </div>
         </div>
-        <div class="row">
-            <div class="col mt-5 text-center">
-                <b>{{room.players[room.stats.player_position].username}} is your turn</b>
-            </div>
-        </div>
 
         <div class="row m-5 justify-content-center">
                 <div class="whist-table">
+                    <div id="players-turn">{{room.players[room.stats.player_position].username}} is your turn</div>
                     <div class="player-1"><Player :player=room.players[0] /></div>
+                    <div class="player-2"><Player :player=room.players[1] /></div>
+                    <div class="player-3"><Player :player=room.players[2] /></div>
+                    <div class="player-4"><Player :player=room.players[3] /></div>
                     <div class="board">
                         <div class="card" v-for="card in room.stats.board" :key="card">
                             <Card  :card_value="card" />
@@ -50,21 +49,12 @@ setInterval(() => {
                     </div>
                 </div>
         </div>
-
-        <!-- <div class="players">
-        
-        <div class="player-2"><Player :player=room.players[1] /></div>
-        <div class="player-3"><Player :player=room.players[2] /></div>
-        <div class="player-4"><Player :player=room.players[3] /></div>
-        </div> -->
-
     </div>
 
 </template>
 
 
 <style scoped>
-
 .whist-table {
     width: 800px;
     height: 400px;
@@ -74,29 +64,58 @@ setInterval(() => {
     border-width: 20px;
     border-color: #161616;
     position:absolute;
-	top: 35%;
+	top: 25%;
 }
 
 .board{
     border:5px solid #63c763;
-    height:100px;
+    height:118px;
     width:340px;
     position:absolute;
     border-radius:10px;
     padding:10px;
-    top:35%;
+    top: 35%;
     left:28%;
 }
 
 
 .card{
     display:inline-block;
-	position:relative;
+	position: relative;
+    margin-left: 5px;
+    top: -7px;
+    left: -8px;
 }
 
 .player-1{
     position: absolute;
     top: -20%;
+    left: 5%;
+}
+
+.player-2{
+    position: absolute;
+    top: -20%;
+    left: 75%;
+}
+
+.player-3{
+    position: absolute;
+    top: 85%;
+    left: 5%;
+}
+
+.player-4{
+    position: absolute;
+    top: 85%;
+    left: 75%;
+}
+
+#players-turn{
+    color: white;
+    position: absolute;
+    top: 25%;
+    left: 40%;
 }
 
 </style>

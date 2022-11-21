@@ -7,5 +7,7 @@ import GameTable from './components/GameTable.vue';
 </template>
 
 <style scoped>
-
+body{
+    background-color: navy;
+}
 </style>

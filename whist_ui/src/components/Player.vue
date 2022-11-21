@@ -7,26 +7,20 @@ const props = defineProps(['player']);
 
 <template>
     <div class="container">
-        <div>
-            <div class="points" ></div>
-            <img 
+            <div id="avatar-1"><img 
                 src="http://localhost:8000/static/images/placeholder_avatar.png"
                 height="100"
                 width="100"
             />
-            <div class="no-bullets">
-                <ul>
-                <li><b>{{player.username}}</b></li>
-                <li><b>Tricks:{{player.tricks}}</b></li>
-                </ul>
+            <div class="display-name"><p id="name"><b>{{player.username}}</b></p></div>
+            <div class="points"><p id="points-text"><b>{{player.tricks}}</b></p></div>
             </div>
-        </div>
-        <div class="card-container">
-            <div v-for="(card, index) in player.hand" :key="card">
-                <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
-            </div>
-        </div>
-
+            
+                <div class="card-container">
+                    <div v-for="(card, index) in player.hand" :key="card">
+                    <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
+                    </div>
+                </div>
     </div>
     
 </template>
@@ -39,23 +33,43 @@ const props = defineProps(['player']);
     margin-left: -50px;
 }
 .no-bullets {
-  background-color:blue;
   list-style-type: none;
 }
 .card-container{
     display: flex;
     position: absolute;
-    top: 0%;
     left: 120px;
 }
 
-.points{
-    background-color: aqua;
+#points-text{
+    color: white;
+    text-align: center;
+}
+
+
+#avatar-1{
     position: absolute;
-    top: -6%;
-    left: 2%;
+}
+
+.points{
+    background-color: #674747;
+    position: absolute;
+    top: -10px;
+    left: -10px;
     height: 25px;
     width: 25px;
     border-radius: 80%;
+}
+
+.display-name{
+    background-color: #674747;
+    position: absolute;
+    height: 25px;
+    width: 100px;
+}
+
+#name{
+    color: white;
+    text-align: center;
 }
 </style>
