@@ -1,13 +1,12 @@
 <script setup>
-import GameTable from './components/GameTable.vue';
+import GameTablee from './components/GameTablee.vue';
 </script>
 
 <template>
-  <GameTable/>
+  <GameTablee/>
 </template>
 
 <style scoped>
-body{
-    background-color: navy;
-}
+
+
 </style>

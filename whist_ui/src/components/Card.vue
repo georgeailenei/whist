@@ -1,8 +1,8 @@
 <script setup>
 import { server_client } from '../client';
 const props = defineProps(['card_value']);
-
-
+console.log(props.card_value);
+// console.log(props.card_value);
 const cards = {
     "10c": "10_of_clubs.png",
     "10d": "10_of_diamonds.png",
@@ -63,24 +63,35 @@ const card_url = `http://localhost:8000/static/images/cards/${cards[props.card_v
 
 const send_played_card = (event) => {
     console.log(props.card_value);
-    server_client.send_card_to_server(1, props.card_value);
+    server_client.send_card_to_server(8, props.card_value);
 }
 
 </script>
 
 <template>
     <div class="card" @click="send_played_card">
-        <img :src="card_url" width="64" height="92" />
+        <img class="card_img" :src="card_url" />
     </div>
 </template>
 
 <style scoped>
 
 .card{
-    transition: 0.5s;
+    height:70px;
+	width:50px;
+    display:inline-block;
+    /* position:relative; */
+/*     
+    height: 70px;
+    width: 50px;  
+    border-radius: 5px;
+    display: inline-block;
+    position: relative; */
+}
+.card_img {
+    width: 100%;
+    height: 100%;
 }
 
-.card:hover{
-    transform: translateY(-20px) scale(1.2);
-}
+
 </style>

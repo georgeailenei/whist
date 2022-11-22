@@ -1,21 +1,5 @@
 <script setup>
-import { ref } from 'vue';
-import Player from './Player.vue';
-import {server_client} from '../client';
-import Card from './Card.vue';
 
-
-const room = ref(null);
-const loaded_data = ref(false);
-
-setInterval(() => {
-    server_client.get_room_details(1)
-    .then((data) => {
-        console.log(data);
-        room.value = data;
-        loaded_data.value = true;
-    })
-}, 2000);
 
 </script>
 
@@ -23,8 +7,8 @@ setInterval(() => {
 
 
     
-    <div v-if="loaded_data" class="container-fluid">
-        <div class="row mt-5 ">
+    <div v-if="loaded_data" class="container">
+        <!-- <div class="row mt-5">
             <div class="col-6 text-center">
                 <b>TEAM ONE POINTS: {{ room.stats.team_one_score }}</b>
                 <p>{{ room.players[0].username}} , {{ room.players[2].username }}</p>
@@ -33,28 +17,41 @@ setInterval(() => {
                 <b>TEAM TWO POINTS: {{ room.stats.team_two_score }}</b>
                 <p>{{ room.players[1].username}} , {{ room.players[3].username }}</p>
             </div>
-        </div>
-
-        <div class="row m-5 justify-content-center">
+        </div> -->
+                
                 <div class="whist-table">
+
                     <div id="players-turn">{{room.players[room.stats.player_position].username}} is your turn</div>
                     <div class="player-1"><Player :player=room.players[0] /></div>
                     <div class="player-2"><Player :player=room.players[1] /></div>
                     <div class="player-3"><Player :player=room.players[2] /></div>
                     <div class="player-4"><Player :player=room.players[3] /></div>
+
+                    
                     <div class="board">
                         <div class="board-cards" v-for="card in room.stats.board" :key="card">
                             <Card  :card_value="card" />
                         </div>
+
+                        
                     </div>
+                    
                 </div>
-        </div>
     </div>
 
 </template>
 
 
 <style scoped>
+.deck {
+    position: relative;
+}
+.card_in_deck {
+    position: absolute;
+}
+.container{
+    display: flex;
+}
 .whist-table {
     width: 1024px;
     height: 570px;
@@ -63,6 +60,9 @@ setInterval(() => {
     border-style: solid;
     border-width: 20px;
     border-color: #161616;
+    flex: 1;
+    flex-basis: 100%;
+    transition: transform 1s;
     position:absolute;
 	top: 25%;
 }
