@@ -2,7 +2,7 @@
 import { server_client } from '../client';
 const props = defineProps(['card_value']);
 
-
+// console.log(props.card_value);
 const cards = {
     "10c": "10_of_clubs.png",
     "10d": "10_of_diamonds.png",
@@ -63,7 +63,7 @@ const card_url = `http://localhost:8000/static/images/cards/${cards[props.card_v
 
 const send_played_card = (event) => {
     console.log(props.card_value);
-    server_client.send_card_to_server(1, props.card_value);
+    server_client.send_card_to_server(8, props.card_value);
 }
 
 </script>
@@ -83,4 +83,5 @@ const send_played_card = (event) => {
 .card:hover{
     transform: translateY(-20px) scale(1.2);
 }
+
 </style>
