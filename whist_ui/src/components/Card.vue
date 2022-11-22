@@ -1,7 +1,11 @@
 <script setup>
 import { server_client } from '../client';
 const props = defineProps(['card_value']);
+<<<<<<< HEAD
 console.log(props.card_value);
+=======
+
+>>>>>>> 9d165c79e4ce83d6d73dd2c7d62f474eb4f2912a
 // console.log(props.card_value);
 const cards = {
     "10c": "10_of_clubs.png",
@@ -93,5 +97,11 @@ const send_played_card = (event) => {
     height: 100%;
 }
 
+<<<<<<< HEAD
+=======
+.card:hover{
+    transform: translateY(-20px) scale(1.2);
+}
+>>>>>>> 9d165c79e4ce83d6d73dd2c7d62f474eb4f2912a
 
 </style>

@@ -1,6 +1,21 @@
 <script setup>
 
 
+<<<<<<< HEAD
+=======
+const room = ref(null);
+const loaded_data = ref(false);
+
+setInterval(() => {
+    server_client.get_room_details(8)
+    .then((data) => {
+        console.log(data);
+        room.value = data;
+        loaded_data.value = true;
+    })
+}, 2000);
+
+>>>>>>> 9d165c79e4ce83d6d73dd2c7d62f474eb4f2912a
 </script>
 
 <template>
@@ -32,9 +47,17 @@
                         <div class="board-cards" v-for="card in room.stats.board" :key="card">
                             <Card  :card_value="card" />
                         </div>
+<<<<<<< HEAD
 
                         
                     </div>
+=======
+                        
+                    </div>
+                    <div class="deck" v-for="index in 52" :key="index">
+                        <Card card_value="not_permitted"></Card>
+                    </div>
+>>>>>>> 9d165c79e4ce83d6d73dd2c7d62f474eb4f2912a
                     
                 </div>
     </div>
@@ -43,12 +66,16 @@
 
 
 <style scoped>
+<<<<<<< HEAD
 .deck {
     position: relative;
 }
 .card_in_deck {
     position: absolute;
 }
+=======
+
+>>>>>>> 9d165c79e4ce83d6d73dd2c7d62f474eb4f2912a
 .container{
     display: flex;
 }
