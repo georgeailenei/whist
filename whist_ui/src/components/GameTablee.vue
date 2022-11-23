@@ -29,7 +29,6 @@ const show = ref(true);
 const cards_to_spread = ref(52);
 
 setTimeout(() => {
-  console.log(cards_to_spread.value)
   cards_to_spread.value -= 1;
 }, 1000)
 
@@ -83,20 +82,6 @@ const after_leave = (el) => {
         <Player :can_see_no_of_cards="player4_see_cards" :player=room.players[3] />
 			</div>
 		</div>
-    <!-- <div v-else class="players">
-      <div :class="['player', 'player-5']">
-        <Player :player=room.players[0] />
-      </div>
-			<div :class="['player', 'player-7']">
-				<Player :player=room.players[1] />
-			</div>
-			<div :class="['player', 'player-6']">
-				<Player :player=room.players[2] />
-			</div>
-			<div :class="['player', 'player-8']">
-        <Player :player=room.players[3] />
-			</div>
-    </div> -->
 	</div>
 </div>
 
