@@ -2,6 +2,11 @@
 import Card from './Card.vue';
 
 const props = defineProps(['player']);
+const cevaX = '500px'
+const cevaY = '220px'
+
+document.documentElement.style.setProperty('--position-1', cevaX)
+document.documentElement.style.setProperty('--position-2', cevaY)
 
 </script>    
 <template>  
@@ -21,6 +26,10 @@ const props = defineProps(['player']);
 </template>
 
 <style scoped>
+:root{
+    --position-1: 0px;
+    --position-2: 0px;
+}
 .avatar {
     width: 62px;
     height: 62px;
@@ -105,7 +114,7 @@ const props = defineProps(['player']);
 
 .move-leave-to{
     opacity: 0;
-    transform: scale(0.5) skew();
+    transform: scale(0.5) translate(var(--position-1), var(--position-2));
 }
 
 .move-leave-active{
