@@ -12,7 +12,7 @@ const room = ref(null);
 const loaded_data = ref(false);
 
 setInterval(() => {
-    server_client.get_room_details(8)
+    server_client.get_room_details(1)
     .then((data) => {
         console.log(data);
         room.value = data;
@@ -186,6 +186,7 @@ const show = ref(true);
   left: 25%;
   transform: translatex(-50%) translatey(-50%);
 }
+
 .players .player.player-6 {
   bottom: -78px;
   left: 75%;

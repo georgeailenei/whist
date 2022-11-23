@@ -7,11 +7,11 @@ const props = defineProps(['player']);
 <template>  
 
 <div class="playing-cards">
-    <div v-for="(card, index) in player.hand" :key="card">
-    <Transition name="move">
-        <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
-    </Transition>
-    </div>
+    <TransitionGroup name="move">
+        <div v-for="(card, index) in player.hand" :key="card">
+            <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
+        </div>
+    </TransitionGroup>
 </div>
             
 <div class="avatar"></div>
@@ -85,16 +85,30 @@ const props = defineProps(['player']);
     transform: translateY(-15px) scale(1.3);
 }
 
+/* transitions */
+
+/* .move-enter-from{
+    opacity: 0;
+    transform: scale(0.6);
+}
+.move-enter-to{
+    opacity: 1;
+    transform: scale(1);
+}
+.move-active{
+    transition: all 0.4s ease;
+} */
 .move-leave-from{
     opacity: 1;
+    transform: scale(1);
 }
 
 .move-leave-to{
     opacity: 0;
-    transform: scale(3);
+    transform: scale(0.5) skew();
 }
 
-.move-active{
+.move-leave-active{
     transition: all 1s ease;
 }
 

@@ -5,7 +5,7 @@ const room = ref(null);
 const loaded_data = ref(false);
 
 setInterval(() => {
-    server_client.get_room_details(8)
+    server_client.get_room_details(1)
     .then((data) => {
         console.log(data);
         room.value = data;
@@ -16,8 +16,6 @@ setInterval(() => {
 </script>
 
 <template>
-
-
     
     <div v-if="loaded_data" class="container">
         <!-- <div class="row mt-5">
