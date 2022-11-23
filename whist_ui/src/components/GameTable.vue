@@ -1,8 +1,6 @@
 <script setup>
 
 
-<<<<<<< HEAD
-=======
 const room = ref(null);
 const loaded_data = ref(false);
 
@@ -15,7 +13,6 @@ setInterval(() => {
     })
 }, 2000);
 
->>>>>>> 9d165c79e4ce83d6d73dd2c7d62f474eb4f2912a
 </script>
 
 <template>
@@ -46,18 +43,14 @@ setInterval(() => {
                     <div class="board">
                         <div class="board-cards" v-for="card in room.stats.board" :key="card">
                             <Card  :card_value="card" />
-                        </div>
-<<<<<<< HEAD
-
-                        
+                        </div>           
                     </div>
-=======
+
                         
                     </div>
                     <div class="deck" v-for="index in 52" :key="index">
                         <Card card_value="not_permitted"></Card>
                     </div>
->>>>>>> 9d165c79e4ce83d6d73dd2c7d62f474eb4f2912a
                     
                 </div>
     </div>
@@ -66,16 +59,14 @@ setInterval(() => {
 
 
 <style scoped>
-<<<<<<< HEAD
+
 .deck {
     position: relative;
 }
 .card_in_deck {
     position: absolute;
 }
-=======
 
->>>>>>> 9d165c79e4ce83d6d73dd2c7d62f474eb4f2912a
 .container{
     display: flex;
 }

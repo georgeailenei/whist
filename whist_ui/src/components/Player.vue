@@ -3,73 +3,83 @@
 import Card from './Card.vue';
 const props = defineProps(['player']);
 
-</script>
+</script>    
+<template>  
 
-<template>
-    <div class="container">
-                <div id="avatar-1"><img 
-                    src="http://localhost:8000/static/images/placeholder_avatar.png"
-                    height="100"
-                    width="100"
-                />
-                <div class="display-name"><p id="name"><b>{{player.username}}</b></p></div>
-                <div class="points"><p id="points-text"><b>{{player.tricks}}</b></p></div>
-            </div>
-            
-            <div class="card-container">
-                <div v-for="(card, index) in player.hand" :key="card">
-                <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
-                </div>
-            </div>
+<div class="playing-cards">
+    <div v-for="(card, index) in player.hand" :key="card">
+        <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
     </div>
+</div>
+            
+<div class="avatar"></div>
+<div class="name">{{player.username}}</div>
+<div class="tricks">{{player.tricks}}</div>
     
 </template>
 
 <style scoped>
-.container{
-    position: absolute;
-}
-.card{
-    margin-left: -50px;
-}
-.no-bullets {
-  list-style-type: none;
-}
-.card-container{
-    display: flex;
-    position: absolute;
-    left: 170px;
+.avatar {
+    width: 62px;
+    height: 62px;
+    background-color: rgb(235, 235, 235);
+    border-radius: 100%;
+    position: relative;
+    box-shadow: 2px 10px 0px rgba(0, 0, 0, 0.4);
+    z-index: 20;
 }
 
-#points-text{
-    color: white;
+.name {
+    font-family: "Calibri";
     text-align: center;
-}
-
-
-#avatar-1{
-    position: absolute;
-}
-
-.points{
-    background-color: #674747;
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    height: 25px;
-    width: 25px;
-    border-radius: 80%;
-}
-
-.display-name{
-    background-color: #674747;
-    position: absolute;
-    height: 25px;
     width: 100px;
+    color:white;
+    padding: 1px 0;
+    margin-left: 10px;
+    box-sizing: border-box;
+    border-top: 1px solid white;
+    border-radius: 5px;
+    margin-top: 15px;
+    text-overflow: ellipsis;
+    font-size: 11px;
+    overflow: hidden;
+    position: relative;
+    top: -65px;
+    left: 40px;
 }
 
-#name{
-    color: white;
+.tricks {
+    font-family: "Calibri";
     text-align: center;
+    width: 100px;
+    color: white;
+    padding: 1px 0;
+    margin-left: 10px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #232323;
+    border-radius: 5px;
+    text-overflow: ellipsis;
+    font-size: 11px;
+    overflow: hidden;
+    position: relative;
+    top: -65px;
+    left: 40px;
+}
+
+.playing-cards{
+    position: absolute;
+    display: flex;
+}
+
+.playing-cards .card{
+    position: relative;
+    margin-left: -40px;
+    left: 95px;
+    top: -64px;
+    transition: 0.5s;
+}
+
+.playing-cards .card:hover{
+    transform: translateY(-15px) scale(1.3);
 }
 </style>

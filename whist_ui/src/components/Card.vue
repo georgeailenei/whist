@@ -1,12 +1,7 @@
 <script setup>
 import { server_client } from '../client';
-const props = defineProps(['card_value']);
-<<<<<<< HEAD
-console.log(props.card_value);
-=======
 
->>>>>>> 9d165c79e4ce83d6d73dd2c7d62f474eb4f2912a
-// console.log(props.card_value);
+const props = defineProps(['card_value']);
 const cards = {
     "10c": "10_of_clubs.png",
     "10d": "10_of_diamonds.png",
@@ -74,7 +69,7 @@ const send_played_card = (event) => {
 
 <template>
     <div class="card" @click="send_played_card">
-        <img class="card_img" :src="card_url" />
+        <img :src="card_url" />
     </div>
 </template>
 
@@ -83,25 +78,6 @@ const send_played_card = (event) => {
 .card{
     height:70px;
 	width:50px;
-    display:inline-block;
-    /* position:relative; */
-/*     
-    height: 70px;
-    width: 50px;  
-    border-radius: 5px;
-    display: inline-block;
-    position: relative; */
 }
-.card_img {
-    width: 100%;
-    height: 100%;
-}
-
-<<<<<<< HEAD
-=======
-.card:hover{
-    transform: translateY(-20px) scale(1.2);
-}
->>>>>>> 9d165c79e4ce83d6d73dd2c7d62f474eb4f2912a
 
 </style>
