@@ -68,9 +68,9 @@ const send_played_card = (event) => {
 </script>
 
 <template>
-    <div class="card" @click="send_played_card">
-        <img :src="card_url" />
-    </div>
+        <div class="card" @click="send_played_card">
+            <img :src="card_url" />
+        </div>
 </template>
 
 <style scoped>

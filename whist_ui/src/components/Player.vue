@@ -1,6 +1,6 @@
 <script setup>
-
 import Card from './Card.vue';
+
 const props = defineProps(['player']);
 
 </script>    
@@ -8,7 +8,9 @@ const props = defineProps(['player']);
 
 <div class="playing-cards">
     <div v-for="(card, index) in player.hand" :key="card">
+    <Transition name="move">
         <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
+    </Transition>
     </div>
 </div>
             
@@ -82,4 +84,18 @@ const props = defineProps(['player']);
 .playing-cards .card:hover{
     transform: translateY(-15px) scale(1.3);
 }
+
+.move-leave-from{
+    opacity: 1;
+}
+
+.move-leave-to{
+    opacity: 0;
+    transform: scale(3);
+}
+
+.move-active{
+    transition: all 1s ease;
+}
+
 </style>

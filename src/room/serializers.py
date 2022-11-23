@@ -21,9 +21,14 @@ class StatsSerializer(ModelSerializer):
         fields = "__all__"
 
     board = fields.SerializerMethodField()
+    played_card = fields.SerializerMethodField()
 
     def get_board(self, object):
         return object.board.split()
+
+    def get_played_card(self, object):
+        return object.played_card.split()
+
 
 class RoomSerializer(ModelSerializer):
     class Meta:

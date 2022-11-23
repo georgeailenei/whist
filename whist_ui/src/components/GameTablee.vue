@@ -29,9 +29,8 @@ const show = ref(true);
 	<div class="table">
 		<div class="board">
 			<div class="deck">
-					<!-- <Card :style="{left: `${index / 4}px`}" v-for="index in 51" :key="index" class="card_in_deck" card_value="not_permitted"></Card> -->
 					<Transition name="spread">
-						<Card v-if="show" class="animated_card" :style="{left: `${52/4}px`}" card_value="not_permitted"></Card>
+            <Card v-if="show" class="animated_card" :style="{left: `${52/4}px`}" card_value="not_permitted"></Card>
 					</Transition>
 			</div>
 
@@ -40,9 +39,11 @@ const show = ref(true);
       </div>       
 		</div>
 		<div class="players">
-			<div :class="['player', 'player-5']">
-        <Player :player=room.players[0] />
-			</div>
+        <div :class="['player', 'player-5']">
+          <Player :player=room.players[0] />
+        </div>
+
+
 			<div :class="['player', 'player-7']">
 				<Player :player=room.players[1] />
 			</div>
@@ -70,6 +71,7 @@ const show = ref(true);
 .deck {
     position: relative;
 }
+
 .card_in_deck {
     position: absolute;
 }
@@ -89,7 +91,6 @@ const show = ref(true);
 .spread-enter-active {
 	transition: all 2s ease;
 }
-
 
 .table {
   width: 775px;
@@ -210,6 +211,7 @@ const show = ref(true);
   outline: none;
   padding: 5px 10px;
 }
+
 
 
 </style>
