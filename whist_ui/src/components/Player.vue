@@ -1,7 +1,7 @@
 <script setup>
 import Card from './Card.vue';
 
-const props = defineProps(['player', 'can_see_no_of_cards']);
+const props = defineProps(['player']);
 const cevaX = '500px'
 const cevaY = '220px'
 
@@ -13,7 +13,7 @@ document.documentElement.style.setProperty('--position-2', cevaY)
 
 <div class="playing-cards">
     <TransitionGroup name="move">
-        <div v-for="(card, index) in player.hand.slice(0, props.can_see_no_of_cards)" :key="card">
+        <div v-for="(card, index) in player.hand" :key="card">
             <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
         </div>
     </TransitionGroup>

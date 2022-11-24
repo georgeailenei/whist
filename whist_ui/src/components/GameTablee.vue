@@ -11,11 +11,6 @@ import {server_client} from '../client';
 const room = ref(null);
 const loaded_data = ref(false);
 
-const player1_see_cards = ref(0);
-const player2_see_cards = ref(0);
-const player3_see_cards = ref(0);
-const player4_see_cards = ref(0);
-
 // setInterval(() => {
     server_client.get_room_details(1)
     .then((data) => {
@@ -28,23 +23,13 @@ const player4_see_cards = ref(0);
 const show = ref(true);
 const cards_to_spread = ref(52);
 
+const after_leave = (el) => {
+  cards_to_spread.value -= 1;
+}
 setTimeout(() => {
   cards_to_spread.value -= 1;
 }, 1000)
 
-const after_leave = (el) => {
-  cards_to_spread.value -= 1;
-  
-  if (el.id === '1') {
-    player1_see_cards.value += 1;
-  } else if (el.id === '2') {
-    player2_see_cards.value += 1;
-  } else if (el.id === '3') {
-    player3_see_cards.value += 1;
-  } else if (el.id === '4') {
-    player4_see_cards.value += 1;
-  }
-}
 
 </script>
 <template>
@@ -70,16 +55,16 @@ const after_leave = (el) => {
 		</div>
 		<div class="players">
       <div :class="['player', 'player-5']">
-        <Player :can_see_no_of_cards="player1_see_cards" :player="room.players[0]" />
+        <Player :player="room.players[0]" />
       </div>
 			<div :class="['player', 'player-7']">
-				<Player :can_see_no_of_cards="player2_see_cards" :player=room.players[1] />
+				<Player :player=room.players[1] />
 			</div>
 			<div :class="['player', 'player-6']">
-				<Player :can_see_no_of_cards="player3_see_cards" :player=room.players[2] />
+				<Player :player=room.players[2] />
 			</div>
 			<div :class="['player', 'player-8']">
-        <Player :can_see_no_of_cards="player4_see_cards" :player=room.players[3] />
+        <Player :player=room.players[3] />
 			</div>
 		</div>
 	</div>
@@ -110,7 +95,7 @@ const after_leave = (el) => {
 .spread-p3-leave-active,
 .spread-p4-leave-active 
  {
-  transition: all 0.09s ease;
+  transition: all 1s ease;
 }
 
 .spread-p1-leave-to {
