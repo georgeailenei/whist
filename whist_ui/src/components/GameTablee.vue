@@ -102,7 +102,6 @@ const after_leave = (el) => {
 
 .card_in_deck {
     position: absolute;
-    left: 100px;
 }
 
 
