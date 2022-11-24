@@ -2,11 +2,6 @@
 import Card from './Card.vue';
 
 const props = defineProps(['player']);
-const cevaX = '500px'
-const cevaY = '220px'
-
-document.documentElement.style.setProperty('--position-1', cevaX)
-document.documentElement.style.setProperty('--position-2', cevaY)
 
 </script>    
 <template>  
@@ -26,10 +21,6 @@ document.documentElement.style.setProperty('--position-2', cevaY)
 </template>
 
 <style scoped>
-:root{
-    --position-1: 0px;
-    --position-2: 0px;
-}
 .avatar {
     width: 62px;
     height: 62px;
@@ -92,33 +83,6 @@ document.documentElement.style.setProperty('--position-2', cevaY)
 
 .playing-cards .card:hover{
     transform: translateY(-15px) scale(1.3);
-}
-
-/* transitions */
-
-/* .move-enter-from{
-    opacity: 0;
-    transform: scale(0.6);
-}
-.move-enter-to{
-    opacity: 1;
-    transform: scale(1);
-}
-.move-active{
-    transition: all 0.4s ease;
-} */
-.move-leave-from{
-    opacity: 1;
-    transform: scale(1);
-}
-
-.move-leave-to{
-    opacity: 0;
-    transform: scale(0.5) translate(var(--position-1), var(--position-2));
-}
-
-.move-leave-active{
-    transition: all 1s ease;
 }
 
 </style>

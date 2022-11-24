@@ -11,26 +11,37 @@ import {server_client} from '../client';
 const room = ref(null);
 const loaded_data = ref(false);
 
-setInterval(() => {
-    server_client.get_room_details(1)
-    .then((data) => {
-        console.log(data);
-        room.value = data;
-        loaded_data.value = true;
-    })
-}, 2000);
+// setInterval(() => {
+      server_client.get_room_details(1)
+      .then((data) => {
+          console.log(data);
+          room.value = data;
+          loaded_data.value = true;
+      })
+// }, 2000);
 
 const show = ref(true);
+const cards_to_spread = ref(52);
+
+const after_leave = (el) => {
+  cards_to_spread.value -= 1;
+}
+
+setTimeout(() => {
+  cards_to_spread.value -= 1;
+}, 1000)
+
 </script>
 <template>
 <div class="vue-container" v-if="loaded_data">
+
 <button @click="show=!show">apasama</button>
 
 	<div class="table">
 		<div class="board">
 			<div class="deck">
-					<Transition name="spread">
-            <Card v-if="show" class="animated_card" :style="{left: `${52/4}px`}" card_value="not_permitted"></Card>
+					<Transition v-for="el in 52" :key="el" :name="`spread-p${4 - ((el - 1) % 4)}`" @after-leave="after_leave">
+            <Card v-if="el<=cards_to_spread" class="card_in_deck" card_value="not_permitted"></Card>
 					</Transition>
 			</div>
 
@@ -42,7 +53,6 @@ const show = ref(true);
         <div :class="['player', 'player-5']">
           <Player :player=room.players[0] />
         </div>
-
 
 			<div :class="['player', 'player-7']">
 				<Player :player=room.players[1] />
@@ -62,6 +72,7 @@ const show = ref(true);
 
 <style scoped>
 
+
 .vue-container{
 	width: 100vw;
 	height: 100vh;
@@ -76,8 +87,7 @@ const show = ref(true);
     position: absolute;
 }
 
-
-.spead {
+.spread {
 	transform: translateX('1000px') scale(1.2);
 }
 
@@ -213,6 +223,30 @@ const show = ref(true);
   padding: 5px 10px;
 }
 
+.spread-p1-leave-active,
+.spread-p2-leave-active,
+.spread-p3-leave-active,
+.spread-p4-leave-active 
+ {
+  transition: all 0.1s ease;
+}
 
+.spread-p1-leave-to {
+  transform: translate(0, -150px);
+}
+
+
+.spread-p2-leave-to {
+  transform: translate(150px ,-150px);
+}
+
+
+.spread-p3-leave-to {
+  transform: translate(280px, 100px);
+}
+
+.spread-p4-leave-to {
+  transform: translate(0, 110px);
+}
 
 </style>
