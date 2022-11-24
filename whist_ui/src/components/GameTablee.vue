@@ -11,16 +11,26 @@ import {server_client} from '../client';
 const room = ref(null);
 const loaded_data = ref(false);
 
-setInterval(() => {
+// setInterval(() => {
     server_client.get_room_details(1)
     .then((data) => {
         console.log(data);
         room.value = data;
         loaded_data.value = true;
     })
-}, 2000);
+// }, 2000);
 
 const show = ref(true);
+const cards_to_spread = ref(52);
+
+const after_leave = (el) => {
+  cards_to_spread.value -= 1;
+}
+setTimeout(() => {
+  cards_to_spread.value -= 1;
+}, 1000)
+
+
 </script>
 <template>
 <div class="vue-container" v-if="loaded_data">
@@ -29,8 +39,13 @@ const show = ref(true);
 	<div class="table">
 		<div class="board">
 			<div class="deck">
-					<Transition name="spread">
-            <Card v-if="show" class="animated_card" :style="{left: `${52/4}px`}" card_value="not_permitted"></Card>
+					<Transition
+           v-for="el in 52" 
+           :key="el"
+           :name="`spread-p${4 - ((el - 1) % 4)}`"
+           @after-leave="after_leave"
+           >
+            <Card :id="`${4 - ((el - 1) % 4)}`" v-if="el<=cards_to_spread" class="card_in_deck" :style="{left: `${52/4}px`}" card_value="not_permitted"></Card>
 					</Transition>
 			</div>
 
@@ -39,11 +54,9 @@ const show = ref(true);
       </div>       
 		</div>
 		<div class="players">
-        <div :class="['player', 'player-5']">
-          <Player :player=room.players[0] />
-        </div>
-
-
+      <div :class="['player', 'player-5']">
+        <Player :player="room.players[0]" />
+      </div>
 			<div :class="['player', 'player-7']">
 				<Player :player=room.players[1] />
 			</div>
@@ -77,20 +90,35 @@ const show = ref(true);
 }
 
 
-.spead {
-	transform: translateX('1000px') scale(1.2);
+.spread-p1-leave-active,
+.spread-p2-leave-active,
+.spread-p3-leave-active,
+.spread-p4-leave-active 
+ {
+  transition: all 1s ease;
 }
 
-.spread-leave-from {
-	transition: 0;	
-}
-.spread-leave-to {
-	opacity: 1;
+.spread-p1-leave-to {
+  transform: translate(0, -150px);
 }
 
-.spread-enter-active {
-	transition: all 2s ease;
+
+.spread-p2-leave-to {
+  transform: translate(150px ,-150px);
 }
+
+
+.spread-p3-leave-to {
+  transform: translate(280px, 100px);
+}
+
+.spread-p4-leave-to {
+  transform: translate(0, 110px);
+}
+
+
+
+
 
 .table {
   width: 775px;
