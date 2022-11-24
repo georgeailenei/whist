@@ -1,8 +1,5 @@
 <script setup>
-import { computed } from 'vue';
 import Card from './Card.vue';
-
-
 import { ref } from 'vue';
 import Player from './Player.vue';
 import {server_client} from '../client';
@@ -20,50 +17,63 @@ const loaded_data = ref(false);
       })
 // }, 2000);
 
-const show = ref(true);
 const cards_to_spread = ref(52);
+const p1_visible_cards = ref(0);
+const p2_visible_cards = ref(0);
+const p3_visible_cards = ref(0);
+const p4_visible_cards = ref(0);
 
 const after_leave = (el) => {
-  cards_to_spread.value -= 1;
+    cards_to_spread.value -= 1;
+    
+    if (el.id === '1') {
+    p1_visible_cards.value++;
+  } else if (el.id === '2') {
+    p2_visible_cards.value++;
+  } else if (el.id === '3') {
+    p3_visible_cards.value++;
+  } else if (el.id === '4') {
+    p4_visible_cards.value++;
+  }
 }
 
 setTimeout(() => {
   cards_to_spread.value -= 1;
 }, 1000)
 
+
 </script>
 <template>
 <div class="vue-container" v-if="loaded_data">
-
-<button @click="show=!show">apasama</button>
-
+  <div v-text="room.status.trump_card"></div>
 	<div class="table">
-		<div class="board">
-			<div class="deck">
-					<Transition v-for="el in 52" :key="el" :name="`spread-p${4 - ((el - 1) % 4)}`" @after-leave="after_leave">
-            <Card v-if="el<=cards_to_spread" class="card_in_deck" card_value="not_permitted"></Card>
-					</Transition>
-			</div>
+      <div class="board">
 
-      <div class="board-cards" v-for="card in room.stats.board" :key="card">
-        <Card  :card_value="card" />
-      </div>       
-		</div>
-		<div class="players">
-        <div :class="['player', 'player-5']">
-          <Player :player=room.players[0] />
+        <div class="deck">
+            <Transition v-for="el in 52" :key="el" :name="`spread-p${4 - ((el - 1) % 4)}`" @after-leave="after_leave">
+              <Card :id="`${4 - ((el - 1) % 4)}`" v-if="el<=cards_to_spread" class="card_in_deck" card_value="not_permitted"></Card>
+            </Transition>
         </div>
 
-			<div :class="['player', 'player-7']">
-				<Player :player=room.players[1] />
-			</div>
-			<div :class="['player', 'player-6']">
-				<Player :player=room.players[2] />
-			</div>
-			<div :class="['player', 'player-8']">
-        <Player :player=room.players[3] />
-			</div>
-		</div>
+        <div class="board-cards" v-for="card in room.stats.board" :key="card">
+          <Card  :card_value="card" />
+        </div>       
+      </div>
+
+      <div class="players">
+          <div :class="['player', 'player-5']">
+            <Player :visible-cards="p1_visible_cards" :player=room.players[0] />
+          </div>
+        <div :class="['player', 'player-7']">
+          <Player :visible-cards="p2_visible_cards" :player=room.players[1] />
+        </div>
+        <div :class="['player', 'player-6']">
+          <Player :visible-cards="p3_visible_cards" :player=room.players[2] />
+        </div>
+        <div :class="['player', 'player-8']">
+          <Player :visible-cards="p4_visible_cards" :player=room.players[3] />
+        </div>
+      </div>
 	</div>
 </div>
 

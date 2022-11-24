@@ -1,19 +1,17 @@
 <script setup>
 import Card from './Card.vue';
 
-const props = defineProps(['player']);
+const props = defineProps(['player', 'visibleCards']);
 
 </script>    
 <template>  
 
 <div class="playing-cards">
-    <TransitionGroup name="move">
-        <div v-for="(card, index) in player.hand" :key="card">
+        <div v-for="(card, index) in player.hand.slice(0, props.visibleCards)" :key="card">
             <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
         </div>
-    </TransitionGroup>
 </div>
-            
+
 <div class="avatar"></div>
 <div class="name">{{player.username}}</div>
 <div class="tricks">{{player.tricks}}</div>
