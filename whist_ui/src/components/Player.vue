@@ -1,15 +1,26 @@
 <script setup>
 import Card from './Card.vue';
 
-const props = defineProps(['player', 'visibleCards']);
+const props = defineProps(['player', 'visibleCards', 'roundStarted', 'board']);
+
+
 
 </script>    
 <template>  
 
-<div class="playing-cards">
+<div v-if="props.roundStarted" class="playing-cards">
         <div v-for="(card, index) in player.hand.slice(0, props.visibleCards)" :key="card">
             <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
         </div>
+</div>
+
+
+<div v-if="props.roundStarted == false" class="playing-cards">
+    <TransitionGroup :name="`list-p${player.id}`">
+        <div v-for="(card, index) in player.hand" :key="card">
+            <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
+        </div>
+    </TransitionGroup>
 </div>
 
 <div class="avatar"></div>
@@ -19,6 +30,44 @@ const props = defineProps(['player', 'visibleCards']);
 </template>
 
 <style scoped>
+
+.list-p1-leave-to {
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 73px), 253px);
+  position: absolute;
+}
+
+.list-p1-leave-active{
+    transition: all 1s ease;
+}
+
+.list-p2-leave-to {
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + -285px) , 253px);
+  position: absolute;
+}
+
+.list-p2-leave-active{
+    transition: all 1s ease;
+}
+
+.list-p3-leave-to {
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + -285px) ,-136px);
+  position: absolute;
+}
+
+.list-p3-leave-active{
+    transition: all 1s ease;
+}
+
+
+.list-p4-leave-to {
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 73px), -136px);
+  position: absolute;
+}
+
+.list-p4-leave-active{
+    transition: all 1s ease;
+}
+
 .avatar {
     width: 62px;
     height: 62px;
@@ -75,12 +124,13 @@ const props = defineProps(['player', 'visibleCards']);
     position: relative;
     margin-left: -40px;
     left: 95px;
-    top: -64px;
+    top: -60px;
     transition: 0.5s;
 }
 
-.playing-cards .card:hover{
-    transform: translateY(-15px) scale(1.3);
-}
-
+/* .playing-cards .card:hover{
+    transform: translate(73px , 253px);
+} */
 </style>
+
+

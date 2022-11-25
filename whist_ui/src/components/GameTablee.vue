@@ -8,20 +8,21 @@ import {server_client} from '../client';
 const room = ref(null);
 const loaded_data = ref(false);
 
-// setInterval(() => {
+setInterval(() => {
       server_client.get_room_details(1)
       .then((data) => {
-          console.log(data);
+          // console.log(data);
           room.value = data;
           loaded_data.value = true;
       })
-// }, 2000);
+}, 2000);
 
 const cards_to_spread = ref(52);
 const p1_visible_cards = ref(0);
 const p2_visible_cards = ref(0);
 const p3_visible_cards = ref(0);
 const p4_visible_cards = ref(0);
+const round_started = ref(false);
 
 const after_leave = (el) => {
     cards_to_spread.value -= 1;
@@ -45,33 +46,37 @@ setTimeout(() => {
 </script>
 <template>
 <div class="vue-container" v-if="loaded_data">
-  <div v-text="room.status.trump_card"></div>
-	<div class="table">
+  <div class="text"> Turn: {{ room.players[room.stats.player_position].username }}</div>
+  <div class="text"> Trump card: {{ room.stats.trump_card }}</div>
+  <div class="text"><b>{{ room.stats.board.length }}</b></div>
+  <div class="table">
       <div class="board">
 
-        <div class="deck">
+        <div v-if="room.stats.board.length == 0 && room.players[room.stats.player_position].hand.length == 13  ? round_started = true : round_started = false" class="deck">
             <Transition v-for="el in 52" :key="el" :name="`spread-p${4 - ((el - 1) % 4)}`" @after-leave="after_leave">
               <Card :id="`${4 - ((el - 1) % 4)}`" v-if="el<=cards_to_spread" class="card_in_deck" card_value="not_permitted"></Card>
             </Transition>
         </div>
 
-        <div class="board-cards" v-for="card in room.stats.board" :key="card">
-          <Card  :card_value="card" />
-        </div>       
+        <TransitionGroup :name="board">
+          <div class="board-cards" v-for="card in room.stats.board" :key="card">
+            <Card  :card_value="card" />
+          </div>    
+        </TransitionGroup>   
       </div>
 
       <div class="players">
           <div :class="['player', 'player-5']">
-            <Player :visible-cards="p1_visible_cards" :player=room.players[0] />
+            <Player :board="room.stats.board.length" :round-started="round_started" :visible-cards="p1_visible_cards" :player=room.players[0] />
           </div>
         <div :class="['player', 'player-7']">
-          <Player :visible-cards="p2_visible_cards" :player=room.players[1] />
+          <Player :board="room.stats.board.length" :round-started="round_started" :visible-cards="p2_visible_cards" :player=room.players[1] />
         </div>
         <div :class="['player', 'player-6']">
-          <Player :visible-cards="p3_visible_cards" :player=room.players[2] />
+          <Player :board="room.stats.board.length" :round-started="round_started" :visible-cards="p3_visible_cards" :player=room.players[2] />
         </div>
         <div :class="['player', 'player-8']">
-          <Player :visible-cards="p4_visible_cards" :player=room.players[3] />
+          <Player :board="room.stats.board.length" :round-started="round_started" :visible-cards="p4_visible_cards" :player=room.players[3] />
         </div>
       </div>
 	</div>
@@ -82,7 +87,9 @@ setTimeout(() => {
 
 <style scoped>
 
-
+.text {
+  color: white;
+}
 .vue-container{
 	width: 100vw;
 	height: 100vh;
@@ -113,8 +120,8 @@ setTimeout(() => {
 }
 
 .table {
-  width: 775px;
-  height: 345px;
+  width: 776px;
+  height: 346px;
   background-color: #456658;
   left: 50%;
   top: 50%;
@@ -124,12 +131,11 @@ setTimeout(() => {
   border: 30px solid #252322;
 }
 .table .board {
-  /* border: 2px solid #5c8773; */
-  height: 100px;
-  width: 340px;
+  border: 2px solid #5c8773;
+  height: 70px;
+  width: 216px;
   position: absolute;
   border-radius: 10px;
-  padding: 10px;
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
@@ -140,7 +146,7 @@ setTimeout(() => {
   display:inline-block;
   position: relative;
   margin-left: 5px;
-  left: 80px;
+  left: -5px;
 }
 
 .players {
@@ -257,6 +263,17 @@ setTimeout(() => {
 
 .spread-p4-leave-to {
   transform: translate(0, 110px);
+}
+
+.board-enter-from{
+  opacity: 0;
+}
+.board-enter-to{
+  opacity: 1;
+  transform: scale(1.3);
+}
+.board-enter-active{
+  transition: all 3s ease;
 }
 
 </style>
