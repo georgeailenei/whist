@@ -58,11 +58,11 @@ setTimeout(() => {
             </Transition>
         </div>
 
-        <TransitionGroup :name="board">
-          <div class="board-cards" v-for="card in room.stats.board" :key="card">
+        <TransitionGroup name="board">
+          <div :class="'board-cards'"  v-for="card in room.stats.board" :key="card">
             <Card  :card_value="card" />
           </div>    
-        </TransitionGroup>   
+        </TransitionGroup>
       </div>
 
       <div class="players">
@@ -270,10 +270,9 @@ setTimeout(() => {
 }
 .board-enter-to{
   opacity: 1;
-  transform: scale(1.3);
 }
 .board-enter-active{
-  transition: all 3s ease;
+  transition: all 1s ease-in;
 }
 
 </style>
