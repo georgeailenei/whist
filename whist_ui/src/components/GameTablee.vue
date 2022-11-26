@@ -11,11 +11,11 @@ const loaded_data = ref(false);
 setInterval(() => {
       server_client.get_room_details(1)
       .then((data) => {
-          // console.log(data);
+          console.log(data);
           room.value = data;
           loaded_data.value = true;
       })
-}, 2000);
+}, 1000);
 
 const cards_to_spread = ref(52);
 const p1_visible_cards = ref(0);
@@ -23,6 +23,8 @@ const p2_visible_cards = ref(0);
 const p3_visible_cards = ref(0);
 const p4_visible_cards = ref(0);
 const round_started = ref(false);
+const visible_board = ref(false);
+
 
 const after_leave = (el) => {
     cards_to_spread.value -= 1;
@@ -58,11 +60,21 @@ setTimeout(() => {
             </Transition>
         </div>
 
-        <TransitionGroup name="board">
-          <div :class="'board-cards'"  v-for="card in room.stats.board" :key="card">
-            <Card  :card_value="card" />
-          </div>    
-        </TransitionGroup>
+      <Transition name="switch" mode="out-in">
+          <div v-if="room.stats.board.length === 4 ? visible_board = true : visible_board = false">
+          <TransitionGroup name="board">
+            <div :class="'board-cards'"  v-for="card in room.stats.board" :key="card">
+              <Card  :card_value="card" />
+            </div>    
+          </TransitionGroup>
+          </div>
+          
+          <div v-else="visible_board">
+            <div :class="'board-cards'"  v-for="card in room.stats.board" :key="card">
+              <Card  :card_value="card" />
+            </div>    
+          </div>
+      </Transition>
       </div>
 
       <div class="players">
@@ -86,6 +98,26 @@ setTimeout(() => {
 </template>
 
 <style scoped>
+.board-enter-from{
+  opacity: 0;
+}
+.board-enter-to{
+  opacity: 1;
+}
+.board-enter-active{
+  transition: all 0.2s ease;
+}
+
+.switch-enter-from{
+  opacity: 1;
+}
+.switch-enter-to{
+  opacity: 1;
+}
+
+.switch-enter-active{
+  transition: all 1s ease;
+}
 
 .text {
   color: white;
@@ -133,7 +165,7 @@ setTimeout(() => {
 .table .board {
   border: 2px solid #5c8773;
   height: 70px;
-  width: 216px;
+  width: 224px;
   position: absolute;
   border-radius: 10px;
   top: 50%;
@@ -264,15 +296,4 @@ setTimeout(() => {
 .spread-p4-leave-to {
   transform: translate(0, 110px);
 }
-
-.board-enter-from{
-  opacity: 0;
-}
-.board-enter-to{
-  opacity: 1;
-}
-.board-enter-active{
-  transition: all 1s ease-in;
-}
-
 </style>

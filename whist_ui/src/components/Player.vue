@@ -32,12 +32,12 @@ const props = defineProps(['player', 'visibleCards', 'roundStarted', 'board']);
 <style scoped>
 
 .list-p1-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 73px), 253px);
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 70px), 253px);
   position: absolute;
 }
 
 .list-p1-leave-active{
-    transition: all 1s ease;
+    transition: all 0.2s ease;
 }
 
 .list-p2-leave-to {
@@ -46,7 +46,7 @@ const props = defineProps(['player', 'visibleCards', 'roundStarted', 'board']);
 }
 
 .list-p2-leave-active{
-    transition: all 1s ease;
+    transition: all 0.2s ease;
 }
 
 .list-p3-leave-to {
@@ -55,17 +55,17 @@ const props = defineProps(['player', 'visibleCards', 'roundStarted', 'board']);
 }
 
 .list-p3-leave-active{
-    transition: all 1s ease;
+    transition: all 0.2s ease;
 }
 
 
 .list-p4-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 73px), -136px);
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 70px), -136px);
   position: absolute;
 }
 
 .list-p4-leave-active{
-    transition: all 1s ease;
+    transition: all 0.2s ease;
 }
 
 .avatar {
@@ -129,7 +129,7 @@ const props = defineProps(['player', 'visibleCards', 'roundStarted', 'board']);
 }
 
 /* .playing-cards .card:hover{
-    transform: translate(73px , 253px);
+    transform: translate(70px , 136px);
 } */
 </style>
 

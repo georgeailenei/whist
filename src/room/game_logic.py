@@ -1,5 +1,5 @@
-from .entities import Deck, Card
-
+from .entities import Card
+import time
 
 class GameController:
     def __init__(self, card_validator, repository):
@@ -68,7 +68,7 @@ class GameController:
         first_card_suit = None
         trump_card_suit = trump_card[0]
 
-        if len(board) > 0:
+        if 0 < len(board) < 5:
             first_card_suit = board[0][-1]
 
         card_is_valid = self.card_validator.check_card(str(card))
@@ -259,6 +259,10 @@ class GameController:
 
         if self.game_ended(room_stats.team_one_score, room_stats.team_two_score):
             one_set_is_finished = self.total_tricks_completed(players) is False
+
+            if self.board_full(board):
+                self.clear_board(board)
+
             is_correct_card = self.correct_card(
                     room_stats.played_card,
                     players,
@@ -266,6 +270,7 @@ class GameController:
                     room_stats.player_position,
                     room_stats.trump_card,
                 )
+
             if one_set_is_finished and is_correct_card:
                     board = self.add_to_board(room_stats.played_card, board)
                     players = self.remove_card_from_player(
@@ -284,7 +289,7 @@ class GameController:
                         room_stats.player_position = self.winner_table_position(
                             winner, players
                         )
-                        self.clear_board(board)
+                        # self.clear_board(board)
 
         if self.total_tricks_completed(players):
             scores = self.update_score(
@@ -295,5 +300,5 @@ class GameController:
             room_stats.team_one_score = scores[0]
             room_stats.team_two_score = scores[1]
 
-        # RESULTS
         self.repository.save_game_stats(room_stats, board)
+
