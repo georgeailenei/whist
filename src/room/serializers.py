@@ -22,9 +22,13 @@ class StatsSerializer(ModelSerializer):
 
     board = fields.SerializerMethodField()
     played_card = fields.SerializerMethodField()
+    old_board = fields.SerializerMethodField()
 
     def get_board(self, object):
         return object.board.split()
+
+    def get_old_board(self, object):
+        return object.old_board.split()
 
     def get_played_card(self, object):
         return object.played_card.split()

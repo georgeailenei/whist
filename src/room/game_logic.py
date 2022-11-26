@@ -1,5 +1,5 @@
-from .entities import Card
-import time
+from .entities import Deck, Card
+
 
 class GameController:
     def __init__(self, card_validator, repository):
@@ -68,7 +68,7 @@ class GameController:
         first_card_suit = None
         trump_card_suit = trump_card[0]
 
-        if 0 < len(board) < 5:
+        if len(board) > 0:
             first_card_suit = board[0][-1]
 
         card_is_valid = self.card_validator.check_card(str(card))
@@ -214,7 +214,7 @@ class GameController:
         return current_players_name.index(winner)
 
     def clear_board(self, board):
-        return board.clear()
+        return [], board
 
     def update_score(self, team_one_score, team_two_score, players):
         team_one = [players[0].tricks, players[2].tricks]
@@ -252,44 +252,41 @@ class GameController:
 
     def run(self, room, played_card):
         room_stats = self.repository.get_room_stats(room)
-        room_stats.played_card = played_card
         room_stats.save()
         players = list(room.players.all())
         board = room_stats.board.split()
+        old_board = room_stats.old_board.split()
 
-        if self.game_ended(room_stats.team_one_score, room_stats.team_two_score):
-            one_set_is_finished = self.total_tricks_completed(players) is False
+        game_ended = self.game_ended(room_stats.team_one_score, room_stats.team_two_score)
+        one_set_is_finished = self.total_tricks_completed(players) is False
+        is_correct_card = self.correct_card(
+            played_card,
+            players,
+            board,
+            room_stats.player_position,
+            room_stats.trump_card,
+        )
+
+        if game_ended and one_set_is_finished and is_correct_card:
+            room_stats.played_card = played_card
+            board = self.add_to_board(played_card, board)
+            players = self.remove_card_from_player(
+                played_card, players
+            )
+            room_stats.player_position += 1
+            if room_stats.player_position == 4:
+                room_stats.player_position = 0
 
             if self.board_full(board):
-                self.clear_board(board)
-
-            is_correct_card = self.correct_card(
-                    room_stats.played_card,
-                    players,
-                    board,
-                    room_stats.player_position,
-                    room_stats.trump_card,
+                winner_card = self.compare_cards_rank(
+                    board, room_stats.trump_card
                 )
-
-            if one_set_is_finished and is_correct_card:
-                    board = self.add_to_board(room_stats.played_card, board)
-                    players = self.remove_card_from_player(
-                        room_stats.played_card, players
-                    )
-                    room_stats.player_position += 1
-                    if room_stats.player_position == 4:
-                        room_stats.player_position = 0
-
-                    if self.board_full(board):
-                        winner_card = self.compare_cards_rank(
-                            board, room_stats.trump_card
-                        )
-                        winner = self.find_winner(winner_card, players)
-                        players = self.add_trick_to_player(winner, players)
-                        room_stats.player_position = self.winner_table_position(
-                            winner, players
-                        )
-                        # self.clear_board(board)
+                winner = self.find_winner(winner_card, players)
+                players = self.add_trick_to_player(winner, players)
+                room_stats.player_position = self.winner_table_position(
+                    winner, players
+                )
+                board, old_board = self.clear_board(board)
 
         if self.total_tricks_completed(players):
             scores = self.update_score(
@@ -300,5 +297,5 @@ class GameController:
             room_stats.team_one_score = scores[0]
             room_stats.team_two_score = scores[1]
 
-        self.repository.save_game_stats(room_stats, board)
-
+        # RESULTS
+        self.repository.save_game_stats(room_stats, board, old_board)

@@ -1,29 +1,59 @@
 <script setup>
 import Card from './Card.vue';
-import { ref } from 'vue';
+import { ref, watch, onUnmounted } from 'vue';
 import Player from './Player.vue';
 import {server_client} from '../client';
+import _ from "lodash";
+let update_interval = null;
 
 
 const room = ref(null);
 const loaded_data = ref(false);
-
-setInterval(() => {
-      server_client.get_room_details(1)
-      .then((data) => {
-          console.log(data);
-          room.value = data;
-          loaded_data.value = true;
-      })
-}, 1000);
+const round_started = ref(true);
+const board = ref([]);
 
 const cards_to_spread = ref(52);
 const p1_visible_cards = ref(0);
 const p2_visible_cards = ref(0);
 const p3_visible_cards = ref(0);
 const p4_visible_cards = ref(0);
-const round_started = ref(false);
-const visible_board = ref(false);
+
+
+
+const update_room = () => {
+      server_client.get_room_details(1)
+      .then((data) => {
+          if ( ! _.isEqual(data, room.value) ) {
+            console.log('updating');
+            console.log(room.value);
+            const is_last_turn = data.stats.board.length === 0;
+
+            if ( is_last_turn && room.value !== null) {
+              board.value = data.stats.old_board;
+            } else {
+              board.value = data.stats.board;
+            }
+            room.value = data;
+            round_started.value = room.value.stats.board.length === 0 && room.value.players[room.value.stats.player_position].hand.length === 13;
+            loaded_data.value = true;
+          }
+      })
+}
+
+update_room();
+
+watch(round_started, async (new_round_started, old_round_started) => {
+  if (old_round_started === true && new_round_started === false) {
+    update_interval = setInterval(update_room, 500);
+  }
+})
+
+onUnmounted(() => {
+  if (update_interval !== null) {
+    console.log('clear interval');
+    clearInterval(update_interval);
+  }
+})
 
 
 const after_leave = (el) => {
@@ -38,12 +68,23 @@ const after_leave = (el) => {
   } else if (el.id === '4') {
     p4_visible_cards.value++;
   }
+  
+  if (cards_to_spread.value === 0) {
+    round_started.value = false;
+  }
 }
 
 setTimeout(() => {
   cards_to_spread.value -= 1;
-}, 1000)
+}, 2000)
 
+
+const board_after_leave = () => {
+    const is_last_turn = room.value.stats.board.length === 0;
+    if (is_last_turn) {
+      board.value = room.value.stats.board;
+    }
+}
 
 </script>
 <template>
@@ -54,41 +95,31 @@ setTimeout(() => {
   <div class="table">
       <div class="board">
 
-        <div v-if="room.stats.board.length == 0 && room.players[room.stats.player_position].hand.length == 13  ? round_started = true : round_started = false" class="deck">
+        <div v-if="round_started" class="deck">
             <Transition v-for="el in 52" :key="el" :name="`spread-p${4 - ((el - 1) % 4)}`" @after-leave="after_leave">
               <Card :id="`${4 - ((el - 1) % 4)}`" v-if="el<=cards_to_spread" class="card_in_deck" card_value="not_permitted"></Card>
             </Transition>
         </div>
 
-      <Transition name="switch" mode="out-in">
-          <div v-if="room.stats.board.length === 4 ? visible_board = true : visible_board = false">
-          <TransitionGroup name="board">
-            <div :class="'board-cards'"  v-for="card in room.stats.board" :key="card">
-              <Card  :card_value="card" />
-            </div>    
-          </TransitionGroup>
+        <TransitionGroup name="board">
+          <div :class="'board-cards'"  v-for="card in board" :key="card">
+            <Card  :card_value="card" />
           </div>
-          
-          <div v-else="visible_board">
-            <div :class="'board-cards'"  v-for="card in room.stats.board" :key="card">
-              <Card  :card_value="card" />
-            </div>    
-          </div>
-      </Transition>
+        </TransitionGroup>
       </div>
 
       <div class="players">
           <div :class="['player', 'player-5']">
-            <Player :board="room.stats.board.length" :round-started="round_started" :visible-cards="p1_visible_cards" :player=room.players[0] />
+            <Player :after_leave_animation='board_after_leave' :board="room.stats.board.length" :round-started="round_started" :visible-cards="p1_visible_cards" :player=room.players[0] />
           </div>
         <div :class="['player', 'player-7']">
-          <Player :board="room.stats.board.length" :round-started="round_started" :visible-cards="p2_visible_cards" :player=room.players[1] />
+          <Player :after_leave_animation='board_after_leave' :board="room.stats.board.length" :round-started="round_started" :visible-cards="p2_visible_cards" :player=room.players[1] />
         </div>
         <div :class="['player', 'player-6']">
-          <Player :board="room.stats.board.length" :round-started="round_started" :visible-cards="p3_visible_cards" :player=room.players[2] />
+          <Player :after_leave_animation='board_after_leave' :board="room.stats.board.length" :round-started="round_started" :visible-cards="p3_visible_cards" :player=room.players[2] />
         </div>
         <div :class="['player', 'player-8']">
-          <Player :board="room.stats.board.length" :round-started="round_started" :visible-cards="p4_visible_cards" :player=room.players[3] />
+          <Player :after_leave_animation='board_after_leave' :board="room.stats.board.length" :round-started="round_started" :visible-cards="p4_visible_cards" :player=room.players[3] />
         </div>
       </div>
 	</div>
@@ -98,26 +129,6 @@ setTimeout(() => {
 </template>
 
 <style scoped>
-.board-enter-from{
-  opacity: 0;
-}
-.board-enter-to{
-  opacity: 1;
-}
-.board-enter-active{
-  transition: all 0.2s ease;
-}
-
-.switch-enter-from{
-  opacity: 1;
-}
-.switch-enter-to{
-  opacity: 1;
-}
-
-.switch-enter-active{
-  transition: all 1s ease;
-}
 
 .text {
   color: white;
@@ -165,7 +176,7 @@ setTimeout(() => {
 .table .board {
   border: 2px solid #5c8773;
   height: 70px;
-  width: 224px;
+  width: 216px;
   position: absolute;
   border-radius: 10px;
   top: 50%;
@@ -296,4 +307,15 @@ setTimeout(() => {
 .spread-p4-leave-to {
   transform: translate(0, 110px);
 }
+
+.board-enter-from{
+  opacity: 0;
+}
+.board-enter-to{
+  opacity: 1;
+}
+.board-enter-active{
+  transition: all 3s ease-in;
+}
+
 </style>

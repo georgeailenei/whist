@@ -11,9 +11,10 @@ class GameData:
     def convert_board(self, board):
         return " ".join(str(card) for card in board)
 
-    def save_game_stats(self, room_stats, board):
+    def save_game_stats(self, room_stats, board, old_board):
         players = room_stats.room.players.all()
         room_stats.board = self.convert_board(board)
+        room_stats.old_board = self.convert_board(old_board)
 
         hands = [p.hand for p in players]
         tricks = [p.tricks for p in players]
