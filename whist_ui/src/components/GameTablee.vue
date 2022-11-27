@@ -17,8 +17,11 @@ const p1_visible_cards = ref(0);
 const p2_visible_cards = ref(0);
 const p3_visible_cards = ref(0);
 const p4_visible_cards = ref(0);
+
 const y = ref(null);
 const x= ref(null);
+
+const change_position = ref(null);
 
 const update_room = () => {
       server_client.get_room_details(1)
@@ -38,21 +41,23 @@ const update_room = () => {
             loaded_data.value = true;
             
             if (data.stats.winner === data.players[0].username){
-              console.log('ceva')
               y.value = -253
               x.value = -68
             } else if (data.stats.winner === data.players[1].username){
-              console.log('ceva2')
               y.value = -253
               x.value = 289
             } else if (data.stats.winner === data.players[2].username){
-              console.log('ceva3')
               y.value = 136
               x.value = 289
             } else if (data.stats.winner === data.players[3].username){
-              console.log('ceva4')
               y.value = 136
               x.value = -68
+            }
+
+            if (data.stats.old_board === 4){
+              change_position.value = 'absolute';
+            } else {
+              change_position.value = 'relative';
             }
 
           }
@@ -123,7 +128,7 @@ const board_after_leave = () => {
         </div>
 
         <TransitionGroup name="board">
-          <div :class="'board-cards'"  v-for="card in board" :key="card">
+          <div class="board-cards"  v-for="card in board" :key="card">
             <Card  :card_value="card" />
           </div>
         </TransitionGroup>
@@ -152,25 +157,35 @@ const board_after_leave = () => {
 
 <style scoped>
 
-.board-enter-from{
-  opacity: 0;
-}
-.board-enter-to{
-  opacity: 1;
-}
-.board-enter-active{
-  transition: all 0.5s ease;
+@keyframes board-animation{
+  0% {opacity: 0;}
+  99% {opacity: 0;}
+  100% {opacity: 1;}
 }
 
-.board-leave-from{
-  opacity: 1;
+@keyframes board-leaving-animation {
+  0% {opacity: 1;}
+  10% {
+    position: absolute;
+    transition: ease-in;
+    }
+  90% {
+    position: absolute;
+    opacity: 1;
+    transform: translate(calc(1px * v-bind(x)),calc(1px * v-bind(y)))
+  }
+  100% {
+    opacity: 0;
+    position: absolute;
+    transform: translate(calc(1px * v-bind(x)),calc(1px * v-bind(y)))
+  }
 }
-.board-leave-to{
-  opacity: 0;
-  transform: translate(calc(1px * v-bind(x)),calc(1px * v-bind(y)));
+.board-enter-active{
+  animation: board-animation 0.5s ease;
 }
+
 .board-leave-active{
-  transition: all 1s ease-out;
+  animation: board-leaving-animation 1s ease;
 }
 
 .text {
@@ -230,9 +245,7 @@ const board_after_leave = () => {
 
 .board-cards{
   display:inline-block;
-  position: relative;
   margin-left: 5px;
-  left: -5px;
 }
 
 .players {
@@ -314,15 +327,6 @@ const board_after_leave = () => {
   bottom: -78px;
   left: 25%;
   transform: translatex(-50%) translatey(50%);
-}
-
-.bouton {
-  background-color: #515260;
-  color: white;
-  text-transform: uppercase;
-  border: none;
-  outline: none;
-  padding: 5px 10px;
 }
 
 .spread-p1-leave-active,

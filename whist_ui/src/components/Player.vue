@@ -40,7 +40,7 @@ const props = defineProps(['player', 'playerNr', 'visibleCards', 'roundStarted',
     position: absolute;
 }
 .list-p1-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 68px), 253px);
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 73px), 253px);
   position: absolute;
 }
 
@@ -56,7 +56,7 @@ const props = defineProps(['player', 'playerNr', 'visibleCards', 'roundStarted',
     position: absolute;
 }
 .list-p2-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + -289px) , 253px);
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + -284px) , 253px);
   position: absolute;
 }
 
@@ -65,7 +65,7 @@ const props = defineProps(['player', 'playerNr', 'visibleCards', 'roundStarted',
     position: absolute;
 }
 .list-p3-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + -289px) ,-136px);
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + -284px) ,-136px);
   position: absolute;
 }
 
@@ -74,7 +74,7 @@ const props = defineProps(['player', 'playerNr', 'visibleCards', 'roundStarted',
     position: absolute;
 }
 .list-p4-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 68px), -136px);
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 73px), -136px);
   position: absolute;
 }
 
