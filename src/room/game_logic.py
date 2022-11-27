@@ -238,7 +238,6 @@ class GameController:
 
     def setup_room(self, card_room, cards):
         players = list(card_room.players.all())
-
         players = self.spread_cards(cards, players)
         stats = self.repository.get_room_stats(room=card_room)
         stats.trump_card = self.find_trump_card(cards)
@@ -270,6 +269,12 @@ class GameController:
         if game_ended and one_set_is_finished and is_correct_card:
             room_stats.played_card = played_card
             board = self.add_to_board(played_card, board)
+
+            room.stats.winner = ""
+            room.stats.cards_per_round += 1
+            if room.stats.cards_per_round == 5:
+                room.stats.cards_per_round = 1
+
             players = self.remove_card_from_player(
                 played_card, players
             )
@@ -282,11 +287,13 @@ class GameController:
                     board, room_stats.trump_card
                 )
                 winner = self.find_winner(winner_card, players)
+                room.stats.winner = winner
                 players = self.add_trick_to_player(winner, players)
                 room_stats.player_position = self.winner_table_position(
                     winner, players
                 )
                 board, old_board = self.clear_board(board)
+
 
         if self.total_tricks_completed(players):
             scores = self.update_score(

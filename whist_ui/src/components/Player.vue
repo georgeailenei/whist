@@ -1,7 +1,7 @@
 <script setup>
 import Card from './Card.vue';
 
-const props = defineProps(['player', 'visibleCards', 'roundStarted', 'board', 'after_leave_animation']);
+const props = defineProps(['player', 'playerNr', 'visibleCards', 'roundStarted', 'board', 'after_leave_animation']);
 
 
 
@@ -16,9 +16,7 @@ const props = defineProps(['player', 'visibleCards', 'roundStarted', 'board', 'a
 
 
 <div v-if="props.roundStarted === false" class="playing-cards">
-    <!-- vezi ca nu e bine player.id (o sa fie id-ul de pe server n-o sa fie mereu 1 - 2 - 3 - 4) -->
-    <TransitionGroup :name="`list-p${player.id}`" @after-leave="props.after_leave_animation">
-
+    <TransitionGroup :name="`list-p${playerNr}`" @after-leave="props.after_leave_animation">
         <div v-for="(card, index) in player.hand" :key="card">
             
             <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
@@ -33,9 +31,16 @@ const props = defineProps(['player', 'visibleCards', 'roundStarted', 'board', 'a
 </template>
 
 <style scoped>
+.playing-cards .card:hover{
+    transform: translateY(-20px);
+}
 
+.list-p1-leave-from{
+    opacity: 0;
+    position: absolute;
+}
 .list-p1-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 73px), 253px);
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 68px), 253px);
   position: absolute;
 }
 
@@ -46,20 +51,30 @@ const props = defineProps(['player', 'visibleCards', 'roundStarted', 'board', 'a
     transition: all 0.5s ease;
 }
 
+.list-p2-leave-from{
+    opacity: 0;
+    position: absolute;
+}
 .list-p2-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + -285px) , 253px);
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + -289px) , 253px);
   position: absolute;
 }
 
-
+.list-p3-leave-from{
+    opacity: 0;
+    position: absolute;
+}
 .list-p3-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + -285px) ,-136px);
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + -289px) ,-136px);
   position: absolute;
 }
 
-
+.list-p4-leave-from{
+    opacity: 0;
+    position: absolute;
+}
 .list-p4-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 73px), -136px);
+  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 68px), -136px);
   position: absolute;
 }
 
@@ -123,9 +138,4 @@ const props = defineProps(['player', 'visibleCards', 'roundStarted', 'board', 'a
     transition: 0.5s;
 }
 
-/* .playing-cards .card:hover{
-    transform: translate(73px , 253px);
-} */
 </style>
-
-

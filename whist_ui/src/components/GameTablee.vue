@@ -17,15 +17,14 @@ const p1_visible_cards = ref(0);
 const p2_visible_cards = ref(0);
 const p3_visible_cards = ref(0);
 const p4_visible_cards = ref(0);
-
-
+const y = ref(null);
+const x= ref(null);
 
 const update_room = () => {
       server_client.get_room_details(1)
       .then((data) => {
           if ( ! _.isEqual(data, room.value) ) {
             console.log('updating');
-            console.log(room.value);
             const is_last_turn = data.stats.board.length === 0;
 
             if ( is_last_turn && room.value !== null) {
@@ -34,8 +33,28 @@ const update_room = () => {
               board.value = data.stats.board;
             }
             room.value = data;
+            console.log(room)
             round_started.value = room.value.stats.board.length === 0 && room.value.players[room.value.stats.player_position].hand.length === 13;
             loaded_data.value = true;
+            
+            if (data.stats.winner === data.players[0].username){
+              console.log('ceva')
+              y.value = -253
+              x.value = -68
+            } else if (data.stats.winner === data.players[1].username){
+              console.log('ceva2')
+              y.value = -253
+              x.value = 289
+            } else if (data.stats.winner === data.players[2].username){
+              console.log('ceva3')
+              y.value = 136
+              x.value = 289
+            } else if (data.stats.winner === data.players[3].username){
+              console.log('ceva4')
+              y.value = 136
+              x.value = -68
+            }
+
           }
       })
 }
@@ -54,7 +73,6 @@ onUnmounted(() => {
     clearInterval(update_interval);
   }
 })
-
 
 const after_leave = (el) => {
     cards_to_spread.value -= 1;
@@ -86,12 +104,15 @@ const board_after_leave = () => {
     }
 }
 
+
 </script>
 <template>
 <div class="vue-container" v-if="loaded_data">
   <div class="text"> Turn: {{ room.players[room.stats.player_position].username }}</div>
   <div class="text"> Trump card: {{ room.stats.trump_card }}</div>
+  <div class="text"> Winner: {{ room.stats.winner }}</div>
   <div class="text"><b>{{ room.stats.board.length }}</b></div>
+  <div class="text"> {{ room.stats.cards_per_round}}</div>
   <div class="table">
       <div class="board">
 
@@ -106,20 +127,21 @@ const board_after_leave = () => {
             <Card  :card_value="card" />
           </div>
         </TransitionGroup>
+
       </div>
 
       <div class="players">
           <div :class="['player', 'player-5']">
-            <Player :after_leave_animation='board_after_leave' :board="room.stats.board.length" :round-started="round_started" :visible-cards="p1_visible_cards" :player=room.players[0] />
+            <Player :player-nr="1" :after_leave_animation='board_after_leave' :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p1_visible_cards" :player=room.players[0] />
           </div>
         <div :class="['player', 'player-7']">
-          <Player :after_leave_animation='board_after_leave' :board="room.stats.board.length" :round-started="round_started" :visible-cards="p2_visible_cards" :player=room.players[1] />
+          <Player :player-nr="2" :after_leave_animation='board_after_leave' :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p2_visible_cards" :player=room.players[1] />
         </div>
         <div :class="['player', 'player-6']">
-          <Player :after_leave_animation='board_after_leave' :board="room.stats.board.length" :round-started="round_started" :visible-cards="p3_visible_cards" :player=room.players[2] />
+          <Player :player-nr="3" :after_leave_animation='board_after_leave' :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p3_visible_cards" :player=room.players[2] />
         </div>
         <div :class="['player', 'player-8']">
-          <Player :after_leave_animation='board_after_leave' :board="room.stats.board.length" :round-started="round_started" :visible-cards="p4_visible_cards" :player=room.players[3] />
+          <Player :player-nr="4" :after_leave_animation='board_after_leave' :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p4_visible_cards" :player=room.players[3] />
         </div>
       </div>
 	</div>
@@ -129,6 +151,27 @@ const board_after_leave = () => {
 </template>
 
 <style scoped>
+
+.board-enter-from{
+  opacity: 0;
+}
+.board-enter-to{
+  opacity: 1;
+}
+.board-enter-active{
+  transition: all 0.5s ease;
+}
+
+.board-leave-from{
+  opacity: 1;
+}
+.board-leave-to{
+  opacity: 0;
+  transform: translate(calc(1px * v-bind(x)),calc(1px * v-bind(y)));
+}
+.board-leave-active{
+  transition: all 1s ease-out;
+}
 
 .text {
   color: white;
@@ -176,7 +219,7 @@ const board_after_leave = () => {
 .table .board {
   border: 2px solid #5c8773;
   height: 70px;
-  width: 216px;
+  width: 225px;
   position: absolute;
   border-radius: 10px;
   top: 50%;
@@ -308,14 +351,5 @@ const board_after_leave = () => {
   transform: translate(0, 110px);
 }
 
-.board-enter-from{
-  opacity: 0;
-}
-.board-enter-to{
-  opacity: 1;
-}
-.board-enter-active{
-  transition: all 3s ease-in;
-}
 
 </style>

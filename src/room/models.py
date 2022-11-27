@@ -20,3 +20,5 @@ class Stats(models.Model):
     team_two_score = models.IntegerField(default=0)
     player_position = models.IntegerField(default=0)
     played_card = models.CharField(max_length=4, blank=True)
+    cards_per_round = models.IntegerField(default=0)
+    winner = models.CharField(max_length=40, blank=True)
