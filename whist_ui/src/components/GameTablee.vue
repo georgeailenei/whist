@@ -113,11 +113,11 @@ const board_after_leave = () => {
 </script>
 <template>
 <div class="vue-container" v-if="loaded_data">
-  <div class="text"> Turn: {{ room.players[room.stats.player_position].username }}</div>
+  <!-- <div class="text"> Turn: {{ room.players[room.stats.player_position].username }}</div>
   <div class="text"> Trump card: {{ room.stats.trump_card }}</div>
   <div class="text"> Winner: {{ room.stats.winner }}</div>
   <div class="text"><b>{{ room.stats.board.length }}</b></div>
-  <div class="text"> {{ room.stats.cards_per_round}}</div>
+  <div class="text"> {{ room.stats.cards_per_round}}</div> -->
   <div class="table">
       <div class="board">
 
@@ -137,16 +137,19 @@ const board_after_leave = () => {
 
       <div class="players">
           <div :class="['player', 'player-5']">
-            <div class="glow"></div>
+            <div v-if="room.stats.player_position === 0" class="glow"></div>
             <Player :player-nr="1" :after_leave_animation='board_after_leave' :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p1_visible_cards" :player=room.players[0] />
           </div>
         <div :class="['player', 'player-7']">
+          <div v-if="room.stats.player_position === 1" class="glow"></div>
           <Player :player-nr="2" :after_leave_animation='board_after_leave' :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p2_visible_cards" :player=room.players[1] />
         </div>
         <div :class="['player', 'player-6']">
+          <div v-if="room.stats.player_position === 2" class="glow"></div>
           <Player :player-nr="3" :after_leave_animation='board_after_leave' :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p3_visible_cards" :player=room.players[2] />
         </div>
         <div :class="['player', 'player-8']">
+          <div v-if="room.stats.player_position === 3" class="glow"></div>
           <Player :player-nr="4" :after_leave_animation='board_after_leave' :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p4_visible_cards" :player=room.players[3] />
         </div>
       </div>
@@ -315,9 +318,15 @@ const board_after_leave = () => {
 
 .glow {
   position: absolute;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #76daff;
+  width: 62px;
+  height: 62px;
+  line-height: 62px;
+  border-radius: 50%;
+  color: white;
+  box-shadow: 0 0 2px #fff, 0 0 10px #fff, 0 0 20px #78ed7a, 0 0 30px #75ec7b,
+    0 0 40px #8fb157, 0 0 50px #b4c78a;
+  -webkit-animation: blink 0.7s infinite alternate;
+  animation: blink 0.7s infinite alternate;
 }
 
 .players .player.player-6 {
