@@ -137,6 +137,7 @@ const board_after_leave = () => {
 
       <div class="players">
           <div :class="['player', 'player-5']">
+            <div class="glow"></div>
             <Player :player-nr="1" :after_leave_animation='board_after_leave' :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p1_visible_cards" :player=room.players[0] />
           </div>
         <div :class="['player', 'player-7']">
@@ -310,6 +311,13 @@ const board_after_leave = () => {
   top: -25px;
   left: 25%;
   transform: translatex(-50%) translatey(-50%);
+}
+
+.glow {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #76daff;
 }
 
 .players .player.player-6 {
