@@ -294,7 +294,6 @@ class GameController:
                 )
                 board, old_board = self.clear_board(board)
 
-
         if self.total_tricks_completed(players):
             scores = self.update_score(
                 room_stats.team_one_score, room_stats.team_one_score, players

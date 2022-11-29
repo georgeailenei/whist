@@ -109,18 +109,35 @@ const board_after_leave = () => {
     }
 }
 
+const isToggled = ref(false);
 
 </script>
 <template>
 <div class="vue-container" v-if="loaded_data">
-  <!-- <div class="text"> Turn: {{ room.players[room.stats.player_position].username }}</div>
-  <div class="text"> Trump card: {{ room.stats.trump_card }}</div>
-  <div class="text"> Winner: {{ room.stats.winner }}</div>
-  <div class="text"><b>{{ room.stats.board.length }}</b></div>
-  <div class="text"> {{ room.stats.cards_per_round}}</div> -->
+
+  <div class="info-bar">
+    <div class="trump-card-1">ceva</div>
+
+    <div class="team-1">
+      <span>{{room.players[0].username}} : {{ room.players[2].username}}</span>
+      <div class="glowing-bar-team-1"></div>
+    </div>
+
+    <Transition name="round-winner">
+      <div v-if="room.stats.winner" class="winner-bar">
+        <span>{{ room.stats.winner}} won</span>
+        <div class="glowing-bar"></div>
+      </div>
+    </Transition>
+
+    <div class="team-2">
+      <span>{{room.players[1].username}} : {{ room.players[3].username}}</span>
+      <div class="glowing-bar-team-2"></div>
+    </div>
+  </div>
+
   <div class="table">
       <div class="board">
-
         <div v-if="round_started" class="deck">
             <Transition v-for="el in 52" :key="el" :name="`spread-p${4 - ((el - 1) % 4)}`" @after-leave="after_leave">
               <Card :id="`${4 - ((el - 1) % 4)}`" v-if="el<=cards_to_spread" class="card_in_deck" card_value="not_permitted"></Card>
@@ -160,6 +177,83 @@ const board_after_leave = () => {
 </template>
 
 <style scoped>
+.trump-card-1{
+  position: absolute;
+  left: 25px;
+}
+
+.trump-card-2{
+  position: absolute;
+  left: 10px;
+}
+
+.glowing-bar-team-1{
+  position: relative;
+  top: 6px;
+  border-bottom: 1px solid #ef3730;
+  box-shadow: 1px 1px 6px #ef3730;
+}
+
+.glowing-bar-team-2{
+  position: relative;
+  top: 6px;
+  border-bottom: 1px solid #2eafeb;
+  box-shadow: 1px 1px 6px #2eafeb;
+}
+
+@keyframes winner{
+  0% {opacity: 1;}
+  25% {opacity: 0;}
+  50% {opacity: 1;}
+  75% {opacity: 0;}
+  100%{opacity: 1;}
+}
+
+@keyframes winner-leave{
+  0% {opacity: 1;}
+  100%{opacity: 0;}
+}
+.round-winner-enter-active{
+  animation: winner 1s ease-in;
+}
+
+.round-winner-leave-active{
+  animation: winner-leave 1s ease-in;
+}
+
+.info-bar{
+  display: flex;
+  justify-content: space-evenly;
+  border-bottom: 1px solid rgb(101, 101, 101);
+  position: relative;
+  color: rgb(139, 139, 139);
+  font-family: sans-serif;
+  font-size: small;
+  padding: 5px;
+  margin-bottom: 20px;
+}
+
+.glowing-bar{
+  position: relative;
+  top: 6px;
+  border-bottom: 1px solid #75ec7b;
+  box-shadow: 1px 1px 6px #75ec7b;
+}
+
+.winner-bar{
+  position: absolute;
+}
+
+.glow {
+  position: absolute;
+  width: 62px;
+  height: 62px;
+  line-height: 62px;
+  border-radius: 50%;
+  color: white;
+  box-shadow: 0 0 2px #fff, 0 0 12px #ffffff, 0 0 5px #ffffff, 0 0 10px #d8d8d8,
+    0 0 40px #9f9f9f, 0 0 20px #4b4b4b;
+}
 
 @keyframes board-animation{
   0% {opacity: 0;}
@@ -314,19 +408,6 @@ const board_after_leave = () => {
   top: -25px;
   left: 25%;
   transform: translatex(-50%) translatey(-50%);
-}
-
-.glow {
-  position: absolute;
-  width: 62px;
-  height: 62px;
-  line-height: 62px;
-  border-radius: 50%;
-  color: white;
-  box-shadow: 0 0 2px #fff, 0 0 10px #fff, 0 0 20px #78ed7a, 0 0 30px #75ec7b,
-    0 0 40px #8fb157, 0 0 50px #b4c78a;
-  -webkit-animation: blink 0.7s infinite alternate;
-  animation: blink 0.7s infinite alternate;
 }
 
 .players .player.player-6 {
