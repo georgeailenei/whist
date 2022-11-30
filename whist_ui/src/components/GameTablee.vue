@@ -109,13 +109,25 @@ const board_after_leave = () => {
     }
 }
 
-const winner_team = () => {
+
+const is_team_one_winning = () => {
   if (room.value.stats.team_one_score > room.value.stats.team_two_score) {
     return true;
-  } else {
-    return false;
-  }
+  } else{return false}
 }
+
+const is_team_two_winning = () => {
+  if (room.value.stats.team_two_score > room.value.stats.team_one_score) {
+    return true;
+  } else{return false}
+}
+
+const card_symbols = {
+    "diamonds": "&diams;",
+    "hearts": "&hearts;",
+    "spades": "&spades;",
+    "clubs": "&clubs;",
+  }
 
 </script>
 <template>
@@ -124,8 +136,8 @@ const winner_team = () => {
   <div class="info-bar">
 
     <div class="team-1">
-      <span>{{ room.players[0].username }} & {{ room.players[2].username}}</span>
-      <span> : {{ room.stats.team_one_score }}</span>
+      <span>{{ room.players[0].username }} & {{ room.players[2].username}} : </span>
+      <span :class="[is_team_one_winning() ? 'winner-score' : 'neutral-score']">{{ room.stats.team_one_score }}</span>
       <div class="glowing-bar-team"></div>
     </div>
 
@@ -137,14 +149,18 @@ const winner_team = () => {
     </Transition>
 
     <div class="team-2">
-      <span>{{room.players[1].username}} & {{ room.players[3].username}}</span>
-      <span> : {{ room.stats.team_two_score }}</span>
+      <span>{{room.players[1].username}} & {{ room.players[3].username}} : </span>
+      <span :class="[is_team_two_winning() ? 'winner-score' : 'neutral-score']">{{ room.stats.team_two_score }}</span>
       <div class="glowing-bar-team"></div>
     </div>
   </div>
 
   <div class="table">
       <div class="board">
+
+        <!-- Trump Card -->
+        <span class="card-symbol" v-html="card_symbols[room.stats.trump_card]"></span>
+
         <div v-if="round_started" class="deck">
             <Transition v-for="el in 52" :key="el" :name="`spread-p${4 - ((el - 1) % 4)}`" @after-leave="after_leave">
               <Card :id="`${4 - ((el - 1) % 4)}`" v-if="el<=cards_to_spread" class="card_in_deck" card_value="not_permitted"></Card>
@@ -184,6 +200,22 @@ const winner_team = () => {
 </template>
 
 <style scoped>
+.card-symbol{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  color: #252322;
+  font-size: larger;
+}
+
+.winner-score{
+  color: #269F37;
+}
+
+.neutral-score{
+  color: #ed4710;
+}
 
 @keyframes winner{
   0% {opacity: 1;}
@@ -279,7 +311,8 @@ const winner_team = () => {
 }
 
 .deck {
-    position: relative;
+  position: relative;
+  left: 40%;
 }
 
 .card_in_deck {
