@@ -109,30 +109,37 @@ const board_after_leave = () => {
     }
 }
 
-const isToggled = ref(false);
+const winner_team = () => {
+  if (room.value.stats.team_one_score > room.value.stats.team_two_score) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 </script>
 <template>
 <div class="vue-container" v-if="loaded_data">
 
   <div class="info-bar">
-    <div class="trump-card-1">ceva</div>
 
     <div class="team-1">
-      <span>{{room.players[0].username}} : {{ room.players[2].username}}</span>
-      <div class="glowing-bar-team-1"></div>
+      <span>{{ room.players[0].username }} & {{ room.players[2].username}}</span>
+      <span> : {{ room.stats.team_one_score }}</span>
+      <div class="glowing-bar-team"></div>
     </div>
 
     <Transition name="round-winner">
-      <div v-if="room.stats.winner" class="winner-bar">
+      <div v-if="room.stats.winner" class="winner">
         <span>{{ room.stats.winner}} won</span>
-        <div class="glowing-bar"></div>
+        <div class="winner-bar"></div>
       </div>
     </Transition>
 
     <div class="team-2">
-      <span>{{room.players[1].username}} : {{ room.players[3].username}}</span>
-      <div class="glowing-bar-team-2"></div>
+      <span>{{room.players[1].username}} & {{ room.players[3].username}}</span>
+      <span> : {{ room.stats.team_two_score }}</span>
+      <div class="glowing-bar-team"></div>
     </div>
   </div>
 
@@ -177,29 +184,6 @@ const isToggled = ref(false);
 </template>
 
 <style scoped>
-.trump-card-1{
-  position: absolute;
-  left: 25px;
-}
-
-.trump-card-2{
-  position: absolute;
-  left: 10px;
-}
-
-.glowing-bar-team-1{
-  position: relative;
-  top: 6px;
-  border-bottom: 1px solid #ef3730;
-  box-shadow: 1px 1px 6px #ef3730;
-}
-
-.glowing-bar-team-2{
-  position: relative;
-  top: 6px;
-  border-bottom: 1px solid #2eafeb;
-  box-shadow: 1px 1px 6px #2eafeb;
-}
 
 @keyframes winner{
   0% {opacity: 1;}
@@ -214,7 +198,7 @@ const isToggled = ref(false);
   100%{opacity: 0;}
 }
 .round-winner-enter-active{
-  animation: winner 1s ease-in;
+  animation: winner 2s ease-in;
 }
 
 .round-winner-leave-active{
@@ -224,23 +208,22 @@ const isToggled = ref(false);
 .info-bar{
   display: flex;
   justify-content: space-evenly;
-  border-bottom: 1px solid rgb(101, 101, 101);
+  border-bottom: 1px solid #252322;
   position: relative;
-  color: rgb(139, 139, 139);
-  font-family: sans-serif;
-  font-size: small;
+  color: #BBBBBB;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size:x-small;
   padding: 5px;
   margin-bottom: 20px;
 }
 
-.glowing-bar{
+.winner-bar{
   position: relative;
-  top: 6px;
-  border-bottom: 1px solid #75ec7b;
-  box-shadow: 1px 1px 6px #75ec7b;
+  top: 5px;
+  border-bottom: 1px solid #ed4710;
 }
 
-.winner-bar{
+.winner{
   position: absolute;
 }
 
@@ -292,7 +275,7 @@ const isToggled = ref(false);
 .vue-container{
 	width: 100vw;
 	height: 100vh;
-  background-color: #3b3b3b;
+  background-color: #333333;
 }
 
 .deck {

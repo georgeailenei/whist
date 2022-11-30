@@ -89,10 +89,11 @@ const props = defineProps(['player', 'playerNr', 'visibleCards', 'roundStarted',
 }
 
 .name {
-    font-family: "Calibri";
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small;
     text-align: center;
     width: 100px;
-    color:white;
+    color: #BBBBBB;
     padding: 1px 0;
     margin-left: 10px;
     box-sizing: border-box;
@@ -108,10 +109,11 @@ const props = defineProps(['player', 'playerNr', 'visibleCards', 'roundStarted',
 }
 
 .tricks {
-    font-family: "Calibri";
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small;
     text-align: center;
     width: 100px;
-    color: white;
+    color: #BBBBBB;
     padding: 1px 0;
     margin-left: 10px;
     box-sizing: border-box;
