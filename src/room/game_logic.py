@@ -15,7 +15,7 @@ class GameController:
     def game_ended(self, team_one_score, team_two_score):
         if team_one_score < 5 and team_two_score < 5:
             return True
-        elif team_one_score >= 5 or team_two_score >= 5:
+        elif team_one_score == 5 or team_two_score == 5:
             return False
 
     def players_cards_count(self, players):
@@ -219,14 +219,14 @@ class GameController:
     def update_score(self, team_one_score, team_two_score, players):
         team_one = [players[0].tricks, players[2].tricks]
         team_two = [players[1].tricks, players[3].tricks]
-        team_one_score_result = sum(team_one) - 6
-        team_two_score_result = sum(team_two) - 6
+        team_one_score_result = sum(team_one)
+        team_two_score_result = sum(team_two)
 
-        if team_one_score_result > 0:
-            team_one_score += team_one_score_result
-        elif team_two_score_result > 0:
-            team_two_score += team_two_score_result
-        return team_one_score, team_two_score
+        if team_one_score_result > team_two_score_result:
+            team_one_score += 1
+        elif team_two_score_result > team_one_score_result:
+            team_two_score += 1
+        return [team_one_score, team_two_score]
 
     def reset_players_cards_and_tricks(self, players):
         for player in players:
@@ -295,13 +295,19 @@ class GameController:
                 board, old_board = self.clear_board(board)
 
         if self.total_tricks_completed(players):
+            cards = Deck().cards
             scores = self.update_score(
-                room_stats.team_one_score, room_stats.team_one_score, players
+                room_stats.team_one_score, room_stats.team_two_score, players
             )
             self.reset_players_cards_and_tricks(players)
-
             room_stats.team_one_score = scores[0]
             room_stats.team_two_score = scores[1]
+            players = self.spread_cards(cards, players)
+            room_stats.trump_card = self.find_trump_card(cards)
+
+            for p in players:
+                p.hand = " ".join(str(e) for e in p.hand)
+                p.save()
 
         # RESULTS
         self.repository.save_game_stats(room_stats, board, old_board)

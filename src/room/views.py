@@ -82,7 +82,6 @@ class Room(LoginRequiredMixin, TemplateView):
 
     def get(self, request, pk):
         form = GameForm()
-
         card_room = get_object_or_404(CardRoom, pk=pk)
         room_stats = self.game.repository.get_room_stats(card_room)
         players = list(card_room.players.all())

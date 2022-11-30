@@ -4,8 +4,8 @@ import { ref, watch, onUnmounted } from 'vue';
 import Player from './Player.vue';
 import {server_client} from '../client';
 import _ from "lodash";
-let update_interval = null;
 
+let update_interval = null;
 
 const room = ref(null);
 const loaded_data = ref(false);
@@ -133,6 +133,7 @@ const card_symbols = {
 <template>
 <div class="vue-container" v-if="loaded_data">
 
+  <!-- Information bar -->
   <div class="info-bar">
 
     <div class="team-1">
@@ -155,26 +156,30 @@ const card_symbols = {
     </div>
   </div>
 
+  <!-- Table -->
   <div class="table">
       <div class="board">
 
         <!-- Trump Card -->
         <span class="card-symbol" v-html="card_symbols[room.stats.trump_card]"></span>
 
+        <!-- Deck -->
         <div v-if="round_started" class="deck">
             <Transition v-for="el in 52" :key="el" :name="`spread-p${4 - ((el - 1) % 4)}`" @after-leave="after_leave">
               <Card :id="`${4 - ((el - 1) % 4)}`" v-if="el<=cards_to_spread" class="card_in_deck" card_value="not_permitted"></Card>
             </Transition>
         </div>
 
+        <!-- Board -->
         <TransitionGroup name="board">
-          <div class="board-cards"  v-for="card in board" :key="card">
+          <div v-if="!round_started" class="board-cards"  v-for="card in board" :key="card">
             <Card  :card_value="card" />
           </div>
         </TransitionGroup>
 
       </div>
 
+      <!-- Players -->
       <div class="players">
           <div :class="['player', 'player-5']">
             <div v-if="room.stats.player_position === 0" class="glow"></div>
