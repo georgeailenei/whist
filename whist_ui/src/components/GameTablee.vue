@@ -1,6 +1,6 @@
 <script setup>
 import Card from './Card.vue';
-import { ref, watch, onUnmounted } from 'vue';
+import { ref, watch, onUnmounted, reactive } from 'vue';
 import Player from './Player.vue';
 import {server_client} from '../client';
 import _ from "lodash";
@@ -127,7 +127,16 @@ const card_symbols = {
     "hearts": "&hearts;",
     "spades": "&spades;",
     "clubs": "&clubs;",
+};
+
+const timeleft = ref(15);
+const timer = setInterval(() => {
+  timeleft.value -= 1;
+  if(timeleft.value === 0){
+    clearInterval(timer);
   }
+}, 1000);
+
 
 </script>
 <template>
@@ -135,6 +144,9 @@ const card_symbols = {
 
   <!-- Information bar -->
   <div class="info-bar">
+
+    <!-- timer -->
+    <div class="countdown"><span>{{timeleft}} seconds remaining</span></div>
 
     <div class="team-1">
       <span>{{ room.players[0].username }} & {{ room.players[2].username}} : </span>
@@ -205,6 +217,20 @@ const card_symbols = {
 </template>
 
 <style scoped>
+
+@keyframes counter{
+  0% {color: #269F37;}
+  25% {color: #919f26;}
+  50% {color: #edab10;}
+  75% {color: #ed7b10;}
+  100% {color: #ed4710;}
+}
+.countdown{
+  position: absolute;
+  right: 25px;
+  color: #ed4710;
+  animation: counter 15s ease;
+}
 .card-symbol{
   position: absolute;
   left: 50%;
@@ -274,6 +300,7 @@ const card_symbols = {
   box-shadow: 0 0 2px #fff, 0 0 12px #ffffff, 0 0 5px #ffffff, 0 0 10px #d8d8d8,
     0 0 40px #9f9f9f, 0 0 20px #4b4b4b;
 }
+
 
 @keyframes board-animation{
   0% {opacity: 0;}
