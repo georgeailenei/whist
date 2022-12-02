@@ -1,4 +1,5 @@
 from .entities import Deck, Card
+from django.utils import timezone
 
 
 class GameController:
@@ -26,8 +27,8 @@ class GameController:
 
     def spread_cards(self, cards, players):
         players[0].hand = cards[:13]
-        players[1].hand = cards[13 : 13 + 13]
-        players[2].hand = cards[26 : 26 + 13]
+        players[1].hand = cards[13: 13 + 13]
+        players[2].hand = cards[26: 26 + 13]
         players[3].hand = cards[39:]
         return players
 
@@ -85,7 +86,6 @@ class GameController:
 
         if card_is_valid and player_has_card and player_played_right_suit:
             return True
-
         return False
 
     def add_to_board(self, card, board):
@@ -236,6 +236,18 @@ class GameController:
             player.save()
         return players
 
+    def play_card_for_player(self, card_room, room_stats, player):
+        players = list(card_room.players.all())
+        for card in player.hand.split():
+            if self.correct_card(
+                    card,
+                    players,
+                    room_stats.board.split(),
+                    room_stats.player_position,
+                    room_stats.trump_card,
+            ):
+                self.run(card_room, card)
+
     def setup_room(self, card_room, cards):
         players = list(card_room.players.all())
         players = self.spread_cards(cards, players)
@@ -267,6 +279,7 @@ class GameController:
         )
 
         if game_ended and one_set_is_finished and is_correct_card:
+            room_stats.last_played_card = timezone.now()
             room_stats.played_card = played_card
             board = self.add_to_board(played_card, board)
 

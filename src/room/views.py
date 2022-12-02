@@ -5,12 +5,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 from room.entities import Deck
-
 from room.models import CardRoom
 from .serializers import RoomSerializer, CardSerializer
 from .utils import get_controller
 from .utils import game_controller
 from .forms import GameForm
+import datetime
+from django.utils import timezone
 
 
 class Room(LoginRequiredMixin, TemplateView):
@@ -87,6 +88,10 @@ class Room(LoginRequiredMixin, TemplateView):
         players = list(card_room.players.all())
         players_count = self.controller.check_players_num(card_room)
         is_registered = self.controller.check_user(request.user, card_room)
+
+        time_since_card_was_played = int((timezone.now() - room_stats.last_played_card).total_seconds())
+        if time_since_card_was_played > 10:
+            self.game.play_card_for_player(card_room, room_stats, players[room_stats.player_position])
 
         if card_room.status and players_count == 4:
             if self.game.players_cards_count(players) == 0:

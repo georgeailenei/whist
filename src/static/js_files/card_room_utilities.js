@@ -2,7 +2,7 @@
 let time = 5;
 const countdown_element = document.getElementById('countdown');
 const the_interval = setInterval(counter, 1000);
-const reload_the_page = setInterval('window.location.reload()', 8000);
+const reload_the_page = setInterval('window.location.reload()', 2000);
 
 function counter () {
     if (countdown_element == null) {

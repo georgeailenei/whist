@@ -20,8 +20,11 @@ const p4_visible_cards = ref(0);
 
 const y = ref(null);
 const x= ref(null);
-
 const change_position = ref(null);
+
+
+const played_hand_time = ref(null);
+const other_date = ref(null);
 
 const update_room = () => {
       server_client.get_room_details(1)
@@ -39,7 +42,12 @@ const update_room = () => {
             console.log(room)
             round_started.value = room.value.stats.board.length === 0 && room.value.players[room.value.stats.player_position].hand.length === 13;
             loaded_data.value = true;
-            
+
+            played_hand_time.value = room.value.stats.last_played_card
+
+            other_date.value = new Date(played_hand_time);
+            console.log(other_date.value)
+
             if (data.stats.winner === data.players[0].username){
               y.value = -253
               x.value = -68
@@ -129,15 +137,6 @@ const card_symbols = {
     "clubs": "&clubs;",
 };
 
-const timeleft = ref(15);
-const timer = setInterval(() => {
-  timeleft.value -= 1;
-  if(timeleft.value === 0){
-    clearInterval(timer);
-  }
-}, 1000);
-
-
 </script>
 <template>
 <div class="vue-container" v-if="loaded_data">
@@ -146,7 +145,8 @@ const timer = setInterval(() => {
   <div class="info-bar">
 
     <!-- timer -->
-    <div class="countdown"><span>{{timeleft}} seconds remaining</span></div>
+    <!-- <div class="countdown"><span>{{timeleft}} seconds remaining</span></div> -->
+    <div class="countdown"><span>{{ other_date }}</span></div>
 
     <div class="team-1">
       <span>{{ room.players[0].username }} & {{ room.players[2].username}} : </span>
