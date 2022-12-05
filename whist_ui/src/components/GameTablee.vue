@@ -24,7 +24,6 @@ const change_position = ref(null);
 
 
 const played_hand_time = ref(null);
-const other_date = ref(null);
 
 const update_room = () => {
       server_client.get_room_details(1)
@@ -43,10 +42,7 @@ const update_room = () => {
             round_started.value = room.value.stats.board.length === 0 && room.value.players[room.value.stats.player_position].hand.length === 13;
             loaded_data.value = true;
 
-            played_hand_time.value = room.value.stats.last_played_card
-
-            other_date.value = new Date(played_hand_time);
-            console.log(other_date.value)
+            played_hand_time.value = Date.parse(room.value.stats.last_played_card);
 
             if (data.stats.winner === data.players[0].username){
               y.value = -253
@@ -137,6 +133,16 @@ const card_symbols = {
     "clubs": "&clubs;",
 };
 
+const timeleft = ref(10);
+const timer = setInterval(() => {
+  const current_time = Date.now();
+  timeleft.value = 10 - (Math.floor((current_time - played_hand_time.value) / 1000));
+  if (timeleft.value < 0) {
+    timeleft.value = 0; 
+  }
+}, 1000);
+
+
 </script>
 <template>
 <div class="vue-container" v-if="loaded_data">
@@ -145,8 +151,9 @@ const card_symbols = {
   <div class="info-bar">
 
     <!-- timer -->
-    <!-- <div class="countdown"><span>{{timeleft}} seconds remaining</span></div> -->
-    <div class="countdown"><span>{{ other_date }}</span></div>
+    <Transition name="timer">
+    <div :class="[timeleft < 4 ? 'countdown_warning' : 'countdown' ]"><span>{{timeleft}} seconds remaining</span></div>
+    </Transition>  
 
     <div class="team-1">
       <span>{{ room.players[0].username }} & {{ room.players[2].username}} : </span>
@@ -171,6 +178,13 @@ const card_symbols = {
   <!-- Table -->
   <div class="table">
       <div class="board">
+        
+        <!-- Winner - Lose Message -->
+        <!-- Display the winners and losers here -->
+
+        <!-- <div class="message_and_options">
+          <b class="winner" >Congratulations</b>
+        </div> -->
 
         <!-- Trump Card -->
         <span class="card-symbol" v-html="card_symbols[room.stats.trump_card]"></span>
@@ -217,19 +231,33 @@ const card_symbols = {
 </template>
 
 <style scoped>
+.message_and_options{
+  top: -70px;
+  left: -40px;
+  width: 300px;
+  height: 200px;
+  position: absolute;
+  background-color: #333333;
+  color: white;
+  border: 1px solid #252322;
+}
 
-@keyframes counter{
-  0% {color: #269F37;}
-  25% {color: #919f26;}
-  50% {color: #edab10;}
-  75% {color: #ed7b10;}
-  100% {color: #ed4710;}
+.message_and_options .winner{
+  color: #BBBBBB;
+  position: relative;
+  left: 90px;
+  top: 30px;
+}
+
+.countdown_warning{
+  position: absolute;
+  right: 25px;
+  color: #ed4710;
 }
 .countdown{
   position: absolute;
   right: 25px;
-  color: #ed4710;
-  animation: counter 15s ease;
+  color: #269F37;
 }
 .card-symbol{
   position: absolute;
