@@ -1,8 +1,14 @@
 <script setup>
 import Card from './Card.vue';
 
-const props = defineProps(['player', 'playerNr', 'visibleCards', 'roundStarted', 'board', 'after_leave_animation']);
-
+const props = defineProps([
+    'player', 
+    'playerNr', 
+    'visibleCards', 
+    'roundStarted', 
+    'board', 
+    'after_leave_animation',
+]);
 
 
 </script>    
@@ -18,8 +24,7 @@ const props = defineProps(['player', 'playerNr', 'visibleCards', 'roundStarted',
 <div v-if="props.roundStarted === false" class="playing-cards">
     <TransitionGroup :name="`list-p${playerNr}`" @after-leave="props.after_leave_animation">
         <div v-for="(card, index) in player.hand" :key="card">
-            
-            <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
+            <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/> 
         </div>
     </TransitionGroup>
 </div>

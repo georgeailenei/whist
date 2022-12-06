@@ -1,12 +1,14 @@
 <script setup>
 import Card from './Card.vue';
-import { ref, watch, onUnmounted, reactive } from 'vue';
+import {ref, watch, onUnmounted} from 'vue';
 import Player from './Player.vue';
 import {server_client} from '../client';
 import _ from "lodash";
+import {Howl} from 'howler';
 
 let update_interval = null;
 
+const user_data = ref(null);
 const room = ref(null);
 const loaded_data = ref(false);
 const round_started = ref(true);
@@ -21,9 +23,20 @@ const p4_visible_cards = ref(0);
 const y = ref(null);
 const x= ref(null);
 const change_position = ref(null);
-
-
 const played_hand_time = ref(null);
+const is_modal_open = ref(false);
+
+const sounds = {
+  spread_card: new Howl({
+    src: ['http://localhost:8000/static/audio/PlayingCards_DealFlip_03.mp3'], html5: true,
+    }),
+  slide_card: new Howl({
+    src: ['http://localhost:8000/static/audio/PlayingCards_Slide_02.mp3'], html5: true,
+    }),
+  pickup_cards: new Howl({
+    src: ['http://localhost:8000/static/audio/PlayingCards_Pickup_02.mp3'], html5: true,
+    }),
+}
 
 const update_room = () => {
       server_client.get_room_details(1)
@@ -37,37 +50,52 @@ const update_room = () => {
             } else {
               board.value = data.stats.board;
             }
+
             room.value = data;
-            console.log(room)
+            // console.log(room)
             round_started.value = room.value.stats.board.length === 0 && room.value.players[room.value.stats.player_position].hand.length === 13;
             loaded_data.value = true;
-
             played_hand_time.value = Date.parse(room.value.stats.last_played_card);
 
             if (data.stats.winner === data.players[0].username){
-              y.value = -253
-              x.value = -68
+              y.value = -253;
+              x.value = -68;
             } else if (data.stats.winner === data.players[1].username){
-              y.value = -253
-              x.value = 289
+              y.value = -253;
+              x.value = 289;
             } else if (data.stats.winner === data.players[2].username){
-              y.value = 136
-              x.value = 289
+              y.value = 136;
+              x.value = 289;
             } else if (data.stats.winner === data.players[3].username){
-              y.value = 136
-              x.value = -68
+              y.value = 136;
+              x.value = -68;
             }
 
             if (data.stats.old_board === 4){
               change_position.value = 'absolute';
             } else {
               change_position.value = 'relative';
+              sounds.slide_card.play();
             }
-
+            
+            // if (room.value.stats.team_one_score === 5){
+            //   console.log("do something");
+            // } else if (room.value.stats.team_two_score === 5){
+            //   console.log("altceva");
+            // }
           }
       })
 }
 
+const update_user_data = () => {
+  server_client.get_user_details()
+  .then((data) => {
+    user_data.value = data;
+    console.log(user_data.value);
+  }
+)}
+
+update_user_data();
 update_room();
 
 watch(round_started, async (new_round_started, old_round_started) => {
@@ -84,7 +112,8 @@ onUnmounted(() => {
 })
 
 const after_leave = (el) => {
-    cards_to_spread.value -= 1;
+  cards_to_spread.value -= 1;
+  sounds.spread_card.play();
     
     if (el.id === '1') {
     p1_visible_cards.value++;
@@ -95,24 +124,19 @@ const after_leave = (el) => {
   } else if (el.id === '4') {
     p4_visible_cards.value++;
   }
-  
-  if (cards_to_spread.value === 0) {
-    round_started.value = false;
-  }
 }
 
 setTimeout(() => {
   cards_to_spread.value -= 1;
 }, 2000)
 
-
 const board_after_leave = () => {
     const is_last_turn = room.value.stats.board.length === 0;
     if (is_last_turn) {
       board.value = room.value.stats.board;
+      sounds.pickup_cards.play();
     }
 }
-
 
 const is_team_one_winning = () => {
   if (room.value.stats.team_one_score > room.value.stats.team_two_score) {
@@ -142,10 +166,20 @@ const timer = setInterval(() => {
   }
 }, 1000);
 
-
 </script>
 <template>
-<div class="vue-container" v-if="loaded_data">
+
+<div class="vue-container" v-if="(loaded_data)">
+  
+  <!-- Display the winners and losers here -->
+<div v-if="is_modal_open" class="modal">
+  <div class="modal-content">
+    <b class="winner-msg-congrats">Congratulations</b>
+    {{ room.players[0].username }} & {{ room.players[2].username }}
+    <b class="winner-msg">You win</b>
+    <button class="button-play-again">Play again</button>
+  </div>
+</div>
 
   <!-- Information bar -->
   <div class="info-bar">
@@ -179,13 +213,6 @@ const timer = setInterval(() => {
   <div class="table">
       <div class="board">
         
-        <!-- Winner - Lose Message -->
-        <!-- Display the winners and losers here -->
-
-        <!-- <div class="message_and_options">
-          <b class="winner" >Congratulations</b>
-        </div> -->
-
         <!-- Trump Card -->
         <span class="card-symbol" v-html="card_symbols[room.stats.trump_card]"></span>
 
@@ -202,7 +229,7 @@ const timer = setInterval(() => {
             <Card  :card_value="card" />
           </div>
         </TransitionGroup>
-
+        
       </div>
 
       <!-- Players -->
@@ -225,28 +252,65 @@ const timer = setInterval(() => {
         </div>
       </div>
 	</div>
-</div>
 
+</div>
 
 </template>
 
 <style scoped>
-.message_and_options{
-  top: -70px;
-  left: -40px;
-  width: 300px;
-  height: 200px;
-  position: absolute;
-  background-color: #333333;
-  color: white;
-  border: 1px solid #252322;
+
+.modal{
+  display: block;
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-.message_and_options .winner{
+.modal-content{
+  text-align: center;
+  background-color: #333333;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
   color: #BBBBBB;
+  padding: 35px;
+  border: 1px solid #252322;
+  width: 275px;
+  height: 225px;
+}
+
+.winner-msg-congrats{
+  color: #BBBBBB;
+  font-size: larger;
+  align-self: center;
+}
+.winner-msg{
+  color: #269F37;
+  font-size: medium;
+}
+
+.button-play-again{
+  width: 90px;
+  height: 30px;
   position: relative;
-  left: 90px;
-  top: 30px;
+  top: 10px;
+  margin: auto;
+  background-color: #252322;
+  border: none;
+  color: white;
+  font-size: x-small;
+  transition-duration: 0.4s;
+}
+
+.button-play-again:hover{
+  background-color: #269F37;
 }
 
 .countdown_warning{

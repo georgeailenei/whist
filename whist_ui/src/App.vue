@@ -4,6 +4,7 @@ import GameTablee from './components/GameTablee.vue';
 
 <template>
   <GameTablee/>
+  
 </template>
 
 <style scoped>

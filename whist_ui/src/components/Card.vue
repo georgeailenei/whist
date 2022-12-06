@@ -60,6 +60,7 @@ const cards = {
 
 const card_url = `http://localhost:8000/static/images/cards/${cards[props.card_value]}`;
 
+
 const send_played_card = (event) => {
     console.log(props.card_value);
     server_client.send_card_to_server(1, props.card_value);

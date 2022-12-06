@@ -4,6 +4,11 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from userauth.serializers import UserSerializer
 
 
 class LoginInterfaceView(LoginView):
@@ -40,3 +45,10 @@ class SuccessRegistration(TemplateView):
 
     def get(self, request):
         return render(request, self.template_name)
+
+
+class SelfApiView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, *args, **kwargs):
+        return Response(data=UserSerializer(instance=self.request.user).data)

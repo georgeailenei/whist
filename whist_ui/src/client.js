@@ -6,7 +6,7 @@ class ServerClient{
     get_room_details = async (room_id) => {
         const response = await fetch(`${this.BASE_URL}rooms/${room_id}/`);
         const data = await response.json();
-
+    
         return data;
     }
 
@@ -22,6 +22,13 @@ class ServerClient{
             })
         });
         return response;
+    }
+
+    get_user_details = async () => {
+        const user_data = await fetch(`${this.BASE_URL}users/self`);
+        const data = await user_data.json();
+
+        return data;
     }
 }
 
