@@ -1,10 +1,9 @@
 <script setup>
-import GameTablee from './components/GameTablee.vue';
+import Controller from './components/Controller.vue';
 </script>
 
 <template>
-  <GameTablee/>
-  
+  <Controller/>
 </template>
 
 <style scoped>

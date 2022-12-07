@@ -141,3 +141,5 @@ def test_run_add_points_to_winner(db, ready_card_room):
 
     player3.refresh_from_db()
     assert player3.tricks == 1
+
+

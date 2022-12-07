@@ -83,7 +83,6 @@ class GameController:
             first_card_suit,
             trump_card_suit,
         )
-
         if card_is_valid and player_has_card and player_played_right_suit:
             return True
         return False
@@ -247,6 +246,7 @@ class GameController:
                     room_stats.trump_card,
             ):
                 self.run(card_room, card)
+                return
 
     def setup_room(self, card_room, cards):
         players = list(card_room.players.all())

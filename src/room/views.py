@@ -88,10 +88,6 @@ class Room(LoginRequiredMixin, TemplateView):
         players_count = self.controller.check_players_num(card_room)
         is_registered = self.controller.check_user(request.user, card_room)
 
-        time_since_card_was_played = int((timezone.now() - room_stats.last_played_card).total_seconds())
-        if time_since_card_was_played > 1:
-            self.game.play_card_for_player(card_room, room_stats, players[room_stats.player_position])
-
         if card_room.status and players_count == 4:
             if self.game.players_cards_count(players) == 0:
                 self.game.setup_room(card_room, Deck().cards)
@@ -140,6 +136,14 @@ class CardRooms(LoginRequiredMixin, ListView):
 class RoomApiView(RetrieveAPIView):
     queryset = CardRoom.objects.all()
     serializer_class = RoomSerializer
+
+    def get(self, *args, **kwargs):
+        card_room = self.get_object()
+        room_stats = card_room.stats
+        time_since_card_was_played = (timezone.now() - room_stats.last_played_card).total_seconds()
+        if time_since_card_was_played > 4000:
+            game_controller().play_card_for_player(card_room, room_stats, card_room.players.all()[room_stats.player_position])
+        return super().get(*args, **kwargs)
 
     def patch(self, *args, **kwargs):
         card_room = self.get_object()
