@@ -7,10 +7,11 @@ import Game from './Game.vue'
 
 const game_is_playing = ref(true);
 const round_finished = ref(false);
-const is_modal_open = ref(true);
+const is_modal_open = ref(false);
 const loaded_data = ref(false);
 const user_data = ref(null);
 const room = ref(null);
+const winners = ref(null);
 
 const update_user_data = () => {
   server_client.get_user_details()
@@ -23,70 +24,27 @@ const update_user_data = () => {
 
 update_user_data();
 
-
 const update_room = () => {
-  // if (!is_in_animation.value) {
     server_client.get_room_details(1)
       .then((data) => {
         if (!_.isEqual(data, room.value)) {
           console.log('updating');
-          // const is_last_turn = data.stats.board.length === 0;
-          // console.log(is_last_turn, room.value !== null)
           console.log(room.value);
           console.log(data);
 
           room.value = data;
           loaded_data.value = true;
 
-
-          // if (is_last_turn && room.value !== null) {
-          //   board.value = data.stats.old_board;
-          // } else {
-          //   board.value = data.stats.board;
-          // }
-
-          // room.value = data;
-          // // console.log(room)
-          // round_started.value = room.value.stats.board.length === 0 && room.value.players[room.value.stats.player_position].hand.length === 13;
-          // loaded_data.value = true;
-          // played_hand_time.value = Date.parse(room.value.stats.last_played_card);
-
-          // if (data.stats.winner === data.players[0].username) {
-          //   y.value = -253;
-          //   x.value = -68;
-          // } else if (data.stats.winner === data.players[1].username) {
-          //   y.value = -253;
-          //   x.value = 289;
-          // } else if (data.stats.winner === data.players[2].username) {
-          //   y.value = 136;
-          //   x.value = 289;
-          // } else if (data.stats.winner === data.players[3].username) {
-          //   y.value = 136;
-          //   x.value = -68;
-          // }
-
-          // if (data.stats.old_board === 4) {
-          //   change_position.value = 'absolute';
-          // } else {
-          //   change_position.value = 'relative';
-          //   sounds.slide_card.play();
-          // }
-
-          // // if (room.value.stats.team_one_score === 5){
-          // //   console.log("do something");
-          // // } else if (room.value.stats.team_two_score === 5){
-          // //   console.log("altceva");
-          // // }
+          if (room.value.stats.team_one_score === 5 && room.value.stats.team_one_score > room.value.stats.team_two_score){
+            winners.value = String(room.value.players[0].username) + " & " + String(room.value.players[2].username)
+            is_modal_open.value = true;
+          } else if (room.value.stats.team_one_score < room.value.stats.team_two_score && room.value.stats.team_two_score === 5){
+            winners.value = String(room.value.players[1].username) + " & " + String(room.value.players[3].username)
+            is_modal_open.value = true;
+          }
         }
       })
-  // }
 }
-
-// watch(round_started, async (new_round_started, old_round_started) => {
-//   if (old_round_started === true && new_round_started === false) {
-//     
-//   }
-// })
 
 const update_interval = setInterval(update_room, 500);
 
@@ -98,26 +56,27 @@ onUnmounted(() => {
 })
 
 const finish_game = () => {
-  game_is_playing.value = false;
+  return false;
 }
 
 const finish_round = () => {
   round_finished.value = true;
 }
+
 </script>
 
 <template>
   <Game v-if="(game_is_playing && loaded_data)" :finish_round="finish_round" :finish_game='finish_game' :room="room"/>
   
-    <!-- Display the winners and losers here -->
-  <!-- <div v-if="is_modal_open" class="modal">
-    <div class="modal-content">
-      <b class="winner-msg-congrats">Congratulations</b>
-        Team 1 wins
-      <b class="winner-msg">You win</b>
-      <button class="button-play-again">Play again</button>
-    </div>
-  </div> -->
+<!-- Display the winners and losers here -->
+<div v-if="is_modal_open" class="modal">
+  <div class="modal-content">
+    <b class="winner-msg-congrats">Congratulations</b>
+      {{ winners }}
+    <b class="winner-msg">You win</b>
+    <button class="button-play-again">Play again</button>
+  </div>
+</div>
 
 </template>
 

@@ -34,37 +34,40 @@ const timer = setInterval(() => {
 
 <template>
 
-  <!-- Information bar -->
-  <div class="info-bar">
-    <!-- timer -->
-    <Transition name="timer">
-      <div :class="[timeleft < 4 ? 'countdown_warning' : 'countdown']"><span>{{ timeleft }} seconds remaining</span>
-      </div>
-    </Transition>
-
-    <div class="team-1">
-      <span>{{ room.players[0].username }} & {{ room.players[2].username }} : </span>
-      <span :class="[is_team_one_winning() ? 'winner-score' : 'neutral-score']">{{ room.stats.team_one_score }}</span>
-      <div class="glowing-bar-team"></div>
+<div class="container">
+<div class="info-bar">
+  <!-- timer -->
+  <Transition name="timer">
+    <div :class="[timeleft < 4 ? 'countdown_warning' : 'countdown']"><span>{{ timeleft }} seconds remaining</span>
     </div>
+  </Transition>
 
-    <Transition name="round-winner">
-      <div v-if="room.stats.winner" class="winner">
-        <span>{{ room.stats.winner }} won</span>
-        <div class="winner-bar"></div>
-      </div>
-    </Transition>
-
-    <div class="team-2">
-      <span>{{ room.players[1].username }} & {{ room.players[3].username }} : </span>
-      <span :class="[is_team_two_winning() ? 'winner-score' : 'neutral-score']">{{ room.stats.team_two_score }}</span>
-      <div class="glowing-bar-team"></div>
-    </div>
+  <div class="team-1">
+    <span>{{ room.players[0].username }} & {{ room.players[2].username }} : </span>
+    <span :class="[is_team_one_winning() ? 'winner-score' : 'neutral-score']">{{ room.stats.team_one_score }}</span>
+    <div class="glowing-bar-team"></div>
   </div>
+
+  <Transition name="round-winner">
+    <div v-if="room.stats.winner" class="winner">
+      <span>{{ room.stats.winner }} won</span>
+      <div class="winner-bar"></div>
+    </div>
+  </Transition>
+
+  <div class="team-2">
+    <span>{{ room.players[1].username }} & {{ room.players[3].username }} : </span>
+    <span :class="[is_team_two_winning() ? 'winner-score' : 'neutral-score']">{{ room.stats.team_two_score }}</span>
+    <div class="glowing-bar-team"></div>
+  </div>
+</div>
+</div>
   <GameTable :key="(room.stats.team_one_score + room.stats.team_two_score)" :room="room" />
+
 </template>
 
 <style scoped>
+
 .countdown_warning {
   position: absolute;
   right: 25px;

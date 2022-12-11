@@ -52,9 +52,6 @@ const update_room = (new_room) => {
     board.value = new_room.stats.board;
   }
 
-  
-  // console.log(room)
-
   if (new_room.stats.winner === new_room.players[0].username) {
     y.value = -253;
     x.value = -68;
@@ -76,13 +73,7 @@ const update_room = (new_room) => {
     sounds.slide_card.play();
   }
 
-  // if (room.value.stats.team_one_score === 5){
-  //   console.log("do something");
-  // } else if (room.value.stats.team_two_score === 5){
-  //   console.log("altceva");
-  // }
 }
-
 
 update_room(props.room);
 
@@ -132,6 +123,7 @@ const card_symbols = {
   "clubs": "&clubs;",
 };
 
+
 </script>
 <template>
 
@@ -146,7 +138,7 @@ const card_symbols = {
         <span class="card-symbol" v-html="card_symbols[room.stats.trump_card]"></span>
 
         <!-- Deck -->
-        <div v-if="!round_started" class="deck">
+        <div v-if="(!round_started && props.finish_game)" class="deck">
           <Transition v-for="el in 52" :key="el" :name="`spread-p${4 - ((el - 1) % 4)}`" @after-leave="after_leave">
             <Card :id="`${4 - ((el - 1) % 4)}`" v-if="el <= cards_to_spread" class="card_in_deck"
               card_value="not_permitted"></Card>
@@ -351,7 +343,6 @@ const card_symbols = {
 .vue-container {
   width: 100vw;
   height: 100vh;
-  background-color: #333333;
 }
 
 .deck {
