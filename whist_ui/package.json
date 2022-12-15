@@ -2,7 +2,7 @@
   "name": "whist_ui",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 3000",
     "build": "vite build",
     "preview": "vite preview",
     "test:unit": "vitest --environment jsdom --root src/",

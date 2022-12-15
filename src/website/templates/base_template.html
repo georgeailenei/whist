@@ -3,6 +3,12 @@
 <head>
 <link href="{% static 'css/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
 <link href="{% static 'css_files/page.css' %}" type="text/css" rel="stylesheet">
+
+
+{% if debug %}
+<script type="module" src="http://localhost:3000/@vite/client"></script>
+{% endif %}
+
 </head>
 <body>
 

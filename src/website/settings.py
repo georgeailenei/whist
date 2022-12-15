@@ -131,12 +131,30 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = "/"
+
+
+# Needed for 'debug' to be available inside templates.
+# https://docs.djangoproject.com/en/3.2/ref/templates/api/#django-template-context-processors-debug
+INTERNAL_IPS = ['127.0.0.1']
+
+# Vite App Dir: point it to the folder your vite app is in.
+VITE_APP_DIR = BASE_DIR.parent / "whist_ui" / "src"
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+# You may change these, but it's important that the dist folder is includedself.
+# If it's not, collectstatic won't copy your bundle to production.
+
+STATICFILES_DIRS = [
+    VITE_APP_DIR / "dist",
+    BASE_DIR / "static",
+]
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
