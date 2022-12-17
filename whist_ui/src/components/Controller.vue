@@ -12,6 +12,7 @@ const loaded_data = ref(false);
 const user_data = ref(null);
 const room = ref(null);
 const winners = ref(null);
+const play_again = ref(false);
 
 const update_user_data = () => {
   server_client.get_user_details()
@@ -23,6 +24,12 @@ const update_user_data = () => {
 }
 
 update_user_data();
+
+const doSomething = () => {
+  console.log("ceva");
+  play_again.value = true;
+  room.value.stats.p1_choice = true;
+}
 
 const update_room = () => {
     server_client.get_room_details(1)
@@ -42,6 +49,12 @@ const update_room = () => {
             winners.value = String(room.value.players[1].username) + " & " + String(room.value.players[3].username)
             is_modal_open.value = true;
           }
+
+          if (play_again.value) {
+            console.log("ar trebui sa mearga")
+            console.log(user_data.value.username)
+          }
+
         }
       })
 }
@@ -74,13 +87,26 @@ const finish_round = () => {
     <b class="winner-msg-congrats">Congratulations</b>
       {{ winners }}
     <b class="winner-msg">You win</b>
-    <button class="button-play-again">Play again</button>
+
+    <button v-if="!play_again" class="button-play-again" @click="doSomething">Play again</button>
+
+    <!-- Make sure you change the link -->
+    <a v-if="!play_again" class="room-list-link" href="http://localhost:8000/card_rooms">Back to the room list</a>
   </div>
 </div>
 
 </template>
 
 <style scoped>
+.room-list-link{
+  font-size: xx-small;
+  color: #BBBBBB;
+}
+
+.room-list-link:hover{
+  color: #ed4710;
+  text-decoration: none;
+}
 .modal{
   display: block;
   position: fixed; /* Stay in place */

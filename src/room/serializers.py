@@ -12,7 +12,11 @@ class PlayerSerializer(ModelSerializer):
     hand = fields.SerializerMethodField()
 
     def get_hand(self, object):
-        return object.hand.split()
+        print(self.context['request'].user, object)
+        if self.context['request'].user == object:
+            return object.hand.split()
+        else:
+            return len(object.hand.split()) * ['not_permitted']
 
 
 class StatsSerializer(ModelSerializer):

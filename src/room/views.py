@@ -141,7 +141,7 @@ class RoomApiView(RetrieveAPIView):
         card_room = self.get_object()
         room_stats = card_room.stats
         time_since_card_was_played = (timezone.now() - room_stats.last_played_card).total_seconds()
-        if time_since_card_was_played > 40000:
+        if time_since_card_was_played > 0.01:
             game_controller().play_card_for_player(card_room, room_stats, card_room.players.all()[room_stats.player_position])
         return super().get(*args, **kwargs)
 
