@@ -17,30 +17,31 @@
 <div class="col ">
 
 {% if table_status %}
-<h5>CARD ROOM {{room_nr}}</h5>
 
-<h6>Players</h6>
-<ul class="list-unstyled">
-{% for player in players %}
-    <li>{{player.username}}</li>
-{% endfor %}
-</ul>
+    <h5>CARD ROOM {{room_nr}}</h5>
 
-{% if register %}
-<form method="post">
-{% csrf_token %}
-<input type="submit" name="Join" value="Join Table">
-</form>
-{% endif %}
+    <h6>Players</h6>
+    <ul class="list-unstyled">
+    {% for player in players %}
+        <li>{{player.username}}</li>
+    {% endfor %}
+    </ul>
+
+    {% if register %}
+    <form method="post">
+    {% csrf_token %}
+    <input type="submit" name="Join" value="Join Table">
+    </form>
+    {% endif %}
 
 
-{% if cancel %}
-<form method="post">
-{% csrf_token %}
-<input type="submit" name="Cancel" value="Leave Table">
-</form>
-{% endif %}
-<p>{{ message }}</p>
+    {% if cancel %}
+    <form method="post">
+    {% csrf_token %}
+    <input type="submit" name="Cancel" value="Leave Table">
+    </form>
+    {% endif %}
+    <p>{{ message }}</p>
 
 {% endif %}
 

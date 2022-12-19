@@ -14,6 +14,7 @@ const room = ref(null);
 const winners = ref(null);
 const play_again = ref(false);
 
+
 const update_user_data = () => {
   server_client.get_user_details()
     .then((data) => {
@@ -25,22 +26,26 @@ const update_user_data = () => {
 
 update_user_data();
 
-const doSomething = () => {
+const doSomething = (event) => {
   console.log("ceva");
   play_again.value = true;
-  room.value.stats.p1_choice = true;
+
+  if (user_data.value.username === room.value.players[0].username){
+    console.log("redirect to the waiting room");
+    location.replace("http://localhost:8000/card_rooms/1/");
+  }
 }
 
 const update_room = () => {
     server_client.get_room_details(1)
       .then((data) => {
         if (!_.isEqual(data, room.value)) {
-          console.log('updating');
-          console.log(room.value);
-          console.log(data);
-
+          
           room.value = data;
           loaded_data.value = true;
+
+          console.log('updating');
+          console.log(room.value);
 
           if (room.value.stats.team_one_score === 5 && room.value.stats.team_one_score > room.value.stats.team_two_score){
             winners.value = String(room.value.players[0].username) + " & " + String(room.value.players[2].username)
@@ -48,11 +53,6 @@ const update_room = () => {
           } else if (room.value.stats.team_one_score < room.value.stats.team_two_score && room.value.stats.team_two_score === 5){
             winners.value = String(room.value.players[1].username) + " & " + String(room.value.players[3].username)
             is_modal_open.value = true;
-          }
-
-          if (play_again.value) {
-            console.log("ar trebui sa mearga")
-            console.log(user_data.value.username)
           }
 
         }
@@ -68,9 +68,6 @@ onUnmounted(() => {
   }
 })
 
-const finish_game = () => {
-  return false;
-}
 
 const finish_round = () => {
   round_finished.value = true;
@@ -79,7 +76,7 @@ const finish_round = () => {
 </script>
 
 <template>
-  <Game v-if="(game_is_playing && loaded_data)" :finish_round="finish_round" :finish_game='finish_game' :room="room"/>
+  <Game v-if="(game_is_playing && loaded_data)" :finish_round="finish_round" :room="room"/>
   
 <!-- Display the winners and losers here -->
 <div v-if="is_modal_open" class="modal">
@@ -88,16 +85,18 @@ const finish_round = () => {
       {{ winners }}
     <b class="winner-msg">You win</b>
 
+    <!-- @click.once triggers the func once so replace it later 
+          also do not forget to change the link  -->
     <button v-if="!play_again" class="button-play-again" @click="doSomething">Play again</button>
+    <a class="room-list-link" href="http://localhost:8000/card_rooms">Back to the room list</a>
 
-    <!-- Make sure you change the link -->
-    <a v-if="!play_again" class="room-list-link" href="http://localhost:8000/card_rooms">Back to the room list</a>
   </div>
 </div>
 
 </template>
 
 <style scoped>
+
 .room-list-link{
   font-size: xx-small;
   color: #BBBBBB;

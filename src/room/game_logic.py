@@ -264,6 +264,7 @@ class GameController:
     def run(self, room, played_card):
         room_stats = self.repository.get_room_stats(room)
         room_stats.save()
+
         players = list(room.players.all())
         board = room_stats.board.split()
         old_board = room_stats.old_board.split()
@@ -321,6 +322,14 @@ class GameController:
             for p in players:
                 p.hand = " ".join(str(e) for e in p.hand)
                 p.save()
+
+        if not game_ended:
+            # for p in players:
+            #     room.players.remove(p)
+
+            room.game_status = False
+            room.status = True
+            room.save()
 
         # RESULTS
         self.repository.save_game_stats(room_stats, board, old_board)
