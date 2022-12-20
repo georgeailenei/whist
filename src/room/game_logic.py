@@ -270,6 +270,12 @@ class GameController:
         old_board = room_stats.old_board.split()
 
         game_ended = self.game_ended(room_stats.team_one_score, room_stats.team_two_score)
+
+        if not game_ended:
+            room.game_status = False
+            room.save()
+            self.reset_players_cards_and_tricks(players)
+
         one_set_is_finished = self.total_tricks_completed(players) is False
         is_correct_card = self.correct_card(
             played_card,
@@ -322,14 +328,6 @@ class GameController:
             for p in players:
                 p.hand = " ".join(str(e) for e in p.hand)
                 p.save()
-
-        if not game_ended:
-            # for p in players:
-            #     room.players.remove(p)
-
-            room.game_status = False
-            room.status = True
-            room.save()
 
         # RESULTS
         self.repository.save_game_stats(room_stats, board, old_board)

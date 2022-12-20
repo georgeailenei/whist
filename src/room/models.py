@@ -4,7 +4,6 @@ from userauth.models import User
 
 class CardRoom(models.Model):
     players = models.ManyToManyField(User)
-    status = models.BooleanField(default=True)
     seats = models.CharField(max_length=15, default="Available")
     players_count = models.IntegerField(default=0)
     game_status = models.BooleanField(default=False)
@@ -24,7 +23,3 @@ class Stats(models.Model):
     cards_per_round = models.IntegerField(default=0)
     winner = models.CharField(max_length=40, blank=True)
     last_played_card = models.DateTimeField(auto_now_add=True)
-    p1_choice = models.BooleanField(default=False)
-    p2_choice = models.BooleanField(default=False)
-    p3_choice = models.BooleanField(default=False)
-    p4_choice = models.BooleanField(default=False)

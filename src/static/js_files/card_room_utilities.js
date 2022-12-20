@@ -1,4 +1,7 @@
 // Refresh & Countdown;
+
+console.log("ceva");
+
 let time = 5;
 const countdown_element = document.getElementById('countdown');
 const the_interval = setInterval(counter, 1000);
@@ -19,3 +22,5 @@ function counter () {
     }
     time--;
 }
+
+

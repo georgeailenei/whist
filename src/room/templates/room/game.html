@@ -1,0 +1,16 @@
+{% extends "base_template.html" %}
+{% load static %}
+{% load render_vite_bundle %}
+
+{% block content %}
+
+{% if debug %}
+<!-- This url will be different for each type of app. Point it to your main js file. -->
+<script type="module" src="http://localhost:3000/main.js"></script>
+{% else %}
+{% render_vite_bundle %}
+{% endif %}
+
+<div id="app"></div>
+
+{% endblock %}

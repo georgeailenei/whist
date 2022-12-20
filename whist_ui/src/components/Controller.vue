@@ -12,7 +12,6 @@ const loaded_data = ref(false);
 const user_data = ref(null);
 const room = ref(null);
 const winners = ref(null);
-const play_again = ref(false);
 
 
 const update_user_data = () => {
@@ -26,14 +25,19 @@ const update_user_data = () => {
 
 update_user_data();
 
-const doSomething = (event) => {
-  console.log("ceva");
-  play_again.value = true;
+const play_another_game = () => {
 
   if (user_data.value.username === room.value.players[0].username){
-    console.log("redirect to the waiting room");
     location.replace("http://localhost:8000/card_rooms/1/");
+    is_modal_open.value = false;
   }
+}
+
+const quit_game = () => {
+  is_modal_open.value = false;
+
+  // location.replace("http://localhost:8000/card_rooms");
+
 }
 
 const update_room = () => {
@@ -76,7 +80,7 @@ const finish_round = () => {
 </script>
 
 <template>
-  <Game v-if="(game_is_playing && loaded_data)" :finish_round="finish_round" :room="room"/>
+<Game v-if="(game_is_playing && loaded_data)" :finish_round="finish_round" :room="room"/>
   
 <!-- Display the winners and losers here -->
 <div v-if="is_modal_open" class="modal">
@@ -87,9 +91,8 @@ const finish_round = () => {
 
     <!-- @click.once triggers the func once so replace it later 
           also do not forget to change the link  -->
-    <button v-if="!play_again" class="button-play-again" @click="doSomething">Play again</button>
-    <a class="room-list-link" href="http://localhost:8000/card_rooms">Back to the room list</a>
-
+    <button class="button-play-again" @click.once="play_another_game">Play again</button>
+    <button class="button-quit" @click.once="quit_game">Quit</button>
   </div>
 </div>
 
@@ -97,15 +100,6 @@ const finish_round = () => {
 
 <style scoped>
 
-.room-list-link{
-  font-size: xx-small;
-  color: #BBBBBB;
-}
-
-.room-list-link:hover{
-  color: #ed4710;
-  text-decoration: none;
-}
 .modal{
   display: block;
   position: fixed; /* Stay in place */
@@ -156,8 +150,25 @@ const finish_round = () => {
   transition-duration: 0.4s;
 }
 
+.button-quit{
+  width: 90px;
+  height: 30px;
+  position: relative;
+  top: 10px;
+  margin: auto;
+  background-color: #252322;
+  border: none;
+  color: white;
+  font-size: x-small;
+  transition-duration: 0.4s;
+}
+
 .button-play-again:hover{
   background-color: #269F37;
+}
+
+.button-quit:hover{
+  background-color: #ed4710;
 }
 
 </style>

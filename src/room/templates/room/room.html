@@ -1,0 +1,51 @@
+{% extends "base_template.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container">
+<div class="row align-items-center text-center h-100">
+<div class="col ">
+
+{% if table_status %}
+
+    <h5>CARD ROOM {{room_nr}}</h5>
+
+    <h6>Players</h6>
+    <ul class="list-unstyled">
+    {% for player in players %}
+        <li>{{player.username}}</li>
+    {% endfor %}
+    </ul>
+
+    {% if is_room_full %}
+        {% if register %}
+        <form method="post">
+        {% csrf_token %}
+        <input type="submit" name="Join" value="Join Table">
+        </form>
+        {% endif %}
+
+        {% if cancel %}
+        <form method="post">
+        {% csrf_token %}
+        <input id="Cancel" type="submit" name="Cancel" value="Leave Table">
+        </form>
+        {% endif %}
+        <p>{{ message }}</p>
+    {% endif %}
+
+{% endif %}
+
+{% if countdown %}
+    <p id="countdown">{{ time }}</p>
+{% endif %}
+
+</div>
+</div>
+</div>
+
+<!--<script src="{% static '/js_files/card_room_utilities.js' %}"></script>-->
+{% endblock %}
+
+
