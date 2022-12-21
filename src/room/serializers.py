@@ -12,7 +12,6 @@ class PlayerSerializer(ModelSerializer):
     hand = fields.SerializerMethodField()
 
     def get_hand(self, object):
-        print(self.context['request'].user, object)
         if self.context['request'].user == object:
             return object.hand.split()
         else:
@@ -49,3 +48,11 @@ class RoomSerializer(ModelSerializer):
 
 class CardSerializer(Serializer):
     card = fields.CharField()
+
+
+class ChoiceSerializer(Serializer):
+    choice = fields.BooleanField()
+
+
+class PlayerSerializer(Serializer):
+    player = fields.CharField()

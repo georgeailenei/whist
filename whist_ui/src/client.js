@@ -26,21 +26,22 @@ class ServerClient{
         return response;
     }
 
-    // send_players_choice_to_server = async (room_id, players_choice) => {
-    //     const csrf_token = this.getCookie('csrftoken');
-    //     const response = await fetch(`${this.BASE_URL}rooms/${room_id}/`, {
-    //         method: 'PATCH',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json',
-    //             'X-CSRFToken': csrf_token,
-    //         },
-    //         body: JSON.stringify({
-    //             'players_choice': players_choice
-    //         })
-    //     });
-    //     return response;
-    // }
+    send_players_choice_to_server = async (room_id, choice, player) => {
+        const csrf_token = this.getCookie('csrftoken');
+        const response = await fetch(`${this.BASE_URL}rooms/${room_id}/`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrf_token,
+            },
+            body: JSON.stringify({
+                'choice': choice,
+                'player': player
+            })
+        });
+        return response;
+    }
 
     get_user_details = async () => {
         const user_data = await fetch(`${this.BASE_URL}users/self`);

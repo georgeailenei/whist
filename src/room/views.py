@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 from room.models import CardRoom
-from .serializers import RoomSerializer, CardSerializer
+from .serializers import RoomSerializer, CardSerializer, ChoiceSerializer, PlayerSerializer
 from .utils import get_controller
 from .utils import game_controller
 from django.utils import timezone
@@ -25,6 +25,7 @@ class Room(LoginRequiredMixin, TemplateView):
 
     def post(self, request, pk):
         card_room = get_object_or_404(CardRoom, pk=pk)
+        players_count = self.controller.check_players_num(card_room)
         user = request.user
 
         if "Join" in request.POST:
@@ -32,6 +33,9 @@ class Room(LoginRequiredMixin, TemplateView):
                 self.controller.add_player(user, card_room)
             except ValueError:
                 return redirect("the_room", pk=pk)
+            if players_count == 4:
+                card_room.game_status = True
+
         elif "Cancel" in request.POST:
             self.controller.remove_player(user, card_room)
 
@@ -54,7 +58,20 @@ class Room(LoginRequiredMixin, TemplateView):
                 "timer": "6",
                 "is_room_full": False,
             }
-            print("ceva")
+            return render(request, self.template_name, content)
+        elif not card_room.game_status and players_count > 1:
+            print("ceva ceva")
+
+            content = {
+                "players": players,
+                "room_nr": pk,
+                "table_status": True,
+                "register": is_registered,
+                "cancel": not is_registered,
+                "countdown": False,
+                "timer": "0",
+                "is_room_full": True,
+            }
             return render(request, self.template_name, content)
         else:
             content = {
@@ -88,12 +105,24 @@ class RoomApiView(RetrieveAPIView):
             game_controller().play_card_for_player(card_room, room_stats, card_room.players.all()[room_stats.player_position])
         return super().get(*args, **kwargs)
 
+    def post(self, *args, **kwargs):
+        card_room = self.get_object()
+        serializer = ChoiceSerializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
+        choice = serializer.data["choice"]
+
+        serializerTwo = PlayerSerializer(data=self.request.data)
+        serializerTwo.is_valid(raise_exception=True)
+        player = serializerTwo.data["player"]
+
+        game_controller().run(card_room, "", choice, player)
+        return Response(serializer.data)
+
     def patch(self, *args, **kwargs):
         card_room = self.get_object()
         serializer = CardSerializer(data=self.request.data)
         serializer.is_valid(raise_exception=True)
 
         played_card = serializer.data["card"]
-
-        game_controller().run(card_room, played_card)
+        game_controller().run(card_room, played_card, True, "")
         return Response(serializer.data)

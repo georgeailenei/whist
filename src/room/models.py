@@ -23,3 +23,4 @@ class Stats(models.Model):
     cards_per_round = models.IntegerField(default=0)
     winner = models.CharField(max_length=40, blank=True)
     last_played_card = models.DateTimeField(auto_now_add=True)
+    players_choice = models.IntegerField(default=0)

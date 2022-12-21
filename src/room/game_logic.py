@@ -245,13 +245,15 @@ class GameController:
                     room_stats.player_position,
                     room_stats.trump_card,
             ):
-                self.run(card_room, card)
+                self.run(card_room, card, True, player.username)
                 return
 
     def setup_room(self, card_room, cards):
         players = list(card_room.players.all())
         players = self.spread_cards(cards, players)
         stats = self.repository.get_room_stats(room=card_room)
+        stats.team_one_score = 0
+        stats.team_two_score = 0
         stats.trump_card = self.find_trump_card(cards)
         card_room.status = True
         card_room.save()
@@ -261,7 +263,7 @@ class GameController:
             p.hand = " ".join(str(e) for e in p.hand)
             p.save()
 
-    def run(self, room, played_card):
+    def run(self, room, played_card, choice, player):
         room_stats = self.repository.get_room_stats(room)
         room_stats.save()
 
@@ -270,12 +272,6 @@ class GameController:
         old_board = room_stats.old_board.split()
 
         game_ended = self.game_ended(room_stats.team_one_score, room_stats.team_two_score)
-
-        if not game_ended:
-            room.game_status = False
-            room.save()
-            self.reset_players_cards_and_tricks(players)
-
         one_set_is_finished = self.total_tricks_completed(players) is False
         is_correct_card = self.correct_card(
             played_card,
@@ -328,6 +324,24 @@ class GameController:
             for p in players:
                 p.hand = " ".join(str(e) for e in p.hand)
                 p.save()
+
+        if not game_ended:
+            self.reset_players_cards_and_tricks(players)
+
+            for p in players:
+                if p.username == player and choice:
+                    room_stats.players_choice += 1
+                elif p.username == player and choice is False:
+                    room.players.remove(p)
+                    print("player has been removed")
+
+            self.repository.save_game_stats(room_stats, board, old_board)
+            room.save()
+
+            # Restart the game once everyone made their choice.
+            if room_stats.players_choice == 4:
+                self.setup_room(room, Deck().cards)
+            # room.game_status = False
 
         # RESULTS
         self.repository.save_game_stats(room_stats, board, old_board)
