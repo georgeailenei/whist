@@ -1,4 +1,3 @@
-from django.http import Http404
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic import TemplateView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
@@ -44,15 +43,16 @@ class Room(LoginRequiredMixin, TemplateView):
 
     def get(self, request, pk):
         card_room = get_object_or_404(CardRoom, pk=pk)
+        room_stats = card_room.stats
         players = list(card_room.players.all())
         players_count = self.controller.check_players_num(card_room)
         is_registered = self.controller.check_user(request.user, card_room)
 
         if players_count == 4 and card_room.game_status:
             return redirect("game", pk=pk)
-        elif not card_room.game_status and players_count == 4:
+        elif players_count == 4 and not card_room.game_status and room_stats.team_one_score == 0 and room_stats.team_one_score == 0:
             return redirect("game", pk=pk)
-        else:
+        elif not card_room.game_status:
             content = {
                 "players": players,
                 "room_nr": pk,
@@ -77,19 +77,22 @@ class RoomApiView(RetrieveAPIView):
         card_room = self.get_object()
         room_stats = card_room.stats
 
-
-        # Set Up Game
-        if not card_room.game_status and len(card_room.players.all()) == 4:
+        if not card_room.game_status and len(card_room.players.all()) == 4 and room_stats.players_choice == 4:
+            game_controller().setup_room(card_room, Deck().cards)
+        elif room_stats.players_choice < 4 and len(card_room.players.all()) < 4:
+            card_room.game_status = False
+            card_room.save()
+        elif not card_room.game_status and len(card_room.players.all()) == 4 and room_stats.team_one_score == 0 and room_stats.team_one_score == 0:
+            card_room.game_status = True
+            card_room.save()
             game_controller().setup_room(card_room, Deck().cards)
 
         time_since_card_was_played = (timezone.now() - room_stats.last_played_card).total_seconds()
-        if time_since_card_was_played > 0.01 and card_room.game_status:
+        if game_controller().game_first_hand(card_room.players.all()) and card_room.game_status and time_since_card_was_played > 40:
+            game_controller().play_card_for_player(card_room, room_stats, card_room.players.all()[room_stats.player_position])
+        elif time_since_card_was_played > 1 and card_room.game_status:
             game_controller().play_card_for_player(card_room, room_stats, card_room.players.all()[room_stats.player_position])
 
-        # End Game
-        if room_stats.players_choice < 4 and len(card_room.players.all()) < 4:
-            card_room.game_status = False
-            card_room.save()
         return super().get(*args, **kwargs)
 
     def post(self, *args, **kwargs):

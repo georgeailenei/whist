@@ -70,6 +70,7 @@ const update_room = () => {
 
 
 const play_another_game = () => {
+  location.replace("http://localhost:8000/card_rooms/1");
   server_client.send_players_choice_to_server(1, true, user_data.value.username);
 }
 
@@ -115,7 +116,7 @@ const finish_round = () => {
 <Game v-if="(game_is_playing && loaded_data && room_full)" :finish_round="finish_round" :room="room"/>
 
 <!-- Display game no longer available -->
-<div v-if="!room_full" class="modal">
+<div v-if="!room_full && !game_is_playing" class="modal">
   <div class="modal-content">
     <p>A player left. This game is no longer available</p>
     <button id="game_finished" class="button-quit" @click="game_no_longer_available">OTHER ROOMS</button>
