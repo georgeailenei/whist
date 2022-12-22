@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from rest_framework.generics import RetrieveAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 from room.models import CardRoom
+from .entities import Deck
 from .serializers import RoomSerializer, CardSerializer, ChoiceSerializer, PlayerSerializer
 from .utils import get_controller
 from .utils import game_controller
@@ -48,41 +49,16 @@ class Room(LoginRequiredMixin, TemplateView):
         is_registered = self.controller.check_user(request.user, card_room)
 
         if players_count == 4 and card_room.game_status:
-            content = {
-                "players": players,
-                "room_nr": pk,
-                "table_status": True,
-                "register": is_registered,
-                "cancel": not is_registered,
-                "countdown": True,
-                "timer": "6",
-                "is_room_full": False,
-            }
-            return render(request, self.template_name, content)
-        elif not card_room.game_status and players_count > 1:
-            print("ceva ceva")
-
-            content = {
-                "players": players,
-                "room_nr": pk,
-                "table_status": True,
-                "register": is_registered,
-                "cancel": not is_registered,
-                "countdown": False,
-                "timer": "0",
-                "is_room_full": True,
-            }
-            return render(request, self.template_name, content)
+            return redirect("game", pk=pk)
+        elif not card_room.game_status and players_count == 4:
+            return redirect("game", pk=pk)
         else:
             content = {
                 "players": players,
                 "room_nr": pk,
-                "table_status": True,
+                "room_status": True,
                 "register": is_registered,
                 "cancel": not is_registered,
-                "countdown": False,
-                "timer": "0",
-                "is_room_full": True,
             }
             return render(request, self.template_name, content)
 
@@ -100,9 +76,20 @@ class RoomApiView(RetrieveAPIView):
     def get(self, *args, **kwargs):
         card_room = self.get_object()
         room_stats = card_room.stats
+
+
+        # Set Up Game
+        if not card_room.game_status and len(card_room.players.all()) == 4:
+            game_controller().setup_room(card_room, Deck().cards)
+
         time_since_card_was_played = (timezone.now() - room_stats.last_played_card).total_seconds()
-        if time_since_card_was_played > 0.01:
+        if time_since_card_was_played > 0.01 and card_room.game_status:
             game_controller().play_card_for_player(card_room, room_stats, card_room.players.all()[room_stats.player_position])
+
+        # End Game
+        if room_stats.players_choice < 4 and len(card_room.players.all()) < 4:
+            card_room.game_status = False
+            card_room.save()
         return super().get(*args, **kwargs)
 
     def post(self, *args, **kwargs):
@@ -124,5 +111,5 @@ class RoomApiView(RetrieveAPIView):
         serializer.is_valid(raise_exception=True)
 
         played_card = serializer.data["card"]
-        game_controller().run(card_room, played_card, True, "")
+        game_controller().run(card_room, played_card, None, "")
         return Response(serializer.data)

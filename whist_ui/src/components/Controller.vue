@@ -14,6 +14,9 @@ const room = ref(null);
 const winners = ref(null);
 const player_left_the_game = ref(false);
 const players_choice = ref(null);
+const p_choice = ref(false);
+const room_full = ref(false);
+
 
 
 const update_user_data = () => {
@@ -21,25 +24,15 @@ const update_user_data = () => {
     .then((data) => {
       user_data.value = data;
       console.log(user_data.value);
+
+      if (user_data.value.choice === 1){
+        p_choice.value = true;
+        is_modal_open.value = false;
+      }
     })
 }
 
 update_user_data();
-
-const play_another_game = () => {
-  is_modal_open.value = false;
-  server_client.send_players_choice_to_server(1, true, user_data.value.username);
-}
-
-const quit_game = () => {
-  is_modal_open.value = false;
-  server_client.send_players_choice_to_server(1, false, user_data.value.username);
-  location.replace("http://localhost:8000/card_rooms");
-}
-
-const game_no_longer_available = () => {
-  location.replace("http://localhost:8000/card_rooms");
-}
 
 const update_room = () => {
     server_client.get_room_details(1)
@@ -51,25 +44,52 @@ const update_room = () => {
 
           console.log('updating');
           console.log(room.value);
+          console.log(room.value.players.length)
+
+          if (room.value.players.length !== 4){
+            room_full.value = false;
+            document.getElementById("game_finished").click();
+            server_client.send_players_choice_to_server(1, false, user_data.value.username);
+          } else if (room.value.players.length === 4){
+            room_full.value = true;
+            console.log("HEY HEY We ARE ROCKING");
+          }
 
           players_choice.value = room.value.stats.players_choice
-          console.log(players_choice)
 
-
-          if (room.value.stats.team_one_score === 5 && room.value.stats.team_one_score > room.value.stats.team_two_score){
+          if (room.value.stats.team_one_score === 5 && room.value.stats.team_one_score > room.value.stats.team_two_score && user_data.value.choice === 0){
             winners.value = String(room.value.players[0].username) + " & " + String(room.value.players[2].username)
             is_modal_open.value = true;
-          } else if (room.value.stats.team_one_score < room.value.stats.team_two_score && room.value.stats.team_two_score === 5){
+          } else if (room.value.stats.team_one_score < room.value.stats.team_two_score && room.value.stats.team_two_score === 5 && user_data.value.choice === 0){
             winners.value = String(room.value.players[1].username) + " & " + String(room.value.players[3].username)
             is_modal_open.value = true;
           }
-
-          if (room.value.players.length != 4) {
-            player_left_the_game.value = true;
-          }
-
         }
       })
+}
+
+
+const play_another_game = () => {
+  server_client.send_players_choice_to_server(1, true, user_data.value.username);
+}
+
+const quit_game = () => {
+  server_client.send_players_choice_to_server(1, false, user_data.value.username);
+  location.replace("http://localhost:8000/card_rooms");
+}
+
+const game_no_longer_available = () => {
+  let time = 3;
+  const the_interval = setInterval(redirect_player, 1000);
+
+  function redirect_player() {
+    if(time === 0){
+      clearInterval(the_interval);
+      window.location.replace("http://localhost:8000/card_rooms");
+    } else {
+      time--;
+    }
+  }
 }
 
 const update_interval = setInterval(update_room, 500);
@@ -90,20 +110,20 @@ const finish_round = () => {
 
 <template>
 
+<!-- <div v-if="loaded_data"> -->
+<!-- The GAME -->
+<Game v-if="(game_is_playing && loaded_data && room_full)" :finish_round="finish_round" :room="room"/>
+
 <!-- Display game no longer available -->
-<div v-if="player_left_the_game" class="modal">
+<div v-if="!room_full" class="modal">
   <div class="modal-content">
-    <p>The game is no longer available</p>
-    <button class="button-quit" @click="game_no_longer_available">OTHER ROOMS</button>
+    <p>A player left. This game is no longer available</p>
+    <button id="game_finished" class="button-quit" @click="game_no_longer_available">OTHER ROOMS</button>
   </div>
 </div>
 
-<!-- The GAME -->
-<Game v-if="(game_is_playing && loaded_data)" :finish_round="finish_round" :room="room"/>
-
-
 <!-- Display the winners and losers here -->
-<div v-if="is_modal_open && players_choice === 0" class="modal">
+<div v-if="is_modal_open && room_full" class="modal">
   <div class="modal-content">
     <b class="winner-msg-congrats">Congratulations</b>
       {{ winners }}
@@ -118,14 +138,13 @@ const finish_round = () => {
 
 
 <!-- Waiting for other players -->
-<div v-if="players_choice > 0" class="modal">
+<div v-if="p_choice && room_full" class="modal">
   <div class="modal-content">
-    <p>Please wait</p>
-    <p>Searching for another game</p>
+    <p>Waiting for everyone to responde</p>
   </div>
 </div>
 
-
+<!-- </div> -->
 </template>
 
 <style scoped>

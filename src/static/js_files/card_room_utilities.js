@@ -1,4 +1,3 @@
-// Refresh & Countdown;
 
 console.log("ceva");
 
