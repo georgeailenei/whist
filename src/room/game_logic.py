@@ -264,7 +264,14 @@ class GameController:
 
         if total_cards_in_play == 52:
             return True
-        print(total_cards_in_play)
+        else:
+            return False
+
+    def cards_in_play(self, players):
+        total_cards_in_play = 0
+        for p in players:
+            total_cards_in_play += len(p.hand.split())
+        return total_cards_in_play
 
     def setup_room(self, card_room, cards):
         players = list(card_room.players.all())
@@ -273,8 +280,8 @@ class GameController:
 
         # Reset stats to set up another game;
         stats = self.reset_room_stats(stats)
-
         stats.trump_card = self.find_trump_card(cards)
+
         card_room.status = True
         card_room.game_status = True
         card_room.save()
@@ -285,11 +292,16 @@ class GameController:
             p.choice = 0
             p.save()
 
+        stats.cards_in_play = self.cards_in_play(players)
+        stats.save()
+
     def run(self, room, played_card, choice, player):
         room_stats = self.repository.get_room_stats(room)
         room_stats.save()
 
         players = list(room.players.all())
+        room_stats.cards_in_play = self.cards_in_play(players)
+
         board = room_stats.board.split()
         old_board = room_stats.old_board.split()
 

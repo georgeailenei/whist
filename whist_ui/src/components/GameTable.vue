@@ -25,8 +25,8 @@ const p4_visible_cards = ref(0);
 
 const y = ref(null);
 const x = ref(null);
-const change_position = ref(null);
 
+const change_position = ref(null);
 const is_in_animation = ref(false);
 
 const sounds = {
@@ -115,7 +115,6 @@ const board_after_leave = () => {
   is_in_animation.value = false;
 }
 
-
 const card_symbols = {
   "diamonds": "&diams;",
   "hearts": "&hearts;",
@@ -156,25 +155,25 @@ const card_symbols = {
 
       <!-- Players -->
       <div class="players">
-        <div :class="['player', 'player-5']">
+        <div :class="['player', 'player-1']">
           <div v-if="room.stats.player_position === 0" class="glow"></div>
           <Player :player-nr="1" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p1_visible_cards"
             :player=room.players[0] />
         </div>
-        <div :class="['player', 'player-7']">
+        <div :class="['player', 'player-2']">
           <div v-if="room.stats.player_position === 1" class="glow"></div>
           <Player :player-nr="2" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p2_visible_cards"
             :player=room.players[1] />
         </div>
-        <div :class="['player', 'player-6']">
+        <div :class="['player', 'player-3']">
           <div v-if="room.stats.player_position === 2" class="glow"></div>
           <Player :player-nr="3" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p3_visible_cards"
             :player=room.players[2] />
         </div>
-        <div :class="['player', 'player-8']">
+        <div :class="['player', 'player-4']">
           <div v-if="room.stats.player_position === 3" class="glow"></div>
           <Player :player-nr="4" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p4_visible_cards"
@@ -188,16 +187,9 @@ const card_symbols = {
 </template>
 
 <style scoped>
-.countdown_warning {
-  position: absolute;
-  right: 25px;
-  color: #ed4710;
-}
-
-.countdown {
-  position: absolute;
-  right: 25px;
-  color: #269F37;
+.vue-container {
+  width: 100vw;
+  height: 100vh;
 }
 
 .card-symbol {
@@ -206,77 +198,7 @@ const card_symbols = {
   top: 50%;
   transform: translateX(-50%) translateY(-50%);
   color: #252322;
-  font-size: larger;
-}
-
-.winner-score {
-  color: #269F37;
-}
-
-.neutral-score {
-  color: #ed4710;
-}
-
-@keyframes winner {
-  0% {
-    opacity: 1;
-  }
-
-  25% {
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  75% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes winner-leave {
-  0% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-  }
-}
-
-.round-winner-enter-active {
-  animation: winner 2s ease-in;
-}
-
-.round-winner-leave-active {
-  animation: winner-leave 1s ease-in;
-}
-
-.info-bar {
-  display: flex;
-  justify-content: space-evenly;
-  border-bottom: 1px solid #252322;
-  position: relative;
-  color: #BBBBBB;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: x-small;
-  padding: 5px;
-  margin-bottom: 20px;
-}
-
-.winner-bar {
-  position: relative;
-  top: 5px;
-  border-bottom: 1px solid #ed4710;
-}
-
-.winner {
-  position: absolute;
+  font-size: x-large;
 }
 
 .glow {
@@ -334,15 +256,6 @@ const card_symbols = {
 
 .board-leave-active {
   animation: board-leaving-animation 1s ease;
-}
-
-.text {
-  color: white;
-}
-
-.vue-container {
-  width: 100vw;
-  height: 100vh;
 }
 
 .deck {
@@ -410,83 +323,25 @@ const card_symbols = {
   position: absolute;
 }
 
-.players .player.playing:before {
-  content: "...";
-  color: white;
-  font-size: 20px;
-  position: absolute;
-  background-color: #76daff;
-  display: inline-block;
-  line-height: 0px;
-  height: 10px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  z-index: 100;
-}
-
 .players .player.player-1 {
-  top: 0px;
-  left: 50%;
-  transform: translatex(-50%) translatey(-50%);
-}
-
-.players .player.player-2 {
-  bottom: 0px;
-  left: 50%;
-  transform: translatex(-50%) translatey(50%) rotatez(180deg);
-}
-
-.players .player.player-2 .name {
-  transform: rotatez(180deg);
-}
-
-.players .player.player-2 .bank-value {
-  transform: rotatez(180deg);
-}
-
-.players .player.player-2 .mise-value {
-  transform: rotatez(180deg);
-}
-
-.players .player.player-3 {
-  top: 50%;
-  left: 0px;
-  transform: translatex(-50%) translatey(-50%) rotatez(-90deg);
-}
-
-.players .player.player-3 .name {
-  transform: rotatez(0deg);
-}
-
-.players .player.player-4 {
-  top: 50%;
-  right: 0px;
-  transform: translatex(50%) translatey(-50%) rotatez(90deg);
-}
-
-.players .player.player-4 .name {
-  transform: rotatez(0deg);
-}
-
-.players .player.player-5 {
   top: -25px;
   left: 25%;
   transform: translatex(-50%) translatey(-50%);
 }
 
-.players .player.player-6 {
-  bottom: -78px;
-  left: 75%;
-  transform: translatex(-50%) translatey(50%);
-}
-
-.players .player.player-7 {
+.players .player.player-2 {
   top: -25px;
   left: 75%;
   transform: translatex(-50%) translatey(-50%);
 }
 
-.players .player.player-8 {
+.players .player.player-3 {
+  bottom: -78px;
+  left: 75%;
+  transform: translatex(-50%) translatey(50%);
+}
+
+.players .player.player-4 {
   bottom: -78px;
   left: 25%;
   transform: translatex(-50%) translatey(50%);
@@ -503,11 +358,9 @@ const card_symbols = {
   transform: translate(0, -150px);
 }
 
-
 .spread-p2-leave-to {
   transform: translate(150px, -150px);
 }
-
 
 .spread-p3-leave-to {
   transform: translate(280px, 100px);
