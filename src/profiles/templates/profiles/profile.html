@@ -1,0 +1,12 @@
+{% extends "base_template.html" %}
+
+{% block content %}
+<div class="content">
+    <div>
+        <img src="{{ user.profile.avatar.url }}">
+    </div>
+    <div>
+        <h1>{{ user.username }}</h1>
+    </div>
+</div>
+{% endblock %}

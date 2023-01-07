@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "home",
     "userauth",
     "room",
+    "profiles",
 ]
 
 AUTH_USER_MODEL = "userauth.User"

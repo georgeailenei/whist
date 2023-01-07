@@ -282,7 +282,7 @@ class GameController:
         stats = self.reset_room_stats(stats)
         stats.trump_card = self.find_trump_card(cards)
 
-        card_room.status = True
+        card_room.status = "In Game"
         card_room.game_status = True
         card_room.save()
         stats.save()
@@ -310,6 +310,9 @@ class GameController:
             if p.username == player and choice is False:
                 room.players.remove(p)
                 room.game_status = False
+                room.status = "Waiting"
+                room.players_count = room.players.count()
+                room.seats = "Available"
                 room_stats = self.reset_room_stats(room_stats)
                 room.save()
 
@@ -378,6 +381,9 @@ class GameController:
                     p.save()
                 elif p.username == player and choice is False:
                     room.players.remove(p)
+                    room.players_count = room.players.count()
+                    room.seats = "Available"
+                    room.status = "Waiting"
                     room_stats = self.reset_room_stats(room_stats)
                     room.save()
 
