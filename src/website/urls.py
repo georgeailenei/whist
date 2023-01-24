@@ -21,4 +21,5 @@ urlpatterns = [
     path("", include("home.urls")),
     path("", include("userauth.urls")),
     path("", include("room.urls")),
+    path("", include("profiles.urls")),
 ]

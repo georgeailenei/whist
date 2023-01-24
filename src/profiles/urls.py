@@ -2,10 +2,13 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
-from . import views
+
 
 urlpatterns = [
-    path('profile/', views.user_profile_view)
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('profile', views.UserProfile.as_view(), name='UserProfile')
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
