@@ -8,3 +8,4 @@ class User(AbstractUser, PermissionsMixin):
     played_hand = models.CharField(max_length=80, default="")
     choice = models.IntegerField(default=0)
     registration_date = models.DateTimeField(auto_now_add=True)
+    points = models.IntegerField(default=1000)
