@@ -7,3 +7,4 @@ class User(AbstractUser, PermissionsMixin):
     tricks = models.IntegerField(default=0)
     played_hand = models.CharField(max_length=80, default="")
     choice = models.IntegerField(default=0)
+    registration_date = models.DateTimeField(auto_now_add=True)
