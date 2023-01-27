@@ -1,21 +1,20 @@
 {% extends "base_template.html" %}
 {% load static %}
 
+
 {% block content %}
 <div class="content">
-    <div>
 
 {% if user.profile.avatar %}
-        <img src="{{ user.profile.avatar.url }}">
+    <img src="{{ user.profile.avatar.url }}" class="avatar">
 
 {% else %}
-        <img src="{% static 'profile/images/default.jpg' %}">
+    <img src="{% static 'profile/images/default.jpg' %}" class="avatar">
+
 {% endif %}
 
-    </div>
-    <div>
-        <p>Test</p>
-        <h6>{{ user.username }}</h6>
-    </div>
+    <p>Test</p>
+    <h6>{{ user.username }}</h6>
+
 </div>
 {% endblock %}
