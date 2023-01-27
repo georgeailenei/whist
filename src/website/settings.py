@@ -162,6 +162,7 @@ VITE_APP_DIR = BASE_DIR.parent / "whist_ui" / "src"
 STATICFILES_DIRS = [
     VITE_APP_DIR / "dist",
     BASE_DIR / "static",
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
