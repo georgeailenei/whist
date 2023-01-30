@@ -10,4 +10,3 @@ def ranking(user):
             return position
         else:
             position += 1
-            

@@ -13,6 +13,12 @@
 
 {% endif %}
 
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit">
+    </form>
+
     <h1>{{ user.username }}</h1>
     <p>Member since {{ user.registration_date }}</p>
     <p>Points available {{ user.points }}</p>
