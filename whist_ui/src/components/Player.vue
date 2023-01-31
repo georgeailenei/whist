@@ -30,9 +30,9 @@ const props = defineProps([
     </TransitionGroup>
 </div>
 
-<div class="avatar"></div>
-<div class="name">{{player.username}}</div>
-<div class="tricks">{{player.tricks}}</div>
+<div class="avatar">{{ }}</div>
+<div class="name">{{ player.username }}</div>
+<div class="tricks">{{ player.tricks }}</div>
     
 </template>
 

@@ -5,7 +5,6 @@ from django.shortcuts import render
 from .controllers.rank_controller import ranking
 from .forms import ProfileForm
 from .models import Profile
-from userauth.models import User
 
 
 class UserProfile(LoginRequiredMixin, TemplateView):
