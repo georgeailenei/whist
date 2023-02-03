@@ -65,8 +65,20 @@ class Room(LoginRequiredMixin, TemplateView):
 
 class CardRooms(LoginRequiredMixin, ListView):
     model = CardRoom
-    context_object_name = "rooms"
     template_name = "room/cardroom_list.html"
+
+    def get(self, request):
+        rooms = CardRoom.objects.all()
+
+        for room in rooms:
+            if room.players_count == 4:
+                room.room_opened = False
+                room.save()
+
+        content = {
+            "rooms": rooms,
+        }
+        return render(request, self.template_name, content)
 
 
 class RoomApiView(RetrieveAPIView):

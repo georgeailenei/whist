@@ -1,11 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>LOGOUT PAGE</title>
-</head>
-<body>
-    <h3>YOU JUST LOGGED OUT</h3>
-    <p>GOOD BYE</p>
-</body>
-</html>
+{% extends "base_template.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="text-secondary" style="display: flex; align-items: center; justify-content: center; height: 100vh;">
+  <div style="text-align: center">
+    <h3>Thanks for visiting our website and playing Whist with us.</h3>
+    <p>We hope you had a great time and we look forward to your next visit.</p>
+    <h3>Goodbye!</h3>
+  </div>
+</div>
+
+{% endblock %}

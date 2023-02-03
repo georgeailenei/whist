@@ -1,12 +1,41 @@
 {% extends "base_template.html" %}
 
 {% block content %}
-<div align="center">
-<h6>LIST OF CARD ROOMS</h6>
-<ul class="list-unstyled">
-{% for room in rooms %}
-<li>Room {{room.id}} - Table Seats: {{room.seats}} - {{room.status}}: {{room.players_count}} - <a href="{% url 'the_room' room.id %}">Open</a></li>
-{% endfor %}
-</ul>
-</div>
+
+<table class="table table-borderless table-hover">
+  <thead>
+    <tr class="border-bottom border-secondary text-secondary">
+        <th scope="col">Room</th>
+        <th scope="col">Players</th>
+        <th scope="col">Seats</th>
+        <th scope="col">Status</th>
+        <th scope="col">Open/Closed</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for room in rooms %}
+    <tr class="border-bottom border-secondary text-secondary">
+        <th scope="col"> {{room.id}}</th>
+        <td>{{room.players_count}}</td>
+
+        {% if room.room_opened %}
+        <td class="text-success">{{room.seats}}</td>
+        {% else %}
+        <td class="text-danger">{{room.seats}}</td>
+        {% endif %}
+
+        <td>{{room.status}}</td>
+
+        {% if room.room_opened %}
+        <td><a href="{% url 'the_room' room.id %}" class="text-success">Open</a></td>
+        {% else %}
+        <td><span class="text-danger">Closed</span></td>
+        {% endif %}
+    </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+
 {% endblock %}

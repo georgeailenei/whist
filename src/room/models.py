@@ -8,6 +8,7 @@ class CardRoom(models.Model):
     players_count = models.IntegerField(default=0)
     status = models.CharField(max_length=15, default="Waiting")
     game_status = models.BooleanField(default=False)
+    room_opened = models.BooleanField(default=True)
 
 
 class Stats(models.Model):
