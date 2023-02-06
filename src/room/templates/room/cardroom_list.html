@@ -4,7 +4,7 @@
 
 <table class="table table-borderless table-hover">
   <thead>
-    <tr class="border-bottom border-secondary text-secondary">
+    <tr class="border-bottom border-secondary font-color">
         <th scope="col">Room</th>
         <th scope="col">Players</th>
         <th scope="col">Seats</th>
@@ -15,7 +15,7 @@
   <tbody>
 
     {% for room in rooms %}
-    <tr class="border-bottom border-secondary text-secondary">
+    <tr class="border-bottom border-secondary font-color">
         <th scope="col"> {{room.id}}</th>
         <td>{{room.players_count}}</td>
 
