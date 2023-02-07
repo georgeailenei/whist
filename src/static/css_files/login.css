@@ -1,0 +1,12 @@
+.login-box{
+    background-color: #333333;
+    border-style: solid;
+    border-width: thin;
+    border-radius: 6px;
+    padding-top: 30px;
+    padding-bottom: 10px;
+}
+
+.login-list{
+    list-style: none;
+}

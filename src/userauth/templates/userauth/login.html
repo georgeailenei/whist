@@ -1,19 +1,27 @@
 {% extends "base_template.html" %}
-{% load static %}
 {% block content %}
 
-<div class="container-fluid h-100">
-    <div class="row row h-100 justify-content-center align-items-center">
-        <div class="col align-items-center text-center">
+<div class="login-box font-color">
+    <form class="form-group" method="post">
+        {% csrf_token %}
 
-            <form method="post">{% csrf_token %}
-                {{form.as_p}}
-            <input class="btn btn-success" type="submit">
-            </form>
-            <a href="{% url 'signup' %}">Don't have an account, signup here</a>
-
+        <!-- Username -->
+        <label>username</label>
+        <div class="form-outline mb-4">
+            {{ form.username }}
         </div>
-    </div>
+
+        <!-- Password -->
+        <label>password</label>
+        <div class="form-outline mb-4">
+            {{ form.password }}
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-outline-success btn-sm">Sign in</button>
+    </form>
+    <p>Don't have an account?
+    <a class="font-color" href="{% url 'signup' %}">Signup here</a></p>
 </div>
 
 {% endblock %}
