@@ -8,11 +8,6 @@ body {
     top: 100%;
 }
 
-.container-fluid{
-    position: absolute;
-    top: 40%;
-    width: 100%;
-}
 
 .font-color{
     color: #999999;
@@ -26,4 +21,8 @@ body {
 #logo{
     width: 28px;
     height: 32px;
+}
+
+a:hover{
+    color: #999999;
 }

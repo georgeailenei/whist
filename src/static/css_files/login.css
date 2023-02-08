@@ -1,12 +1,19 @@
 .login-box{
-    background-color: #333333;
+    width: 360px;
     border-style: solid;
     border-width: thin;
     border-radius: 6px;
+    border-color: #999999;
     padding-top: 30px;
     padding-bottom: 10px;
 }
 
-.login-list{
-    list-style: none;
+.row{
+    height: calc(100vh - 100px);
+    align-items: center;
+}
+
+.col-12{
+    display: flex;
+    justify-content: center;
 }

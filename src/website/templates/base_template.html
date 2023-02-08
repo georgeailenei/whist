@@ -8,9 +8,11 @@
 <!-- Bootstrap -->
 <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
 
-<!-- Other Stylesheets -->
+<!-- Global Stylesheet -->
 <link rel="stylesheet" type="text/css" href="{% static 'css_files/global.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'css_files/login.css' %}">
+
+{% block header %}
+{% endblock %}
 
 {% if debug %}
 <script type="module" src="http://localhost:3000/@vite/client"></script>
@@ -19,6 +21,7 @@
 </head>
 
 <body>
+
 
 <nav class="navbar navbar-expand-sm navbar-dark">
   <a href="{% url 'home_page' %}" class="navbar-brand">
@@ -65,17 +68,14 @@
   </div>
 </nav>
 
-<main>
-  <div class="container-fluid">
-    <div class="row justify-content-center">
-      <div class="col-12 col-sm-10 col-md-8 p-2 text-center">  
-        {% block content %}
-        {% endblock %}
-      </div>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 p-2">  
+      {% block content %}
+      {% endblock %}
     </div>
   </div>
-</main>
-
+</div>
 
 <footer class="sticky-footer d-flex justify-content-center py-1">
   <section>
