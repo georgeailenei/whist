@@ -1,0 +1,7 @@
+.table-hover tr:hover td{
+    color: #999999;
+}
+
+.table-hover tr:hover th{
+    color: #999999;
+}

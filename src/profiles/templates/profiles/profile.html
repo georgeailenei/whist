@@ -1,28 +1,27 @@
 {% extends "base_template.html" %}
 {% load static %}
 
+{% block header %}
+<link rel="stylesheet" type="text/css" href="{% static 'css_files/profile.css'%}">
+{% endblock %}
 
 {% block content %}
-<div class="content">
+<div class="font-color text-center">
 
-{% if user.profile.avatar %}
-    <img src="{{ user.profile.avatar.url }}" class="avatar">
-
-{% else %}
+    {% if user.profile.avatar %}
+    <p><img src="{{ user.profile.avatar.url }}" class="avatar">
+    {% else %}
     <img src="{% static 'profile/images/default.jpg' %}" class="avatar">
-
-{% endif %}
+    {% endif %} <b>{{ user.username }}</b></p>
+    <p>Member since {{ user.registration_date }}</p>
+    <p>Points available <b>{{ user.points }}</b></p>
+    <p>Rank <b>{{ rank }}</b></p>
 
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form }}
         <input type="submit">
     </form>
-
-    <h1>{{ user.username }}</h1>
-    <p>Member since {{ user.registration_date }}</p>
-    <p>Points available {{ user.points }}</p>
-    <p>Rank {{ rank }}</p>
 
 </div>
 {% endblock %}

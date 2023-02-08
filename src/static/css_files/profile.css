@@ -1,0 +1,10 @@
+.avatar{
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+}
+
+.row{
+    align-items: center;
+    height: calc(100vh - 100px);
+}
