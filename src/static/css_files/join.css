@@ -1,7 +1,6 @@
-
 .row{
-    height: calc(100vh - 100px);
     align-items: center;
+    height: calc(100vh - 100px);
 }
 
 .col-12{

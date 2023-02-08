@@ -7,24 +7,19 @@
 
 {% block content %}
 
-<div class="login-box font-color text-center">
+<div class="font-color">
     <form class="form-group" method="post">
         {% csrf_token %}
 
-        <!-- Username -->
-        <label>username</label>
-        <div class="site-form form-outline mb-4">
-            {{ form.username }}
+        <div class="form-group">
+            <input type="text" class="form-control" name="username" placeholder="username">
         </div>
 
-        <!-- Password -->
-        <label>password</label>
-        <div class="form-outline mb-4">
-            {{ form.password }}
+        <div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="password">
         </div>
 
-        <!-- Submit button -->
-        <button type="submit" class="btn btn-outline-success btn-sm">Sign in</button>
+        <button type="submit" class="btn btn-outline-success btn-block">Sign in</button>
     </form>
     <p>Don't have an account?
     <a class="font-color" href="{% url 'signup' %}">Signup here</a></p>

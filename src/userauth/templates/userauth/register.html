@@ -1,16 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>USER REGISTRATION PAGE</title>
-</head>
-<body>
+{% extends "base_template.html" %}
+{% load static%}
 
-    <h1>REGISTRATION PAGE</h1>
-    <form method="post">{% csrf_token %}
-       {{form.as_p}}
-        <input type="submit" name="Submit">
-    </form>
+{% block header %}
+<link rel="stylesheet" type="text/css" href="{% static 'css_files/join.css'%}" >
+{% endblock %}
 
-</body>
-</html>
+{% block content %}
+<form class="form-group font-color" method="post">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit" class="btn btn-outline-success btn-block">Submit</button>
+</form>
+{% endblock %}

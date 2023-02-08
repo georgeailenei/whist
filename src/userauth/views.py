@@ -2,12 +2,11 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic.edit import CreateView
-from django.contrib.auth.forms import UserCreationForm
+from .forms import RegisterUserForm
 from django.shortcuts import redirect
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from userauth.serializers import UserSerializer
 
 
@@ -30,7 +29,7 @@ class LogoutInterfaceView(LogoutView):
 
 
 class SignupInterfaceView(CreateView):
-    form_class = UserCreationForm
+    form_class = RegisterUserForm
     template_name = "userauth/register.html"
     success_url = "/success"
 
