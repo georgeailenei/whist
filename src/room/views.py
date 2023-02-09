@@ -69,7 +69,16 @@ class CardRooms(LoginRequiredMixin, ListView):
 
     def get(self, request):
         rooms = CardRoom.objects.all()
+        player = request.user
 
+        # Remember to change it back in the game.
+        # Make this a function/method.
+        for room in rooms:
+            if player in room.players.all():
+                room.view_rejoin = True
+                room.save()
+
+        # Make this a function/method.
         for room in rooms:
             if room.players_count == 4:
                 room.room_opened = False

@@ -23,9 +23,33 @@ class Command(BaseCommand):
         user4.set_password('admin')
         user4.save()
 
+        user5 = User.objects.create(username='admin5')
+        user5.set_password('admin')
+        user5.save()
+
+        user6 = User.objects.create(username='admin6')
+        user6.set_password('admin')
+        user6.save()
+
+        user7 = User.objects.create(username='admin7')
+        user7.set_password('admin')
+        user7.save()
+
+        user8 = User.objects.create(username='admin8')
+        user8.set_password('admin')
+        user8.save()
+
+        card_room2 = CardRoom.objects.create()
+        controller.add_player(user5, card_room2)
+        controller.add_player(user6, card_room2)
+        controller.add_player(user7, card_room2)
+        controller.add_player(user8, card_room2)
+        game.setup_room(card_room2, Deck().cards)
+
         card_room = CardRoom.objects.create()
         controller.add_player(user1, card_room)
         controller.add_player(user2, card_room)
         controller.add_player(user3, card_room)
         controller.add_player(user4, card_room)
         game.setup_room(card_room, Deck().cards)
+

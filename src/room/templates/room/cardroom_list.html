@@ -35,7 +35,14 @@
         {% if room.room_opened %}
         <td><a href="{% url 'the_room' room.id %}" class="text-success">Open</a></td>
         {% else %}
-        <td><span class="text-danger">Closed</span></td>
+        <td><span class="text-danger">Closed / </span>
+            {% if room.view_rejoin %}
+                <a href="{% url 'game' room.id %}" class="font-color">Rejoin</a>
+            {% else %}
+                <a href="{% url 'game' room.id %}" class="font-color">View</a>
+        {% endif %}
+        </td>
+
         {% endif %}
     </tr>
     {% endfor %}
