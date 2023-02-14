@@ -12,9 +12,11 @@
 <table class="table table-borderless table-hover">
   <thead>
     <tr class="border-bottom border-secondary font-color">
-        <th scope="col">Player</th>
-        <th scope="col">Rank</th>
-        <th scope="col">Points</th>
+        <th>Room {{ room_nr }}</th></tr>
+    <tr class="border-bottom border-secondary font-color">
+        <th>Player</th>
+        <th>Rank</th>
+        <th>Points</th>
     </tr>
   </thead>
   <tbody>
@@ -51,8 +53,7 @@
     {% endif %}
     <p>{{ message }}</p>
 </div>
-
-<!--{% endif %}-->
+{% endif %}
 
 {% endblock %}
 
