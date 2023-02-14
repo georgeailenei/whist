@@ -7,6 +7,7 @@ def ranking(user):
 
     for u in users:
         if user.username == u['username']:
-            return position
+            user.rank = position
+            user.save()
         else:
             position += 1

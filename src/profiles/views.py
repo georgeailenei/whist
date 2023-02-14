@@ -12,11 +12,11 @@ class UserProfile(LoginRequiredMixin, TemplateView):
 
     def get(self, request, **kwargs):
         user = request.user
-        rank = ranking(user)
+        ranking(user)
         profile_form = ProfileForm()
 
         context = {
-            'rank': rank,
+            'rank': user.rank,
             'form': profile_form,
         }
 

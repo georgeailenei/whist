@@ -3,6 +3,7 @@
 
 {% block header %}
 <link rel="stylesheet" type="text/css" href="{% static 'css_files/room_list.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css_files/home.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -12,8 +13,9 @@
 <table class="table table-borderless table-hover">
   <thead>
     <tr class="border-bottom border-secondary font-color">
-        <th>Room {{ room_nr }}</th></tr>
-    <tr class="border-bottom border-secondary font-color">
+        <th><h4>Room {{ room_nr }}</h4></th>
+    </tr>
+    <tr class="border-bottom border-secondary font-color text-center">
         <th>Player</th>
         <th>Rank</th>
         <th>Points</th>
@@ -21,16 +23,16 @@
   </thead>
   <tbody>
   {% for player in players %}
-     <tr class="border-bottom border-secondary font-color">
+     <tr class="border-bottom border-secondary font-color text-center">
         <th scope="col">
-            {% if user.profile.avatar %}
+            {% if player.profile.avatar %}
             <img src="{{ user.profile.avatar.url }}" class="avatar">
             {% else %}
             <img src="{% static 'profile/images/default.jpg' %}" class="avatar">
             {% endif %}
             {{ player.username }}
         </th>
-        <td> {{ rank }}  </td>
+        <td> {{ player.rank }} </td>
         <td> {{ player.points }}  </td>
     </tr>
   {% endfor %}
@@ -41,14 +43,14 @@
     {% if register %}
     <form method="post">
     {% csrf_token %}
-    <button type="submit" name="Join" class="btn btn-outline-success btn-sm">Join Table</button>
+    <button type="submit" name="Join" class="btn btn-outline-success btn-sm">Join Room</button>
     </form>
     {% endif %}
 
     {% if cancel %}
     <form method="post">
     {% csrf_token %}
-    <button type="submit" name="Cancel" class="btn btn-outline-danger btn-sm">Leave Table</button>
+    <button type="submit" name="Cancel" class="btn btn-outline-danger btn-sm">Leave Room</button>
     </form>
     {% endif %}
     <p>{{ message }}</p>

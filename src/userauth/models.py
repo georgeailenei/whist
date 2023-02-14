@@ -9,3 +9,4 @@ class User(AbstractUser, PermissionsMixin):
     choice = models.IntegerField(default=0)
     registration_date = models.DateTimeField(auto_now_add=True)
     points = models.IntegerField(default=1000)
+    rank = models.IntegerField(default=0)

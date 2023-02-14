@@ -28,6 +28,7 @@ class Room(LoginRequiredMixin, TemplateView):
         card_room = get_object_or_404(CardRoom, pk=pk)
         players_count = self.controller.check_players_num(card_room)
         user = request.user
+        ranking(user)
 
         if "Join" in request.POST:
             try:
@@ -48,8 +49,6 @@ class Room(LoginRequiredMixin, TemplateView):
         players = list(card_room.players.all())
         players_count = self.controller.check_players_num(card_room)
         is_registered = self.controller.check_user(request.user, card_room)
-        user = request.user
-        rank = ranking(user)
 
         if players_count == 4 and card_room.game_status:
             return redirect("game", pk=pk)
@@ -62,7 +61,6 @@ class Room(LoginRequiredMixin, TemplateView):
                 "room_status": True,
                 "register": is_registered,
                 "cancel": not is_registered,
-                "rank": rank,
             }
             return render(request, self.template_name, content)
 
