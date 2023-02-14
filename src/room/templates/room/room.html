@@ -2,22 +2,40 @@
 {% load static %}
 
 {% block header %}
-<link rel="stylesheet" type="text/css" href="{% static 'css_files/join.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css_files/room_list.css' %}">
 {% endblock %}
 
 {% block content %}
 
 {% if room_status %}
-<div class="text-center font-color">
-    <h1>Room {{room_nr}}</h1>
 
-    <h6>Players</h6>
-    <ul class="list-unstyled">
-    {% for player in players %}
-        <li>{{player.username}}</li>
-    {% endfor %}
-    </ul>
+<table class="table table-borderless table-hover">
+  <thead>
+    <tr class="border-bottom border-secondary font-color">
+        <th scope="col">Player</th>
+        <th scope="col">Rank</th>
+        <th scope="col">Points</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for player in players %}
+     <tr class="border-bottom border-secondary font-color">
+        <th scope="col">
+            {% if user.profile.avatar %}
+            <img src="{{ user.profile.avatar.url }}" class="avatar">
+            {% else %}
+            <img src="{% static 'profile/images/default.jpg' %}" class="avatar">
+            {% endif %}
+            {{ player.username }}
+        </th>
+        <td> {{ rank }}  </td>
+        <td> {{ player.points }}  </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
 
+<div class="text-right">
     {% if register %}
     <form method="post">
     {% csrf_token %}
@@ -34,7 +52,7 @@
     <p>{{ message }}</p>
 </div>
 
-{% endif %}
+<!--{% endif %}-->
 
 {% endblock %}
 

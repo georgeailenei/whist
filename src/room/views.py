@@ -9,6 +9,7 @@ from .serializers import RoomSerializer, CardSerializer, ChoiceSerializer, Playe
 from .utils import get_controller
 from .utils import game_controller
 from django.utils import timezone
+from profiles.controllers.rank_controller import ranking
 
 
 class Game(LoginRequiredMixin, TemplateView):
@@ -47,6 +48,8 @@ class Room(LoginRequiredMixin, TemplateView):
         players = list(card_room.players.all())
         players_count = self.controller.check_players_num(card_room)
         is_registered = self.controller.check_user(request.user, card_room)
+        user = request.user
+        rank = ranking(user)
 
         if players_count == 4 and card_room.game_status:
             return redirect("game", pk=pk)
@@ -59,6 +62,7 @@ class Room(LoginRequiredMixin, TemplateView):
                 "room_status": True,
                 "register": is_registered,
                 "cancel": not is_registered,
+                "rank": rank,
             }
             return render(request, self.template_name, content)
 
