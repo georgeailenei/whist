@@ -3,12 +3,9 @@ import { ref } from 'vue';
 import GameTable from './GameTable.vue'
 
 const props = defineProps([
-  'finish_round',
-  'finish_game',
   'room',
   'time',
 ]);
-
 
 const is_team_one_winning = () => {
   if (props.room.stats.team_one_score > props.room.stats.team_two_score) {

@@ -6,7 +6,6 @@ import Game from './Game.vue'
 
 
 const game_is_playing = ref(true);
-const round_finished = ref(false);
 const loaded_data = ref(false);
 const user_data = ref(null);
 const room = ref(null);
@@ -129,16 +128,12 @@ onUnmounted(() => {
   }
 })
 
-const finish_round = () => {
-  round_finished.value = true;
-}
-
 </script>
 
 <template>
 
 <!-- The GAME -->
-<Game v-if="(game_is_playing && loaded_data && room_full)" :finish_round="finish_round" :room="room" :time="timer" />
+<Game v-if="(game_is_playing && loaded_data && room_full)" :room="room" :time="timer" />
 
 <!-- Display game no longer available -->
 <div v-if="!game_is_playing" class="modal">
