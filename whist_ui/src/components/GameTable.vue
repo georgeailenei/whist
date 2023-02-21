@@ -134,7 +134,8 @@ const card_symbols = {
         <span class="card-symbol" v-html="card_symbols[room.stats.trump_card]"></span>
 
         <!-- Deck -->
-        <div v-if="(!round_started)" class="deck">
+        <div v-if="(!round_started || room.stats.team_one_score
+ === 0 && room.stats.team_two_score === 0)" class="deck">
           <Transition v-for="el in 52" :key="el" :name="`spread-p${4 - ((el - 1) % 4)}`" @after-leave="after_leave">
             <Card :id="`${4 - ((el - 1) % 4)}`" v-if="el <= cards_to_spread" class="card_in_deck"
               card_value="not_permitted"></Card>
