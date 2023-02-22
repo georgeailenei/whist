@@ -23,12 +23,17 @@ const timeleft = ref(props.time);
 const timer = setInterval(() => {
   const played_hand_time = Date.parse(props.room.stats.last_played_card);
   const current_time = Date.now();
-
-  if (props.time === 30) {
+  console.log(props.room.stats.team_one_score);
+  if (props.room.stats.team_one_score === 0
+    && props.room.stats.team_one_score === 0
+    && props.room.stats.board.length === 0
+    && props.room.players[props.room.stats.player_position].hand.length === 13) {
+    timeleft.value = 30 - (Math.floor((current_time - played_hand_time) / 1000)); 
+  } else if (props.time === 30) {
     timeleft.value = 30 - (Math.floor((current_time - played_hand_time) / 1000));
-  } else{
+  } else if (props.time === 15) {
     timeleft.value = 15 - (Math.floor((current_time - played_hand_time) / 1000));
-  }
+  } 
 
   if (timeleft.value < 0) {
     timeleft.value = 0;

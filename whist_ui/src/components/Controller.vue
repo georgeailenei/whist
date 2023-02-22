@@ -53,8 +53,13 @@ const update_room = () => {
             room_full.value = true;
             game_is_playing.value = true;
           }
-
-          if (room.value.stats.cards_in_play === 1) {
+          
+          if (room.value.stats.team_one_score === 0
+            && room.value.stats.team_one_score === 0
+            && room.value.stats.board.length === 0
+            && room.value.players[room.value.stats.player_position].hand.length === 13) {
+            timer.value = 30;
+          } else if (room.value.stats.cards_in_play === 1) {
             timer.value = 30;
           } else {
             timer.value = 15;
