@@ -1,8 +1,6 @@
 <script setup>
-import { ref } from 'vue';
 import Player from './Player.vue';
 
-const player_number = ref(0);
 const props = defineProps([
     'room',
 ]);
