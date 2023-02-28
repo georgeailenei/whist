@@ -3,6 +3,7 @@ import {ref, onUnmounted} from 'vue';
 import { server_client } from '../client';
 import _ from "lodash";
 import Game from './Game.vue'
+import EmptyTable from './EmptyTable.vue';
 
 
 const game_is_playing = ref(true);
@@ -47,7 +48,7 @@ const update_room = () => {
           if (room.value.players.length !== 4){
             game_is_playing.value = false;
             room_full.value = false;
-            document.getElementById("game_finished").click();
+            // document.getElementById("game_finished").click();
             server_client.send_players_choice_to_server(1, true, user_data.value.username);
           } else if (room.value.players.length === 4){
             room_full.value = true;
@@ -141,16 +142,16 @@ onUnmounted(() => {
 <Game v-if="(game_is_playing && loaded_data && room_full)" :room="room" :time="timer" />
 
 <!-- The GAME Room Not Full -->
-<Game v-if="!room_full" :room="room" />
+<EmptyTable v-if="(loaded_data && !room_full)" :room="room"/>
 
 <!-- Display game no longer available -->
-<div v-if="!game_is_playing" class="modal">
+<!-- <div v-if="!game_is_playing" class="modal">
   <div class="modal-content">
     <p>A player left.</p>
       <p>This game is no longer available</p>
     <button id="game_finished" class="button-quit" @click="game_no_longer_available">OTHER ROOMS</button>
   </div>
-</div>
+</div> -->
 
 <!-- Display waiting on other players -->
 <div v-if="room_full && p_choice != 0" class="modal">
