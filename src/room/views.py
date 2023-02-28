@@ -10,6 +10,7 @@ from .utils import get_controller
 from .utils import game_controller
 from django.utils import timezone
 from profiles.controllers.rank_controller import ranking
+from .repos.room_stats import RoomStats
 
 
 class Game(LoginRequiredMixin, TemplateView):
@@ -45,7 +46,8 @@ class Room(LoginRequiredMixin, TemplateView):
 
     def get(self, request, pk):
         card_room = get_object_or_404(CardRoom, pk=pk)
-        room_stats = card_room.stats
+        stats = RoomStats()
+        room_stats = stats.get_room_stats(card_room)
         players = list(card_room.players.all())
         players_count = self.controller.check_players_num(card_room)
         is_registered = self.controller.check_user(request.user, card_room)

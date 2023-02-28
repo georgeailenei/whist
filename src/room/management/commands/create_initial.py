@@ -43,17 +43,17 @@ class Command(BaseCommand):
         controller.add_player(user1, card_room)
         controller.add_player(user2, card_room)
         controller.add_player(user3, card_room)
-        controller.add_player(user4, card_room)
-        game.setup_room(card_room, Deck().cards)
-
-        card_room2 = CardRoom.objects.create()
-        controller.add_player(user5, card_room2)
-        controller.add_player(user6, card_room2)
-        controller.add_player(user7, card_room2)
-        controller.add_player(user8, card_room2)
-        game.setup_room(card_room2, Deck().cards)
-
-        card_room3 = CardRoom.objects.create()
-        game.setup_room(card_room3, Deck().cards)
+        # controller.add_player(user4, card_room)
+        # game.setup_room(card_room, Deck().cards)
+        #
+        # card_room2 = CardRoom.objects.create()
+        # controller.add_player(user5, card_room2)
+        # controller.add_player(user6, card_room2)
+        # controller.add_player(user7, card_room2)
+        # controller.add_player(user8, card_room2)
+        # game.setup_room(card_room2, Deck().cards)
+        #
+        # card_room3 = CardRoom.objects.create()
+        # game.setup_room(card_room3, Deck().cards)
 
 

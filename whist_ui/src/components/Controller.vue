@@ -140,6 +140,9 @@ onUnmounted(() => {
 <!-- The GAME -->
 <Game v-if="(game_is_playing && loaded_data && room_full)" :room="room" :time="timer" />
 
+<!-- The GAME Room Not Full -->
+<Game v-if="!room_full" :room="room" />
+
 <!-- Display game no longer available -->
 <div v-if="!game_is_playing" class="modal">
   <div class="modal-content">
