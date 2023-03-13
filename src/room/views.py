@@ -41,7 +41,6 @@ class Room(LoginRequiredMixin, TemplateView):
 
         elif "Cancel" in request.POST:
             self.controller.remove_player(user, card_room)
-
         return redirect("the_room", pk=pk)
 
     def get(self, request, pk):
@@ -71,10 +70,23 @@ class CardRooms(LoginRequiredMixin, ListView):
     model = CardRoom
     template_name = "room/cardroom_list.html"
 
+    def __init__(self):
+        super().__init__()
+        self.controller = get_controller()
+
+    def post(self, request):
+        if 'Join' in request.POST:
+            room_id = request.POST['Join']
+            card_room = get_object_or_404(CardRoom, pk=room_id)
+            user = request.user
+            try:
+                self.controller.add_player(user, card_room)
+            except ValueError:
+                return redirect('card_rooms_list')
+            return redirect('game', pk=room_id)
+
     def get(self, request):
         rooms = CardRoom.objects.all()
-        player = request.user
-
         content = {
             "rooms": rooms,
         }

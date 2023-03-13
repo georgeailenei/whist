@@ -22,14 +22,23 @@
     <tr class="border-bottom border-secondary font-color">
         <th scope="col" class="text-center">{{room.id}}</th>
         <td class="text-center">{{room.players_count}}</td>
-        <td class="text-center"><a href="{% url 'the_room' room.id %}" class="font-color">View</a></td>
+        <td class="text-center">
+            {% if room.game_status %}
+            <i>Hidden</i>
+            {% else %}
+            <a href="{% url 'the_room' room.id %}" class="font-color">View</a>
+            {% endif %}
+        </td>
         <td class="text-right">
             {% if room.game_status %}
             <button type="button" class="btn btn-outline-danger btn-sm" disabled>Game In Progress</button>
             {% else %}
-            <a href="{% url 'the_room' room.id %}" class="text-success">
-            <button class="btn btn-outline-success btn-sm">Join Table</button>
-            </a>
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="Join" value="{{ room.id }}" class="btn btn-outline-success btn-sm">
+                        Join Table
+                    </button>
+                </form>
             {% endif %}
         </td>
     </tr>
