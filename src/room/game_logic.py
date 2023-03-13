@@ -273,26 +273,27 @@ class GameController:
             total_cards_in_play += len(p.hand.split())
         return total_cards_in_play
 
+    def sort_players_cards(self, players):
+        for p in players:
+            p.hand = " ".join(str(e) for e in p.hand)
+            p.choice = 0
+            p.save()
+        return players
+
     def setup_room(self, card_room, cards):
         stats = self.repository.get_room_stats(room=card_room)
         players = list(card_room.players.all())
 
         if len(players) == 4:
             players = self.spread_cards(cards, players)
-            # Reset stats to set up another game;
             stats = self.reset_room_stats(stats)
             stats.trump_card = self.find_trump_card(cards)
 
-            card_room.status = "In Game"
             card_room.game_status = True
             card_room.save()
             stats.save()
 
-            for p in players:
-                p.hand = " ".join(str(e) for e in p.hand)
-                p.choice = 0
-                p.save()
-
+            players = self.sort_players_cards(players)
             stats.cards_in_play = self.cards_in_play(players)
             stats.save()
 

@@ -75,19 +75,6 @@ class CardRooms(LoginRequiredMixin, ListView):
         rooms = CardRoom.objects.all()
         player = request.user
 
-        # Remember to change it back in the game.
-        # Make this a function/method.
-        for room in rooms:
-            if player in room.players.all():
-                room.view_rejoin = True
-                room.save()
-
-        # Make this a function/method.
-        for room in rooms:
-            if room.players_count == 4:
-                room.room_opened = False
-                room.save()
-
         content = {
             "rooms": rooms,
         }
@@ -118,7 +105,7 @@ class RoomApiView(RetrieveAPIView):
             if time_since_card_was_played - 5 > 25:     # 30 seconds allocated to allow the game to spread the cards.
                 print(time_since_card_was_played)
                 game_controller().play_card_for_player(card_room, room_stats, card_room.players.all()[room_stats.player_position])
-        elif time_since_card_was_played > 1 and card_room.game_status:
+        elif time_since_card_was_played > 0.1 and card_room.game_status:
             game_controller().play_card_for_player(card_room, room_stats, card_room.players.all()[room_stats.player_position])
         return super().get(*args, **kwargs)
 

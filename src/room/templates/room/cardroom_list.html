@@ -10,40 +10,24 @@
 <table class="table table-borderless table-hover">
   <thead>
     <tr class="border-bottom border-secondary font-color">
-        <th scope="col">Room</th>
-        <th scope="col">Players</th>
-        <th scope="col">Seats</th>
-        <th scope="col">Status</th>
-        <th scope="col">Open/Closed</th>
+        <th scope="col" class="text-center">Room</th>
+        <th scope="col" class="text-center">Players</th>
+        <th scope="col" class="text-center">Stats</th>
+        <th scope="col" class="text-right">Registration</th>
     </tr>
   </thead>
   <tbody>
 
     {% for room in rooms %}
     <tr class="border-bottom border-secondary font-color">
-        <th scope="col"> {{room.id}}</th>
-        <td>{{room.players_count}}</td>
-
-        {% if room.room_opened %}
-        <td class="text-success">{{room.seats}}</td>
-        {% else %}
-        <td class="text-danger">{{room.seats}}</td>
-        {% endif %}
-
-        <td>{{room.status}}</td>
-
-        {% if room.room_opened %}
-        <td><a href="{% url 'the_room' room.id %}" class="text-success">Open</a></td>
-        {% else %}
-        <td><span class="text-danger">Closed / </span>
-            {% if room.view_rejoin %}
-                <a href="{% url 'game' room.id %}" class="font-color">Rejoin</a>
-            {% else %}
-                <a href="{% url 'game' room.id %}" class="font-color">View</a>
-        {% endif %}
+        <th scope="col" class="text-center">{{room.id}}</th>
+        <td class="text-center">{{room.players_count}}</td>
+        <td class="text-center"><a href="{% url 'the_room' room.id %}" class="font-color">View</a></td>
+        <td class="text-right">
+            <a href="{% url 'the_room' room.id %}" class="text-success">
+            <button class="btn btn-outline-success btn-sm">Join Table</button>
+            </a>
         </td>
-
-        {% endif %}
     </tr>
     {% endfor %}
 

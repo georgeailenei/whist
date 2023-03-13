@@ -10,10 +10,13 @@ const game_is_playing = ref(true);
 const loaded_data = ref(false);
 const user_data = ref(null);
 const room = ref(null);
+
+// What are variables winners, losers, p_choice 
 const winners = ref(null);
 const losers = ref(null);
-const p_choice = ref(false);
+const p_choice = ref(false); 
 const room_full = ref(false);
+
 const display_winners = ref(false);
 const display_losers = ref(false);
 const is_modal_open = ref(false);

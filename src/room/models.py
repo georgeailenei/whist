@@ -4,12 +4,8 @@ from userauth.models import User
 
 class CardRoom(models.Model):
     players = models.ManyToManyField(User)
-    seats = models.CharField(max_length=15, default="Available")
     players_count = models.IntegerField(default=0)
-    status = models.CharField(max_length=15, default="Waiting")
     game_status = models.BooleanField(default=False)
-    room_opened = models.BooleanField(default=True)
-    view_rejoin = models.BooleanField(default=False)
 
 
 class Stats(models.Model):
