@@ -11,7 +11,7 @@ const loaded_data = ref(false);
 const user_data = ref(null);
 const room = ref(null);
 
-// What are variables winners, losers, p_choice 
+
 const winners = ref(null);
 const losers = ref(null);
 const p_choice = ref(false); 
@@ -28,10 +28,10 @@ const update_user_data = () => {
       user_data.value = data;
       console.log(user_data.value);
 
-      // if (user_data.value.choice === 1){ 
-      //   p_choice.value = true;
-      //   is_modal_open.value = false;
-      // }
+      if (user_data.value.choice === 1){
+        p_choice.value = true;
+        is_modal_open.value = false;
+      }
     })
 }
 
@@ -51,7 +51,6 @@ const update_room = () => {
           if (room.value.players.length !== 4){
             game_is_playing.value = false;
             room_full.value = false;
-            // document.getElementById("game_finished").click();
             server_client.send_players_choice_to_server(1, true, user_data.value.username);
           } else if (room.value.players.length === 4){
             room_full.value = true;
@@ -106,8 +105,8 @@ const play_another_game = () => {
 }
 
 const quit_game = () => {
-  location.replace("http://localhost:8000/card_rooms");
   server_client.send_players_choice_to_server(1, false, user_data.value.username);
+  location.replace("http://localhost:8000/card_rooms");
 }
 
 const update_interval = setInterval(update_room, 500);
