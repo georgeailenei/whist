@@ -307,16 +307,18 @@ class GameController:
         board = room_stats.board.split()
         old_board = room_stats.old_board.split()
 
-        # Check if players are still at the table;
-        for p in players:
-            if p.username == player and choice is False:
-                room.players.remove(p)
-                room.game_status = False
-                room.status = "Waiting"
-                room.players_count = room.players.count()
-                room.seats = "Available"
-                room_stats = self.reset_room_stats(room_stats)
-                room.save()
+        remaining_players = []
+
+        # the following for loop must be optimise.
+        # for p in players:
+        #     if p.username == player and choice is False:
+        #         room.players.remove(p)
+        #         room.game_status = False
+        #         room.status = "Waiting"
+        #         room.players_count = room.players.count()
+        #         room.seats = "Available"
+        #         room_stats = self.reset_room_stats(room_stats)
+        #         room.save()
 
         game_ended = self.game_ended(room_stats.team_one_score, room_stats.team_two_score)
         one_set_is_finished = self.total_tricks_completed(players) is False
@@ -375,26 +377,10 @@ class GameController:
         if not game_ended:
             self.reset_players_cards_and_tricks(players)
             room.game_status = False
-
-            for p in players:
-                if p.username == player and choice:
-                    room_stats.players_choice += 1
-                    p.choice += 1
-                    p.save()
-                elif p.username == player and choice is False:
-                    room.players.remove(p)
-                    room.players_count = room.players.count()
-                    room.seats = "Available"
-                    room.status = "Waiting"
-                    room_stats = self.reset_room_stats(room_stats)
-                    room.save()
-
+            room_stats = self.reset_room_stats(room_stats)
             self.repository.save_game_stats(room_stats, board, old_board)
-
-            if room_stats.players_choice == 4:
-                self.setup_room(room, Deck().cards)
-
+            self.setup_room(room, Deck().cards)
             room.save()
-
+            
         # RESULTS
         self.repository.save_game_stats(room_stats, board, old_board)

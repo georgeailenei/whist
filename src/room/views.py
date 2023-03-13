@@ -78,12 +78,15 @@ class CardRooms(LoginRequiredMixin, ListView):
         if 'Join' in request.POST:
             room_id = request.POST['Join']
             card_room = get_object_or_404(CardRoom, pk=room_id)
+            players_count = self.controller.check_players_num(card_room)
             user = request.user
 
             try:
                 self.controller.add_player(user, card_room)
             except ValueError:
                 return redirect('game', pk=room_id)
+            if players_count == 3:
+                return redirect('the_room', pk=room_id)
             return redirect('game', pk=room_id)
 
     def get(self, request):

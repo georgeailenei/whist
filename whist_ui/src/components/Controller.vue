@@ -28,10 +28,10 @@ const update_user_data = () => {
       user_data.value = data;
       console.log(user_data.value);
 
-      if (user_data.value.choice === 1){
-        p_choice.value = true;
-        is_modal_open.value = false;
-      }
+      // if (user_data.value.choice === 1){ 
+      //   p_choice.value = true;
+      //   is_modal_open.value = false;
+      // }
     })
 }
 
@@ -101,31 +101,13 @@ const update_room = () => {
 }
 
 const play_another_game = () => {
-  location.replace("http://localhost:8000/card_rooms/1");
+  location.replace("http://localhost:8000/card_rooms/1/game");
   server_client.send_players_choice_to_server(1, true, user_data.value.username);
 }
 
-const back_to_room = () => {
-  location.replace("http://localhost:8000/card_rooms/1");
-}
-
 const quit_game = () => {
-  server_client.send_players_choice_to_server(1, false, user_data.value.username);
   location.replace("http://localhost:8000/card_rooms");
-}
-
-const game_no_longer_available = () => {
-  let time = 1;
-  const the_interval = setInterval(redirect_player, 1000);
-
-  function redirect_player() {
-    if(time === 0){
-      clearInterval(the_interval);
-      window.location.replace("http://localhost:8000/card_rooms/1");
-    } else {
-      time--;
-    }
-  }
+  server_client.send_players_choice_to_server(1, false, user_data.value.username);
 }
 
 const update_interval = setInterval(update_room, 500);
@@ -140,30 +122,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-
-<!-- The GAME -->
+  
 <Game v-if="(game_is_playing && loaded_data && room_full)" :room="room" :time="timer" />
-
-<!-- The GAME Room Not Full -->
 <EmptyTable v-if="(loaded_data && !room_full)" :room="room"/>
-
-<!-- Display game no longer available -->
-<!-- <div v-if="!game_is_playing" class="modal">
-  <div class="modal-content">
-    <p>A player left.</p>
-      <p>This game is no longer available</p>
-    <button id="game_finished" class="button-quit" @click="game_no_longer_available">OTHER ROOMS</button>
-  </div>
-</div> -->
-
-<!-- Display waiting on other players -->
-<div v-if="room_full && p_choice != 0" class="modal">
-  <div class="modal-content">
-    <p>Waiting for players to act</p>
-    <p>...</p>
-    <button id="game_finished" class="button-quit" @click="back_to_room">Room</button>
-  </div>
-</div>
 
 <!-- Display Winners -->
 <div v-if="display_winners && room_full" class="modal">
