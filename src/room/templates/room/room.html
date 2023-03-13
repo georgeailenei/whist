@@ -43,14 +43,14 @@
     {% if register %}
     <form method="post">
     {% csrf_token %}
-    <button type="submit" name="Join" class="btn btn-outline-success btn-sm">Join Room</button>
+    <button type="submit" name="Join" class="btn btn-outline-success btn-sm">Join Table</button>
     </form>
     {% endif %}
 
     {% if cancel %}
     <form method="post">
     {% csrf_token %}
-    <button type="submit" name="Cancel" class="btn btn-outline-danger btn-sm">Leave Room</button>
+    <button type="submit" name="Cancel" class="btn btn-outline-danger btn-sm">Leave Table</button>
     </form>
     {% endif %}
     <p>{{ message }}</p>
