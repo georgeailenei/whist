@@ -24,9 +24,13 @@
         <td class="text-center">{{room.players_count}}</td>
         <td class="text-center"><a href="{% url 'the_room' room.id %}" class="font-color">View</a></td>
         <td class="text-right">
+            {% if room.game_status %}
+            <button type="button" class="btn btn-outline-danger btn-sm" disabled>Game In Progress</button>
+            {% else %}
             <a href="{% url 'the_room' room.id %}" class="text-success">
             <button class="btn btn-outline-success btn-sm">Join Table</button>
             </a>
+            {% endif %}
         </td>
     </tr>
     {% endfor %}
