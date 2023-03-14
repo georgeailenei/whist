@@ -92,7 +92,7 @@ class CardRooms(LoginRequiredMixin, ListView):
     def get(self, request):
         rooms = CardRoom.objects.all()
         content = {
-            "rooms": rooms,
+            'rooms': rooms,
         }
         return render(request, self.template_name, content)
 

@@ -98,7 +98,6 @@ const update_room = () => {
 }
 
 const play_another_game = () => {
-  location.replace("http://localhost:8000/card_rooms/1/game");
   server_client.send_players_choice_to_server(1, true, user_data.value.username);
 }
 

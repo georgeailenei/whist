@@ -391,6 +391,7 @@ class GameController:
                     self.reset_players_cards_and_tricks(players)
                     room_stats = self.reset_room_stats(room_stats)
                     room.leaving_players = ''
+                    room.players_count = len(players)
                 room.save()
 
         # RESULTS
