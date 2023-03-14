@@ -6,7 +6,6 @@ class CardRoom(models.Model):
     players = models.ManyToManyField(User)
     players_count = models.IntegerField(default=0)
     game_status = models.BooleanField(default=False)
-    remaining_players = models.CharField(max_length=500)
     leaving_players = models.CharField(max_length=500)
 
 
