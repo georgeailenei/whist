@@ -7,7 +7,7 @@ from userauth.models import User
 class PlayerSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = "id", "hand", "username", "tricks", "played_hand"
+        fields = "id", "hand", "username", "tricks", "played_hand", "choice"
 
     hand = fields.SerializerMethodField()
 

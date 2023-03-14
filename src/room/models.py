@@ -7,6 +7,7 @@ class CardRoom(models.Model):
     players_count = models.IntegerField(default=0)
     game_status = models.BooleanField(default=False)
     remaining_players = models.CharField(max_length=500)
+    leaving_players = models.CharField(max_length=500)
 
 
 class Stats(models.Model):
@@ -23,5 +24,4 @@ class Stats(models.Model):
     cards_per_round = models.IntegerField(default=0)
     winner = models.CharField(max_length=40, blank=True)
     last_played_card = models.DateTimeField(auto_now_add=True)
-    players_choice = models.IntegerField(default=0)
     cards_in_play = models.IntegerField(default=0)

@@ -6,20 +6,18 @@ import Game from './Game.vue'
 import EmptyTable from './EmptyTable.vue';
 
 
-const game_is_playing = ref(true);
 const loaded_data = ref(false);
 const user_data = ref(null);
 const room = ref(null);
-
+const game_is_playing = ref(true);
 
 const winners = ref(null);
 const losers = ref(null);
-const p_choice = ref(false); 
-const room_full = ref(false);
 
 const display_winners = ref(false);
 const display_losers = ref(false);
-const is_modal_open = ref(false);
+const is_modal_open = ref(true);
+const room_full = ref(false);
 const timer = ref(0);
 
 const update_user_data = () => {
@@ -29,7 +27,6 @@ const update_user_data = () => {
       console.log(user_data.value);
 
       if (user_data.value.choice === 1){
-        p_choice.value = true;
         is_modal_open.value = false;
       }
     })
@@ -126,7 +123,7 @@ onUnmounted(() => {
 <EmptyTable v-if="(loaded_data && !room_full)" :room="room"/>
 
 <!-- Display Winners -->
-<div v-if="display_winners && room_full" class="modal">
+<div v-if="display_winners && room_full && is_modal_open" class="modal">
   <div class="modal-content">
     <b class="winner-msg-congrats">Congratulations</b>
       {{ winners }}
@@ -137,7 +134,7 @@ onUnmounted(() => {
 </div>
 
 <!-- Display Losers -->
-<div v-if="display_losers && room_full" class="modal">
+<div v-if="display_losers && room_full && is_modal_open" class="modal">
   <div class="modal-content">
     <b class="winner-msg-congrats">Try again</b>
       {{ losers }}

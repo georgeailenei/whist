@@ -33,7 +33,6 @@ class Command(BaseCommand):
         game.setup_room(card_room, Deck().cards)
 
         card_room_stats = room_stats.get_room_stats(card_room)
-        card_room_stats.team_one_score = 5
-        card_room_stats.team_two_score = 5
+        card_room_stats.team_one_score = 4
+        card_room_stats.team_two_score = 4
         card_room_stats.save()
-        

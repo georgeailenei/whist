@@ -105,11 +105,8 @@ class RoomApiView(RetrieveAPIView):
         card_room = self.get_object()
         room_stats = card_room.stats
 
-        if not card_room.game_status and len(card_room.players.all()) == 4 and room_stats.players_choice == 4:
+        if not card_room.game_status and len(card_room.players.all()) == 4:
             game_controller().setup_room(card_room, Deck().cards)
-        elif room_stats.players_choice < 4 and len(card_room.players.all()) < 4:
-            card_room.game_status = False
-            card_room.save()
         elif not card_room.game_status and len(card_room.players.all()) == 4 and room_stats.team_one_score == 0 and room_stats.team_one_score == 0:
             card_room.game_status = True
             card_room.save()
@@ -143,5 +140,5 @@ class RoomApiView(RetrieveAPIView):
         serializer.is_valid(raise_exception=True)
 
         played_card = serializer.data["card"]
-        game_controller().run(card_room, played_card, None, "")
+        game_controller().run(card_room, played_card, "", "")
         return Response(serializer.data)

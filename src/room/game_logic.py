@@ -297,16 +297,21 @@ class GameController:
             stats.cards_in_play = self.cards_in_play(players)
             stats.save()
 
-    def remaining_players(self, room, choice, player, players):
-        remaining_players = []
+    def player_leaves_or_stays(self, room, choice, player, players):
+        if not choice and choice is not None:
+            for p in players:
+                if player == p.username:
+                    room.leaving_players = room.leaving_players + p.username + " "
+                    p.choice = 1
+                    p.save()
 
-        for p in players:
-            if p.username == player and choice:
-                remaining_players.append(player)
-
-        room.remaining_players = ' '.join(remaining_players)
+        if choice:
+            for p in players:
+                if player == p.username:
+                    room.remaining_players = room.leaving_players + p.username + " "
+                    p.choice = 1
+                    p.save()
         room.save()
-        return room
 
     def run(self, room, played_card, choice, player):
         room_stats = self.repository.get_room_stats(room)
@@ -373,7 +378,10 @@ class GameController:
                 p.save()
 
         if not game_ended:
-            return
+            self.player_leaves_or_stays(room, choice, player, players)
+            
+            print('leaving: ' + room.leaving_players)
+            print('remaining: ' + room.remaining_players)
             # time_since_card_was_played = (timezone.now() - room_stats.last_played_card).total_seconds()
             # room = self.remaining_players(room, choice, player, players)
             #
@@ -384,7 +392,7 @@ class GameController:
             #         if p.username not in room.remaining_players.split():
             #             room.players.remove(p)
             #             room.save()
-            # 
+            #
             #     self.reset_players_cards_and_tricks(players)
             #     room_stats = self.reset_room_stats(room_stats)
             #     self.repository.save_game_stats(room_stats, board, old_board)
