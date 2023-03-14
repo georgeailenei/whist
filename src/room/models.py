@@ -4,7 +4,6 @@ from userauth.models import User
 
 class CardRoom(models.Model):
     players = models.ManyToManyField(User)
-    players_count = models.IntegerField(default=0)
     game_status = models.BooleanField(default=False)
     leaving_players = models.CharField(max_length=500)
 

@@ -380,19 +380,16 @@ class GameController:
             time_since_card_was_played = (timezone.now() - room_stats.last_played_card).total_seconds()
 
             if time_since_card_was_played > 6:
+                room.game_status = False
+                self.reset_players_cards_and_tricks(players)
+                room_stats = self.reset_room_stats(room_stats)
+
                 for p in players:
                     if p.choice == 0:
                         room.players.remove(p)
                     elif p.choice == 1 and p.username in room.leaving_players.split():
                         room.players.remove(p)
-
-                if len(players) < 4:
-                    room.game_status = False
-                    self.reset_players_cards_and_tricks(players)
-                    room_stats = self.reset_room_stats(room_stats)
-                    room.leaving_players = ''
-                    room.players_count = len(players)
-                room.save()
+            room.save()
 
         # RESULTS
         self.repository.save_game_stats(room_stats, board, old_board)

@@ -18,10 +18,10 @@
   </thead>
   <tbody>
 
-    {% for room in rooms %}
+    {% for room, p_count in rooms %}
     <tr class="border-bottom border-secondary font-color">
         <th scope="col" class="text-center">{{room.id}}</th>
-        <td class="text-center">{{room.players_count}}</td>
+        <td class="text-center">{{p_count}}</td>
         <td class="text-center">
             {% if room.game_status %}
             <i>Hidden</i>
