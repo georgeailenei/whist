@@ -308,7 +308,7 @@ class GameController:
         if choice:
             for p in players:
                 if player == p.username:
-                    room.remaining_players = room.leaving_players + p.username + " "
+                    room.remaining_players = room.remaining_players + p.username + " "
                     p.choice = 1
                     p.save()
         room.save()
@@ -379,7 +379,7 @@ class GameController:
 
         if not game_ended:
             self.player_leaves_or_stays(room, choice, player, players)
-            
+
             print('leaving: ' + room.leaving_players)
             print('remaining: ' + room.remaining_players)
             # time_since_card_was_played = (timezone.now() - room_stats.last_played_card).total_seconds()

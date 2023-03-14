@@ -23,7 +23,7 @@ const timeleft = ref(props.time);
 const timer = setInterval(() => {
   const played_hand_time = Date.parse(props.room.stats.last_played_card);
   const current_time = Date.now();
-  console.log(props.room.stats.team_one_score);
+
   if (props.room.stats.team_one_score === 0
     && props.room.stats.team_one_score === 0
     && props.room.stats.board.length === 0

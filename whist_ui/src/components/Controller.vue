@@ -16,7 +16,7 @@ const losers = ref(null);
 
 const display_winners = ref(false);
 const display_losers = ref(false);
-const is_modal_open = ref(true);
+const is_modal_open = ref(false);
 const room_full = ref(false);
 const timer = ref(0);
 
@@ -69,6 +69,7 @@ const update_room = () => {
             && room.value.stats.team_one_score > room.value.stats.team_two_score
             && user_data.value.choice === 0){
 
+            is_modal_open.value = true;
             winners.value = String(room.value.players[0].username) + " & " + String(room.value.players[2].username)
             losers.value = String(room.value.players[1].username) + " & " + String(room.value.players[3].username)
             
@@ -81,7 +82,8 @@ const update_room = () => {
           } else if (room.value.stats.team_one_score < room.value.stats.team_two_score
           && room.value.stats.team_two_score === 5
           && user_data.value.choice === 0){
-
+            
+            is_modal_open.value = true;
             winners.value = String(room.value.players[1].username) + " & " + String(room.value.players[3].username)
             losers.value = String(room.value.players[0].username) + " & " + String(room.value.players[2].username)
 
@@ -91,7 +93,6 @@ const update_room = () => {
               display_losers.value = true;
             }
           }
-
         }
       })    
 }
@@ -115,6 +116,21 @@ onUnmounted(() => {
   }
 })
 
+const modal_timeleft = ref(5);
+const modal_timer = setInterval(() => {
+  const played_hand_time = Date.parse(room.value.stats.last_played_card);
+  const current_time = Date.now();
+
+  if (is_modal_open) {
+    modal_timeleft.value = 5 - (Math.floor((current_time - played_hand_time) / 1000))
+  }
+
+  if (modal_timeleft.value < 0) {
+    modal_timeleft.value = 0;
+  }
+
+}, 1000);
+
 </script>
 
 <template>
@@ -130,6 +146,7 @@ onUnmounted(() => {
     <b class="winner-msg">You win</b>
     <button class="button-play-again" @click.once="play_another_game">Play again</button>
     <button class="button-quit" @click.once="quit_game">Quit</button>
+    <span class="modal_timer">{{ modal_timeleft }}</span>
   </div>
 </div>
 
@@ -141,13 +158,17 @@ onUnmounted(() => {
     <b class="losers-msg">You lose</b>
     <button class="button-play-again" @click.once="play_another_game">Play again</button>
     <button class="button-quit" @click.once="quit_game">Quit</button>
+    <span class="modal_timer">{{ modal_timeleft }}</span>
   </div>
 </div>
 
 </template>
 
 <style scoped>
-
+.modal_timer{
+  position: relative;
+  top: 25px;
+}
 .modal{
   display: block;
   position: fixed; /* Stay in place */
@@ -206,7 +227,7 @@ onUnmounted(() => {
   width: 90px;
   height: 30px;
   position: relative;
-  top: 10px;
+  top: 15px;
   margin: auto;
   background-color: #252322;
   border: none;
