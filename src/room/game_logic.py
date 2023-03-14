@@ -373,22 +373,23 @@ class GameController:
                 p.save()
 
         if not game_ended:
-            time_since_card_was_played = (timezone.now() - room_stats.last_played_card).total_seconds()
-            room = self.remaining_players(room, choice, player, players)
-
-            # fix the end of the game tomorrow. the modals are not working
-            # the way it supposes to.
-            if time_since_card_was_played > 10:
-                for p in players:
-                    if p.username not in room.remaining_players.split():
-                        room.players.remove(p)
-                        room.save()
-
-                self.reset_players_cards_and_tricks(players)
-                room_stats = self.reset_room_stats(room_stats)
-                self.repository.save_game_stats(room_stats, board, old_board)
-                self.setup_room(room, Deck().cards)
-                room.save()
+            return
+            # time_since_card_was_played = (timezone.now() - room_stats.last_played_card).total_seconds()
+            # room = self.remaining_players(room, choice, player, players)
+            #
+            # # fix the end of the game tomorrow. the modals are not working
+            # # the way it supposes to.
+            # if time_since_card_was_played > 10:
+            #     for p in players:
+            #         if p.username not in room.remaining_players.split():
+            #             room.players.remove(p)
+            #             room.save()
+            # 
+            #     self.reset_players_cards_and_tricks(players)
+            #     room_stats = self.reset_room_stats(room_stats)
+            #     self.repository.save_game_stats(room_stats, board, old_board)
+            #     self.setup_room(room, Deck().cards)
+            #     room.save()
 
         # RESULTS
         self.repository.save_game_stats(room_stats, board, old_board)
