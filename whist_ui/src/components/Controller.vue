@@ -9,7 +9,7 @@ import EmptyTable from './EmptyTable.vue';
 const loaded_data = ref(false);
 const user_data = ref(null);
 const room = ref(null);
-const game_is_playing = ref(true);
+const game_is_playing = ref(false);
 
 const winners = ref(null);
 const losers = ref(null);
@@ -24,15 +24,11 @@ const update_user_data = () => {
   server_client.get_user_details()
     .then((data) => {
       user_data.value = data;
+      console.log('user data');
       console.log(user_data.value);
-
-      if (user_data.value.choice === 1){
-        is_modal_open.value = false;
-      }
+      console.log(user_data.value.choice);
     })
 }
-
-update_user_data();
 
 const update_room = () => {
     server_client.get_room_details(1)
@@ -42,20 +38,19 @@ const update_room = () => {
           room.value = data;
           loaded_data.value = true;
 
-          console.log('updating');
+          console.log('room updating');
           console.log(room.value);
           
-          if (room.value.players.length !== 4){
-            game_is_playing.value = false;
-            room_full.value = false;
-            server_client.send_players_choice_to_server(1, true, user_data.value.username);
-          } else if (room.value.players.length === 4){
+          if (room.value.players.length === 4){
             room_full.value = true;
             game_is_playing.value = true;
+          } else {
+            game_is_playing.value = false;
+            room_full.value = false;
           }
-          
+
           if (room.value.stats.team_one_score === 0
-            && room.value.stats.team_one_score === 0
+            && room.value.stats.team_two_score === 0
             && room.value.stats.board.length === 0
             && room.value.players[room.value.stats.player_position].hand.length === 13) {
             timer.value = 30;
@@ -64,12 +59,19 @@ const update_room = () => {
           } else {
             timer.value = 15;
           }
+          
+          if (room.value.stats.team_one_score === 5 || room.value.stats.team_two_score === 5) {
+            if (user_data.value.choice === 1) {
+              is_modal_open.value = false;
+            } else {
+              is_modal_open.value = true;
+            }
+          }          
 
           if (room.value.stats.team_one_score === 5
-            && room.value.stats.team_one_score > room.value.stats.team_two_score
-            && user_data.value.choice === 0){
+            && room.value.stats.team_one_score > room.value.stats.team_two_score){
 
-            is_modal_open.value = true;
+            game_is_playing.value = false;
             winners.value = String(room.value.players[0].username) + " & " + String(room.value.players[2].username)
             losers.value = String(room.value.players[1].username) + " & " + String(room.value.players[3].username)
             
@@ -80,10 +82,9 @@ const update_room = () => {
             }
 
           } else if (room.value.stats.team_one_score < room.value.stats.team_two_score
-          && room.value.stats.team_two_score === 5
-          && user_data.value.choice === 0){
+          && room.value.stats.team_two_score === 5){
             
-            is_modal_open.value = true;
+            game_is_playing.value = false;
             winners.value = String(room.value.players[1].username) + " & " + String(room.value.players[3].username)
             losers.value = String(room.value.players[0].username) + " & " + String(room.value.players[2].username)
 
@@ -92,27 +93,30 @@ const update_room = () => {
             } else if (user_data.value.username === room.value.players[0].username || user_data.value.username === room.value.players[2].username){
               display_losers.value = true;
             }
-          }
+          } 
         }
       })    
 }
 
 const play_another_game = () => {
   server_client.send_players_choice_to_server(1, true, user_data.value.username);
-  location.replace("http://localhost:8000/card_rooms/1/game");
+  is_modal_open.value = false;
 }
 
 const quit_game = () => {
-  server_client.send_players_choice_to_server(1, false, user_data.value.username);
   location.replace("http://localhost:8000/card_rooms");
+  server_client.send_players_choice_to_server(1, false, user_data.value.username);
 }
 
-const update_interval = setInterval(update_room, 500);
+const update_room_interval = setInterval(update_room, 500);
+const update_user_data_interval = setInterval(update_user_data, 500);
 
 onUnmounted(() => {
-  if (update_interval !== null) {
+  if (update_room_interval !== null) {
     console.log('clear interval');
-    clearInterval(update_interval);
+    clearInterval(update_room_interval);
+  } else if (update_user_data_interval !== null) {
+    clearInterval(update_user_data_interval);
   }
 })
 

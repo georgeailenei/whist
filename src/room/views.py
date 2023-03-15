@@ -134,7 +134,8 @@ class RoomApiView(RetrieveAPIView):
         serializerTwo.is_valid(raise_exception=True)
         player = serializerTwo.data["player"]
 
-        game_controller().run(card_room, "", choice, player)
+        if card_room.game_status:
+            game_controller().run(card_room, "", choice, player)
         return Response(serializer.data)
 
     def patch(self, *args, **kwargs):
@@ -143,5 +144,6 @@ class RoomApiView(RetrieveAPIView):
         serializer.is_valid(raise_exception=True)
 
         played_card = serializer.data["card"]
-        game_controller().run(card_room, played_card, "", "")
+        if card_room.game_status:
+            game_controller().run(card_room, played_card, "", "")
         return Response(serializer.data)
