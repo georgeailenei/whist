@@ -26,7 +26,6 @@ const update_user_data = () => {
       user_data.value = data;
       console.log('user data');
       console.log(user_data.value);
-      console.log(user_data.value.choice);
     })
 }
 
@@ -140,7 +139,7 @@ const modal_timer = setInterval(() => {
 <template>
   
 <Game v-if="(game_is_playing && loaded_data && room_full)" :room="room" :time="timer" />
-<EmptyTable v-if="(loaded_data && !room_full)" :room="room"/>
+<EmptyTable v-if="(loaded_data && !game_is_playing)" :room="room" :game_is_playing="game_is_playing"/>
 
 <!-- Display Winners -->
 <div v-if="display_winners && room_full && is_modal_open" class="modal">

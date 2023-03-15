@@ -3,6 +3,7 @@ import Player from './Player.vue';
 
 const props = defineProps([
     'room',
+    'game_is_playing',
 ]);
 
 </script>
@@ -16,7 +17,7 @@ const props = defineProps([
 
   <div class="players">
     <div v-for="player, index in room.players" :class="['player', `player-${index + 1}`]">
-        <Player :player="player" />
+        <Player :player="player" :game_is_playing="game_is_playing" />
     </div>
   </div>
 </div>

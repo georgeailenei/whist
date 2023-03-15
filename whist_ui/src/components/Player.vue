@@ -9,18 +9,19 @@ const props = defineProps([
     'board', 
     'after_leave_animation',
     'before_leave_animation',
+
+    'game_is_playing',
 ]);
 
 
 </script>    
 <template>  
 
-<div v-if="!props.roundStarted" class="playing-cards">
+<div v-if="!props.roundStarted && game_is_playing" class="playing-cards">
         <div v-for="(card, index) in player.hand.slice(0, props.visibleCards)" :key="card">
             <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
         </div>
 </div>
-
 
 <div v-if="!props.roundStarted === false" class="playing-cards">
     <TransitionGroup :name="`list-p${playerNr}`" @before-leave="props.before_leave_animation" @after-leave="props.after_leave_animation">

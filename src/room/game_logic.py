@@ -379,10 +379,10 @@ class GameController:
             scores = self.update_score(
                 room_stats.team_one_score, room_stats.team_two_score, players
             )
-            self.reset_players_cards_and_tricks(players)
             room_stats.team_one_score = scores[0]
             room_stats.team_two_score = scores[1]
 
+            self.reset_players_cards_and_tricks(players)
             cards = Deck().cards
             players = self.spread_cards(cards, players)
             room_stats.trump_card = self.find_trump_card(cards)
