@@ -311,6 +311,21 @@ class GameController:
                     p.choice = 1
                     p.save()
 
+    def game_ended_timeleft(self, room, room_stats, players):
+        time_since_card_was_played = (timezone.now() - room_stats.last_played_card).total_seconds()
+
+        if time_since_card_was_played > 6:
+            room.game_status = False
+            self.reset_players_cards_and_tricks(players)
+            self.reset_room_stats(room_stats)
+
+            for p in players:
+                if p.choice == 0:
+                    room.players.remove(p)
+                elif p.choice == 1 and p.username in room.leaving_players.split():
+                    room.players.remove(p)
+        room.save()
+
     def run(self, room, played_card, choice, player):
         room_stats = self.repository.get_room_stats(room)
         room_stats.save()
@@ -377,19 +392,6 @@ class GameController:
 
         if not game_ended:
             self.player_leaves_or_stays(room, choice, player, players)
-            time_since_card_was_played = (timezone.now() - room_stats.last_played_card).total_seconds()
-
-            if time_since_card_was_played > 6:
-                room.game_status = False
-                self.reset_players_cards_and_tricks(players)
-                room_stats = self.reset_room_stats(room_stats)
-
-                for p in players:
-                    if p.choice == 0:
-                        room.players.remove(p)
-                    elif p.choice == 1 and p.username in room.leaving_players.split():
-                        room.players.remove(p)
-            room.save()
-
+            self.game_ended_timeleft(room, room_stats, players)
         # RESULTS
         self.repository.save_game_stats(room_stats, board, old_board)
