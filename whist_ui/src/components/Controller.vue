@@ -40,6 +40,7 @@ const update_room = () => {
           console.log('room updating');
           console.log(room.value);
           
+          // Room is full or NOT && if the Game is running or NOT;
           if (room.value.players.length === 4){
             room_full.value = true;
             game_is_playing.value = true;
@@ -47,7 +48,8 @@ const update_room = () => {
             game_is_playing.value = false;
             room_full.value = false;
           }
-
+          
+          // Adjust timer value;
           if (room.value.stats.team_one_score === 0
             && room.value.stats.team_two_score === 0
             && room.value.stats.board.length === 0
@@ -59,6 +61,7 @@ const update_room = () => {
             timer.value = 15;
           }
           
+          // Show and hide the Modal;
           if (room.value.stats.team_one_score === 5 || room.value.stats.team_two_score === 5) {
             if (user_data.value.choice === 1) {
               is_modal_open.value = false;
@@ -66,7 +69,8 @@ const update_room = () => {
               is_modal_open.value = true;
             }
           }          
-
+          
+          // Shows the winners && losers, the Game is also stopped.
           if (room.value.stats.team_one_score === 5
             && room.value.stats.team_one_score > room.value.stats.team_two_score){
 
