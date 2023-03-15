@@ -7,6 +7,7 @@ import { Howl } from 'howler';
 
 const props = defineProps([
   'room',
+  'game_is_playing',
 ]);
 
 const room = ref(null);
@@ -160,25 +161,25 @@ const card_symbols = {
       <div class="players">
         <div :class="['player', 'player-1']">
           <div v-if="room.stats.player_position === 0" class="glow"></div>
-          <Player :player-nr="1" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
+          <Player :game_is_playing="game_is_playing" :player-nr="1" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p1_visible_cards"
             :player=room.players[0] />
         </div>
         <div :class="['player', 'player-2']">
           <div v-if="room.stats.player_position === 1" class="glow"></div>
-          <Player :player-nr="2" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
+          <Player :game_is_playing="game_is_playing" :player-nr="2" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p2_visible_cards"
             :player=room.players[1] />
         </div>
         <div :class="['player', 'player-3']">
           <div v-if="room.stats.player_position === 2" class="glow"></div>
-          <Player :player-nr="3" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
+          <Player :game_is_playing="game_is_playing" :player-nr="3" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p3_visible_cards"
             :player=room.players[2] />
         </div>
         <div :class="['player', 'player-4']">
           <div v-if="room.stats.player_position === 3" class="glow"></div>
-          <Player :player-nr="4" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
+          <Player :game_is_playing="game_is_playing" :player-nr="4" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p4_visible_cards"
             :player=room.players[3] />
         </div>

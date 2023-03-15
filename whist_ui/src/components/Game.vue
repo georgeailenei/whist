@@ -5,6 +5,7 @@ import GameTable from './GameTable.vue'
 const props = defineProps([
   'room',
   'time',
+  'game_is_playing',
 ]);
 
 const is_team_one_winning = () => {
@@ -76,7 +77,7 @@ const timer = setInterval(() => {
   </Transition>
 </div>
 
-<GameTable :key="(room.stats.team_one_score + room.stats.team_two_score)" :room="room" />
+<GameTable :key="(room.stats.team_one_score + room.stats.team_two_score)" :room="room" :game_is_playing="game_is_playing" />
 
 </template>
 

@@ -118,9 +118,9 @@ class RoomApiView(RetrieveAPIView):
         if card_room.game_status:
             time_since_card_was_played = (timezone.now() - room_stats.last_played_card).total_seconds()
             if game_controller().game_first_hand(card_room.players.all()) and card_room.game_status:
-                if time_since_card_was_played - 5 > 0:
+                if time_since_card_was_played - 5 > 10:
                     game_controller().play_card_for_player(card_room, room_stats, card_room.players.all()[room_stats.player_position])
-            elif time_since_card_was_played > 0.1 and card_room.game_status:
+            elif time_since_card_was_played > 5 and card_room.game_status:
                 game_controller().play_card_for_player(card_room, room_stats, card_room.players.all()[room_stats.player_position])
         return super().get(*args, **kwargs)
 
