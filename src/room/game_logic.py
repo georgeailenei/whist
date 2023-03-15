@@ -376,19 +376,17 @@ class GameController:
                 board, old_board = self.clear_board(board)
 
         if self.total_tricks_completed(players):
-            cards = Deck().cards
             scores = self.update_score(
                 room_stats.team_one_score, room_stats.team_two_score, players
             )
             self.reset_players_cards_and_tricks(players)
             room_stats.team_one_score = scores[0]
             room_stats.team_two_score = scores[1]
+
+            cards = Deck().cards
             players = self.spread_cards(cards, players)
             room_stats.trump_card = self.find_trump_card(cards)
-
-            for p in players:
-                p.hand = ' '.join(str(e) for e in p.hand)
-                p.save()
+            self.sort_players_cards(players)
 
         if not game_ended:
             self.player_leaves_or_stays(room, choice, player, players)
