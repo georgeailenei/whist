@@ -28,6 +28,7 @@ const x = ref(null);
 const change_position = ref(null);
 const is_in_animation = ref(false);
 
+// Cards sounds effects. Create a button to turn the sound off && on.
 const sounds = {
   spread_card: new Howl({
     src: ['http://localhost:8000/static/audio/PlayingCards_DealFlip_03.mp3'], html5: true,
@@ -42,10 +43,11 @@ const sounds = {
 
 const update_room = (new_room) => {
   room.value = new_room;
+
   const is_last_turn = new_room.stats.board.length === 0;
-  
   round_started.value = !(new_room.stats.board.length === 0 && new_room.players[new_room.stats.player_position].hand.length === 13);
-  
+  console.log(round_started.value);
+  // First round or First Hand
   first_round_started.value = new_room.stats.board.length === 0 && 
   new_room.players[new_room.stats.player_position].hand.length === 13 && 
   new_room.stats.team_one_score === 0 && new_room.stats.team_two_score === 0;
@@ -56,6 +58,7 @@ const update_room = (new_room) => {
     board.value = new_room.stats.board;
   }
 
+  // Cards directions values.
   if (new_room.stats.winner === new_room.players[0].username) {
     y.value = -253;
     x.value = -68;
@@ -85,7 +88,7 @@ watch(() => props.room, async (new_room, old_room) => {
   update_room(new_room);
 })
 
-
+// Spreading cards.
 const after_leave = (el) => {
   cards_to_spread.value -= 1;
   sounds.spread_card.play();
@@ -131,7 +134,6 @@ const card_symbols = {
 <template>
 
   <div class="vue-container">
-
 
     <!-- Table -->
     <div class="table">
