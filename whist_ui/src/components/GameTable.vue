@@ -17,6 +17,7 @@ const first_round_started = ref(false);
 const board = ref([]);
 
 const cards_to_spread = ref(52);
+const cards_are_available = ref(false);
 const p1_visible_cards = ref(0);
 const p2_visible_cards = ref(0);
 const p3_visible_cards = ref(0);
@@ -47,10 +48,10 @@ const update_room = (new_room) => {
   const is_last_turn = new_room.stats.board.length === 0;
   round_started.value = !(new_room.stats.board.length === 0 && new_room.players[new_room.stats.player_position].hand.length === 13);
   console.log(round_started.value);
-  // First round or First Hand
+  
+  // First round conditions.
   first_round_started.value = new_room.stats.board.length === 0 && 
-  new_room.players[new_room.stats.player_position].hand.length === 13 && 
-  new_room.stats.team_one_score === 0 && new_room.stats.team_two_score === 0;
+  new_room.players[new_room.stats.player_position].hand.length === 13;
   
   if (is_last_turn && room.value !== null) {
     board.value = new_room.stats.old_board;
@@ -102,6 +103,10 @@ const after_leave = (el) => {
   } else if (el.id === '4') {
     p4_visible_cards.value++;
   }
+
+  if (cards_to_spread.value === 0) {
+    cards_are_available.value = true;
+  }
 }
 
 setTimeout(() => {
@@ -118,7 +123,6 @@ const board_after_leave = () => {
     board.value = room.value.stats.board;
     sounds.pickup_cards.play();
   }
-
   is_in_animation.value = false;
 }
 
@@ -163,27 +167,27 @@ const card_symbols = {
       <div class="players">
         <div :class="['player', 'player-1']">
           <div v-if="room.stats.player_position === 0" class="glow"></div>
-          <Player :game_is_playing="game_is_playing" :player-nr="1" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
+          <Player :game-is-playing="game_is_playing" :player-nr="1" :before-leave-animation='board_before_leave' :after-leave-animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p1_visible_cards"
-            :player=room.players[0] />
+            :first-round="cards_are_available" :player=room.players[0] />
         </div>
         <div :class="['player', 'player-2']">
           <div v-if="room.stats.player_position === 1" class="glow"></div>
-          <Player :game_is_playing="game_is_playing" :player-nr="2" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
+          <Player :game-is-playing="game_is_playing" :player-nr="2" :before-leave-animation='board_before_leave' :after-leave-animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p2_visible_cards"
-            :player=room.players[1] />
+            :first-round="cards_are_available" :player=room.players[1] />
         </div>
         <div :class="['player', 'player-3']">
           <div v-if="room.stats.player_position === 2" class="glow"></div>
-          <Player :game_is_playing="game_is_playing" :player-nr="3" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
+          <Player :game-is-playing="game_is_playing" :player-nr="3" :before-leave-animation='board_before_leave' :after-leave-animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p3_visible_cards"
-            :player=room.players[2] />
+            :first-round="cards_are_available" :player=room.players[2] />
         </div>
         <div :class="['player', 'player-4']">
           <div v-if="room.stats.player_position === 3" class="glow"></div>
-          <Player :game_is_playing="game_is_playing" :player-nr="4" :before_leave_animation='board_before_leave' :after_leave_animation='board_after_leave'
+          <Player :game-is-playing="game_is_playing" :player-nr="4" :before-leave-animation='board_before_leave' :after-leave-animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p4_visible_cards"
-            :player=room.players[3] />
+            :first-round="cards_are_available" :player=room.players[3] />
         </div>
       </div>
     </div>

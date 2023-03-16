@@ -17,7 +17,7 @@ const props = defineProps([
 
   <div class="players">
     <div v-for="player, index in room.players" :class="['player', `player-${index + 1}`]">
-        <Player :player="player" :game_is_playing="game_is_playing" />
+        <Player :player="player" :game-is-playing="game_is_playing" />
     </div>
   </div>
 </div>

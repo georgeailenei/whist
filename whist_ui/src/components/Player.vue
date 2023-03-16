@@ -7,24 +7,29 @@ const props = defineProps([
     'visibleCards', 
     'roundStarted', 
     'board', 
-    'after_leave_animation',
-    'before_leave_animation',
-    'game_is_playing',
+    'afterLeaveAnimation',
+    'beforeLeaveAnimation',
+    'gameIsPlaying',
+    'firstRound',
 ]);
 
 
 </script>    
 <template>  
 
-<!-- Player's Hand / Cards -->
-<div v-if="!props.roundStarted && game_is_playing" class="playing-cards">
-        <div v-for="(card, index) in player.hand.slice(0, props.visibleCards)" :key="card">
+<!--
+    Display player's hand when spreading.
+    There isn't any animations here. 
+-->
+<div v-if="!roundStarted && gameIsPlaying" class="playing-cards">
+        <div v-for="(card, index) in player.hand.slice(0, visibleCards)" :key="card">
             <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
         </div>
 </div>
 
-<div v-if="!props.roundStarted === false" class="playing-cards">
-    <TransitionGroup :name="`list-p${playerNr}`"  @after-leave="props.after_leave_animation">
+<!-- Player's cards, board && Animations -->
+<div v-if="!roundStarted === false || firstRound" class="playing-cards">
+    <TransitionGroup :name="`list-p${playerNr}`" @before-leave="beforeLeaveAnimation" @after-leave="afterLeaveAnimation">
         <div v-for="(card, index) in player.hand" :key="card">
             <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/> 
         </div>
@@ -47,7 +52,7 @@ const props = defineProps([
     position: absolute;
 }
 .list-p1-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 73px), 253px);
+  transform: translate(calc(calc(55px * v-bind(board - 1)) + 73px), 253px);
   position: absolute;
 }
 
@@ -63,7 +68,7 @@ const props = defineProps([
     position: absolute;
 }
 .list-p2-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + -284px) , 253px);
+  transform: translate(calc(calc(55px * v-bind(board - 1)) + -284px) , 253px);
   position: absolute;
 }
 
@@ -72,7 +77,7 @@ const props = defineProps([
     position: absolute;
 }
 .list-p3-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + -284px) ,-136px);
+  transform: translate(calc(calc(55px * v-bind(board - 1)) + -284px) ,-136px);
   position: absolute;
 }
 
@@ -81,7 +86,7 @@ const props = defineProps([
     position: absolute;
 }
 .list-p4-leave-to {
-  transform: translate(calc(calc(55px * v-bind(props.board - 1)) + 73px), -136px);
+  transform: translate(calc(calc(55px * v-bind(board - 1)) + 73px), -136px);
   position: absolute;
 }
 
