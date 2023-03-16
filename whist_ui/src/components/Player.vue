@@ -11,6 +11,7 @@ const props = defineProps([
     'beforeLeaveAnimation',
     'gameIsPlaying',
     'firstRound',
+    'lastHand',
 ]);
 
 
@@ -27,8 +28,8 @@ const props = defineProps([
         </div>
 </div>
 
-<!-- Player's cards, board && Animations -->
-<div v-if="!roundStarted === false || firstRound" class="playing-cards">
+<!-- Player's cards && Animations -->
+<div v-if="roundStarted || firstRound || lastHand" class="playing-cards">
     <TransitionGroup :name="`list-p${playerNr}`" @before-leave="beforeLeaveAnimation" @after-leave="afterLeaveAnimation">
         <div v-for="(card, index) in player.hand" :key="card">
             <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/> 

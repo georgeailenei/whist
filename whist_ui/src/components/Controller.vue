@@ -24,8 +24,6 @@ const update_user_data = () => {
   server_client.get_user_details()
     .then((data) => {
       user_data.value = data;
-      console.log('user data');
-      console.log(user_data.value);
     })
 }
 
@@ -36,9 +34,7 @@ const update_room = () => {
           
           room.value = data;
           loaded_data.value = true;
-
-          console.log('room updating');
-          console.log(room.value);
+          console.log(room.value)
           
           // Room is full or NOT && if the Game is running or NOT;
           if (room.value.players.length === 4){
@@ -116,7 +112,6 @@ const update_user_data_interval = setInterval(update_user_data, 500);
 
 onUnmounted(() => {
   if (update_room_interval !== null) {
-    console.log('clear interval');
     clearInterval(update_room_interval);
   } else if (update_user_data_interval !== null) {
     clearInterval(update_user_data_interval);

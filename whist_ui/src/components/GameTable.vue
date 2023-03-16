@@ -13,6 +13,7 @@ const props = defineProps([
 const room = ref(null);
 const round_started = ref(false);
 const first_round_started = ref(false);
+const last_hand = ref(false);
 
 const board = ref([]);
 
@@ -47,8 +48,7 @@ const update_room = (new_room) => {
 
   const is_last_turn = new_room.stats.board.length === 0;
   round_started.value = !(new_room.stats.board.length === 0 && new_room.players[new_room.stats.player_position].hand.length === 13);
-  console.log(round_started.value);
-  
+
   // First round conditions.
   first_round_started.value = new_room.stats.board.length === 0 && 
   new_room.players[new_room.stats.player_position].hand.length === 13;
@@ -59,7 +59,9 @@ const update_room = (new_room) => {
     board.value = new_room.stats.board;
   }
 
-  // Cards directions values.
+  // Last hand condition.
+
+  // Board cards directions values.
   if (new_room.stats.winner === new_room.players[0].username) {
     y.value = -253;
     x.value = -68;
@@ -80,7 +82,6 @@ const update_room = (new_room) => {
     change_position.value = 'relative';
     sounds.slide_card.play();
   }
-
 }
 
 update_room(props.room);
@@ -104,8 +105,13 @@ const after_leave = (el) => {
     p4_visible_cards.value++;
   }
 
+  // If spreaded cards, allow card animation.
   if (cards_to_spread.value === 0) {
     cards_are_available.value = true;
+  }
+
+  if (cards_to_spread.value === 52 && !round_started.value) {
+    last_hand.value = true;
   }
 }
 
@@ -113,6 +119,7 @@ setTimeout(() => {
   cards_to_spread.value -= 1;
 }, 2000)
 
+// Board Animations.
 const board_before_leave = () => {
   is_in_animation.value = true;
 }
@@ -133,7 +140,7 @@ const card_symbols = {
   "clubs": "&clubs;",
 };
 
-
+console.log(last_hand.value);
 </script>
 <template>
 
@@ -169,25 +176,25 @@ const card_symbols = {
           <div v-if="room.stats.player_position === 0" class="glow"></div>
           <Player :game-is-playing="game_is_playing" :player-nr="1" :before-leave-animation='board_before_leave' :after-leave-animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p1_visible_cards"
-            :first-round="cards_are_available" :player=room.players[0] />
+            :first-round="cards_are_available" :last-hand="last_hand" :player=room.players[0] />
         </div>
         <div :class="['player', 'player-2']">
           <div v-if="room.stats.player_position === 1" class="glow"></div>
           <Player :game-is-playing="game_is_playing" :player-nr="2" :before-leave-animation='board_before_leave' :after-leave-animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p2_visible_cards"
-            :first-round="cards_are_available" :player=room.players[1] />
+            :first-round="cards_are_available" :last-hand="last_hand" :player=room.players[1] />
         </div>
         <div :class="['player', 'player-3']">
           <div v-if="room.stats.player_position === 2" class="glow"></div>
           <Player :game-is-playing="game_is_playing" :player-nr="3" :before-leave-animation='board_before_leave' :after-leave-animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p3_visible_cards"
-            :first-round="cards_are_available" :player=room.players[2] />
+            :first-round="cards_are_available" :last-hand="last_hand" :player=room.players[2] />
         </div>
         <div :class="['player', 'player-4']">
           <div v-if="room.stats.player_position === 3" class="glow"></div>
           <Player :game-is-playing="game_is_playing" :player-nr="4" :before-leave-animation='board_before_leave' :after-leave-animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p4_visible_cards"
-            :first-round="cards_are_available" :player=room.players[3] />
+            :first-round="cards_are_available" :last-hand="last_hand" :player=room.players[3] />
         </div>
       </div>
     </div>
