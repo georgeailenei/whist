@@ -14,8 +14,11 @@ const room = ref(null);
 const round_started = ref(false);
 const first_round_started = ref(false);
 const last_hand = ref(false);
-
 const board = ref([]);
+
+const played_hand_time = Date.parse(props.room.stats.last_played_card);
+const current_time = Date.now();
+const time_from_last_game = (Math.floor((current_time - played_hand_time) / 1000));
 
 const cards_to_spread = ref(52);
 const cards_are_available = ref(false);
@@ -41,7 +44,7 @@ const sounds = {
   pickup_cards: new Howl({
     src: ['http://localhost:8000/static/audio/PlayingCards_Pickup_02.mp3'], html5: true,
   }),
-}
+};
 
 const update_room = (new_room) => {
   room.value = new_room;
@@ -51,15 +54,13 @@ const update_room = (new_room) => {
 
   // First round conditions.
   first_round_started.value = new_room.stats.board.length === 0 && 
-  new_room.players[new_room.stats.player_position].hand.length === 13;
+  new_room.players[new_room.stats.player_position].hand.length === 13; 
   
   if (is_last_turn && room.value !== null) {
     board.value = new_room.stats.old_board;
   } else {
     board.value = new_room.stats.board;
   }
-
-  // Last hand condition.
 
   // Board cards directions values.
   if (new_room.stats.winner === new_room.players[0].username) {
@@ -82,13 +83,13 @@ const update_room = (new_room) => {
     change_position.value = 'relative';
     sounds.slide_card.play();
   }
-}
+};
 
 update_room(props.room);
 
 watch(() => props.room, async (new_room, old_room) => {
   update_room(new_room);
-})
+});
 
 // Spreading cards.
 const after_leave = (el) => {
@@ -105,7 +106,7 @@ const after_leave = (el) => {
     p4_visible_cards.value++;
   }
 
-  // If spreaded cards, allow card animation.
+  // Card animation conditions for first and last card.
   if (cards_to_spread.value === 0) {
     cards_are_available.value = true;
   }
@@ -113,16 +114,16 @@ const after_leave = (el) => {
   if (cards_to_spread.value === 52 && !round_started.value) {
     last_hand.value = true;
   }
-}
+};
 
 setTimeout(() => {
   cards_to_spread.value -= 1;
-}, 2000)
+}, 2000);
 
 // Board Animations.
 const board_before_leave = () => {
   is_in_animation.value = true;
-}
+};
 
 const board_after_leave = () => {
   const is_last_turn = room.value.stats.board.length === 0;
@@ -131,7 +132,7 @@ const board_after_leave = () => {
     sounds.pickup_cards.play();
   }
   is_in_animation.value = false;
-}
+};
 
 const card_symbols = {
   "diamonds": "&diams;",
@@ -140,7 +141,6 @@ const card_symbols = {
   "clubs": "&clubs;",
 };
 
-console.log(last_hand.value);
 </script>
 <template>
 
