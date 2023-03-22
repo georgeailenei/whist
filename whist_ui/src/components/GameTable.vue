@@ -13,12 +13,7 @@ const props = defineProps([
 const room = ref(null);
 const round_started = ref(false);
 const first_round_started = ref(false);
-const last_hand = ref(false);
 const board = ref([]);
-
-const played_hand_time = Date.parse(props.room.stats.last_played_card);
-const current_time = Date.now();
-const time_from_last_game = (Math.floor((current_time - played_hand_time) / 1000));
 
 const cards_to_spread = ref(52);
 const cards_are_available = ref(false);
@@ -54,8 +49,8 @@ const update_room = (new_room) => {
 
   // First round conditions.
   first_round_started.value = new_room.stats.board.length === 0 && 
-  new_room.players[new_room.stats.player_position].hand.length === 13; 
-  
+  new_room.players[new_room.stats.player_position].hand.length === 13;
+
   if (is_last_turn && room.value !== null) {
     board.value = new_room.stats.old_board;
   } else {
@@ -109,10 +104,6 @@ const after_leave = (el) => {
   // Card animation conditions for first and last card.
   if (cards_to_spread.value === 0) {
     cards_are_available.value = true;
-  }
-
-  if (cards_to_spread.value === 52 && !round_started.value) {
-    last_hand.value = true;
   }
 };
 
@@ -176,25 +167,25 @@ const card_symbols = {
           <div v-if="room.stats.player_position === 0" class="glow"></div>
           <Player :game-is-playing="game_is_playing" :player-nr="1" :before-leave-animation='board_before_leave' :after-leave-animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p1_visible_cards"
-            :first-round="cards_are_available" :last-hand="last_hand" :player=room.players[0] />
+            :first-round="cards_are_available" :player=room.players[0] />
         </div>
         <div :class="['player', 'player-2']">
           <div v-if="room.stats.player_position === 1" class="glow"></div>
           <Player :game-is-playing="game_is_playing" :player-nr="2" :before-leave-animation='board_before_leave' :after-leave-animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p2_visible_cards"
-            :first-round="cards_are_available" :last-hand="last_hand" :player=room.players[1] />
+            :first-round="cards_are_available" :player=room.players[1] />
         </div>
         <div :class="['player', 'player-3']">
           <div v-if="room.stats.player_position === 2" class="glow"></div>
           <Player :game-is-playing="game_is_playing" :player-nr="3" :before-leave-animation='board_before_leave' :after-leave-animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p3_visible_cards"
-            :first-round="cards_are_available" :last-hand="last_hand" :player=room.players[2] />
+            :first-round="cards_are_available" :player=room.players[2] />
         </div>
         <div :class="['player', 'player-4']">
           <div v-if="room.stats.player_position === 3" class="glow"></div>
           <Player :game-is-playing="game_is_playing" :player-nr="4" :before-leave-animation='board_before_leave' :after-leave-animation='board_after_leave'
             :board="room.stats.cards_per_round" :round-started="round_started" :visible-cards="p4_visible_cards"
-            :first-round="cards_are_available" :last-hand="last_hand" :player=room.players[3] />
+            :first-round="cards_are_available" :player=room.players[3] />
         </div>
       </div>
     </div>

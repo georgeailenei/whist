@@ -29,7 +29,7 @@ const props = defineProps([
 </div>
 
 <!-- Player's cards && Animations -->
-<div v-if="roundStarted || firstRound || lastHand" class="playing-cards">
+<div v-if="roundStarted || firstRound" class="playing-cards">
     <TransitionGroup :name="`list-p${playerNr}`" @before-leave="beforeLeaveAnimation" @after-leave="afterLeaveAnimation">
         <div v-for="(card, index) in player.hand" :key="card">
             <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/> 
