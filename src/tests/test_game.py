@@ -94,8 +94,7 @@ def test_run_removes_player_card_from_hand_when_valid_card_is_played(
     db, ready_card_room
 ):
     player1 = ready_card_room.players.first()
-    game.run(ready_card_room, "3d")
-
+    game.run(ready_card_room, "3d", "", "")
     player1.refresh_from_db()
     assert player1.hand.split() == [
         "Kh",
@@ -114,32 +113,25 @@ def test_run_removes_player_card_from_hand_when_valid_card_is_played(
 
 
 def test_run_increases_player_position_when_valid_card_is_played(db, ready_card_room):
-    player1 = ready_card_room.players.first()
-    game.run(ready_card_room, "3d")
-
+    game.run(ready_card_room, "3d", "", "")
     ready_card_room.refresh_from_db()
     assert ready_card_room.stats.player_position == 1
 
 
 def test_run_sets_player_position_to_winner(db, ready_card_room):
-    player1 = ready_card_room.players.first()
-    game.run(ready_card_room, "3d")
-    game.run(ready_card_room, "6d")
-    game.run(ready_card_room, "10d")
-    game.run(ready_card_room, "9d")
-
+    game.run(ready_card_room, "3d", "", "")
+    game.run(ready_card_room, "6d", "", "")
+    game.run(ready_card_room, "10d", "", "")
+    game.run(ready_card_room, "9d", "", "")
     ready_card_room.refresh_from_db()
     assert ready_card_room.stats.player_position == 2
 
 
 def test_run_add_points_to_winner(db, ready_card_room):
     player3 = ready_card_room.players.all()[2]
-    game.run(ready_card_room, "3d")
-    game.run(ready_card_room, "6d")
-    game.run(ready_card_room, "10d")
-    game.run(ready_card_room, "9d")
-
+    game.run(ready_card_room, "3d", "", "")
+    game.run(ready_card_room, "6d", "", "")
+    game.run(ready_card_room, "10d", "", "")
+    game.run(ready_card_room, "9d", "", "")
     player3.refresh_from_db()
     assert player3.tricks == 1
-
-
