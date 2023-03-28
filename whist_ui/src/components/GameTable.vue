@@ -44,6 +44,7 @@ const sounds = {
 const update_room = (new_room) => {
   room.value = new_room;
 
+  // Round started && last turn conditions.
   const is_last_turn = new_room.stats.board.length === 0;
   round_started.value = !(new_room.stats.board.length === 0 && new_room.players[new_room.stats.player_position].hand.length === 13);
 
@@ -102,7 +103,7 @@ const after_leave = (el) => {
     p4_visible_cards.value++;
   }
 
-  // Card animation conditions for first and last card.
+  // Card animation conditions for first.
   if (cards_to_spread.value === 0) {
     cards_are_available.value = true;
   }
@@ -122,7 +123,7 @@ const board_after_leave = () => {
   if (is_last_turn) {
     board.value = room.value.stats.board;
     sounds.pickup_cards.play();
-  }
+  } 
   is_in_animation.value = false;
 };
 
@@ -146,12 +147,12 @@ const card_symbols = {
         <span class="card-symbol" v-html="card_symbols[room.stats.trump_card]"></span>
 
         <!-- Deck -->
-        <!-- <div v-if="(!round_started || first_round_started)" class="deck">
+        <div v-if="(!round_started || first_round_started)" class="deck">
           <Transition v-for="el in 52" :key="el" :name="`spread-p${4 - ((el - 1) % 4)}`" @after-leave="after_leave">
             <Card :id="`${4 - ((el - 1) % 4)}`" v-if="el <= cards_to_spread" class="card_in_deck"
               card_value="not_permitted"></Card>
           </Transition>
-        </div> -->
+        </div>
 
         <!-- Board -->
         <TransitionGroup name="board">
@@ -263,7 +264,7 @@ const card_symbols = {
 }
 
 .board-leave-active {
-  animation: board-leaving-animation 3s ease;
+  animation: board-leaving-animation 2s ease;
 }
 
 .deck {

@@ -22,11 +22,11 @@ const props = defineProps([
     Display player's hand when spreading.
     There isn't any animations here. 
 -->
-    <!-- <div v-if="!roundStarted && gameIsPlaying" class="playing-cards">
-            <div v-for="(card, index) in player.hand.slice(0, visibleCards)" :key="card">
-                <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
-            </div>
-    </div> -->
+    <div v-if="!roundStarted && gameIsPlaying" class="playing-cards">
+        <div v-for="(card, index) in player.hand.slice(0, visibleCards)" :key="card">
+            <Card :card_value="card" :class="index === 0 ? 'empty': 'card'"/>
+        </div>
+    </div>
 
     <!-- Player's cards && Animations -->
     <div v-if="roundStarted || firstRound" class="playing-cards">
