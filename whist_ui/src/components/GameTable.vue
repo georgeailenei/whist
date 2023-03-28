@@ -51,6 +51,7 @@ const update_room = (new_room) => {
   first_round_started.value = new_room.stats.board.length === 0 && 
   new_room.players[new_room.stats.player_position].hand.length === 13;
 
+  // Board values.
   if (is_last_turn && room.value !== null) {
     board.value = new_room.stats.old_board;
   } else {
@@ -145,12 +146,12 @@ const card_symbols = {
         <span class="card-symbol" v-html="card_symbols[room.stats.trump_card]"></span>
 
         <!-- Deck -->
-        <div v-if="(!round_started || first_round_started)" class="deck">
+        <!-- <div v-if="(!round_started || first_round_started)" class="deck">
           <Transition v-for="el in 52" :key="el" :name="`spread-p${4 - ((el - 1) % 4)}`" @after-leave="after_leave">
             <Card :id="`${4 - ((el - 1) % 4)}`" v-if="el <= cards_to_spread" class="card_in_deck"
               card_value="not_permitted"></Card>
           </Transition>
-        </div>
+        </div> -->
 
         <!-- Board -->
         <TransitionGroup name="board">
@@ -242,19 +243,18 @@ const card_symbols = {
 
   10% {
     position: absolute;
-    transition: ease-in;
   }
 
   90% {
     position: absolute;
     opacity: 1;
-    transform: translate(calc(1px * v-bind(x)), calc(1px * v-bind(y)))
+    transform: translate(calc(1px * v-bind(x)), calc(1px * v-bind(y)));
   }
 
   100% {
     opacity: 0;
     position: absolute;
-    transform: translate(calc(1px * v-bind(x)), calc(1px * v-bind(y)))
+    transform: translate(calc(1px * v-bind(x)), calc(1px * v-bind(y)));
   }
 }
 
@@ -263,7 +263,7 @@ const card_symbols = {
 }
 
 .board-leave-active {
-  animation: board-leaving-animation 1s ease;
+  animation: board-leaving-animation 3s ease;
 }
 
 .deck {
