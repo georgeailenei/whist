@@ -1,5 +1,6 @@
 from .entities import Deck, Card
 from django.utils import timezone
+import time
 
 
 class GameController:
@@ -382,6 +383,7 @@ class GameController:
             room_stats.team_one_score = scores[0]
             room_stats.team_two_score = scores[1]
 
+            time.sleep(3)
             self.reset_players_cards_and_tricks(players)
             cards = Deck().cards
             players = self.spread_cards(cards, players)
@@ -391,5 +393,5 @@ class GameController:
         if not game_ended:
             self.player_leaves_or_stays(room, choice, player, players)
             self.game_ended_timeleft(room, room_stats, players)
-        # RESULTS
+
         self.repository.save_game_stats(room_stats, board, old_board)
