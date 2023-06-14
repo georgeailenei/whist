@@ -274,6 +274,12 @@ class GameController:
             total_cards_in_play += len(p.hand.split())
         return total_cards_in_play
 
+    def cards_played(self, players):
+        total_cards_played = 0
+        for p in players:
+            total_cards_played += len(p.played_hand.split())
+        return total_cards_played
+
     def sort_players_cards(self, players):
         for p in players:
             p.hand = " ".join(str(e) for e in p.hand)
@@ -333,6 +339,9 @@ class GameController:
 
         players = list(room.players.all())
         room_stats.cards_in_play = self.cards_in_play(players)
+
+        cards_played = self.cards_played(players)
+        print(cards_played)
 
         board = room_stats.board.split()
         old_board = room_stats.old_board.split()
