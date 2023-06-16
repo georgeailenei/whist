@@ -340,9 +340,6 @@ class GameController:
         players = list(room.players.all())
         room_stats.cards_in_play = self.cards_in_play(players)
 
-        cards_played = self.cards_played(players)
-        print(cards_played)
-
         board = room_stats.board.split()
         old_board = room_stats.old_board.split()
 
@@ -385,6 +382,9 @@ class GameController:
                 )
                 board, old_board = self.clear_board(board)
 
+                room_stats.cards_in_play = self.cards_in_play(players)
+                print(room_stats.cards_in_play)
+
         if self.total_tricks_completed(players):
             scores = self.update_score(
                 room_stats.team_one_score, room_stats.team_two_score, players
@@ -392,12 +392,13 @@ class GameController:
             room_stats.team_one_score = scores[0]
             room_stats.team_two_score = scores[1]
 
-            time.sleep(3)
+            # Reset Game
             self.reset_players_cards_and_tricks(players)
             cards = Deck().cards
             players = self.spread_cards(cards, players)
             room_stats.trump_card = self.find_trump_card(cards)
             self.sort_players_cards(players)
+
 
         if not game_ended:
             self.player_leaves_or_stays(room, choice, player, players)
