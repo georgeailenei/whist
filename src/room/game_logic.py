@@ -337,6 +337,8 @@ class GameController:
         room_stats = self.repository.get_room_stats(room)
         room_stats.save()
 
+        # Focus on this method to correct the game mistake.
+
         players = list(room.players.all())
         room_stats.cards_in_play = self.cards_in_play(players)
 
