@@ -4,6 +4,7 @@ import { ref, watch } from 'vue';
 import Player from './Player.vue';
 import _ from "lodash";
 import { Howl } from 'howler';
+import AudioButton from './AudioButton.vue'
 
 const props = defineProps([
   'room',
@@ -27,6 +28,17 @@ const x = ref(null);
 
 const change_position = ref(null);
 const is_in_animation = ref(false);
+const audio_sound = ref(true);
+
+const mute_or_unmute = (event) => {
+  console.log('Audio Button Clicked');
+
+  if(audio_sound.value === true){
+    audio_sound.value = false;
+  } else {
+    audio_sound.value = true;
+  }
+}
 
 // Cards sounds effects. Create a button to turn the sound off && on.
 const sounds = {
@@ -78,7 +90,10 @@ const update_room = (new_room) => {
     change_position.value = 'absolute';
   } else {
     change_position.value = 'relative';
-    sounds.slide_card.play();
+
+    if (audio_sound.value === true) {
+      sounds.slide_card.play();
+    }
   }
 };
 
@@ -91,7 +106,9 @@ watch(() => props.room, async (new_room, old_room) => {
 // Spreading cards.
 const after_leave = (el) => {
   cards_to_spread.value -= 1;
-  sounds.spread_card.play();
+  if (audio_sound.value === true) {
+    sounds.spread_card.play();
+  }
 
   if (el.id === '1') {
     p1_visible_cards.value++;
@@ -122,7 +139,9 @@ const board_after_leave = () => {
   const is_last_turn = room.value.stats.board.length === 0;
   if (is_last_turn) {
     board.value = room.value.stats.board;
-    sounds.pickup_cards.play();
+    if (audio_sound.value === true) {
+      sounds.pickup_cards.play();
+    }
   } 
   is_in_animation.value = false;
 };
@@ -139,6 +158,10 @@ const card_symbols = {
 
   <div class="vue-container">
 
+    <!-- Mute Sound -->
+    <div @click="mute_or_unmute">
+      <AudioButton />
+    </div>
     <!-- Table -->
     <div class="table">
       <div class="board">
