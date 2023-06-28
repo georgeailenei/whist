@@ -74,7 +74,6 @@ def cards():
         "3h",
     ]
 
-
 @pytest.fixture
 def ready_card_room(cards):
     card_room = CardRoom.objects.create()

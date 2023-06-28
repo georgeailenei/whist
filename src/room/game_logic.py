@@ -268,17 +268,31 @@ class GameController:
         else:
             return False
 
+    def game_last_card(self, players):
+        total_cards_in_play = 0
+        for p in players:
+            total_cards_in_play += len(p.hand.split())
+
+        if total_cards_in_play == 1:
+            for p in players:
+                if len(p.hand.split()) == 1 and "Joker" not in p.hand.split():
+                    p.hand += " Joker"
+
+    def last_card(self, players):
+        for p in players:
+            if "Joker" in p.hand.split():
+                return True
+
+    def find_player_with_joker(self, players):
+        for p in players:
+            if "Joker" in p.hand.split():
+                return p
+
     def cards_in_play(self, players):
         total_cards_in_play = 0
         for p in players:
             total_cards_in_play += len(p.hand.split())
         return total_cards_in_play
-
-    def cards_played(self, players):
-        total_cards_played = 0
-        for p in players:
-            total_cards_played += len(p.played_hand.split())
-        return total_cards_played
 
     def sort_players_cards(self, players):
         for p in players:
@@ -337,8 +351,6 @@ class GameController:
         room_stats = self.repository.get_room_stats(room)
         room_stats.save()
 
-        # Focus on this method to correct the game mistake.
-
         players = list(room.players.all())
         room_stats.cards_in_play = self.cards_in_play(players)
 
@@ -354,6 +366,13 @@ class GameController:
             room_stats.player_position,
             room_stats.trump_card,
         )
+
+        # if room_stats.cards_in_play == 1:
+        #     self.game_last_card(players)
+        #     print(players[0].hand,
+        #           players[1].hand,
+        #           players[2].hand,
+        #           players[3].hand)
 
         if game_ended and one_set_is_finished and is_correct_card:
             room_stats.last_played_card = timezone.now()
@@ -382,10 +401,21 @@ class GameController:
                 room_stats.player_position = self.winner_table_position(
                     winner, players
                 )
-                board, old_board = self.clear_board(board)
 
+                board, old_board = self.clear_board(board)
                 room_stats.cards_in_play = self.cards_in_play(players)
-                print(room_stats.cards_in_play)
+                print(self.cards_in_play(players))
+
+        # if "Joker" in players[room_stats.player_position]:
+        #     players = self.remove_card_from_player(
+        #         played_card, players
+        #     )
+        #
+        # if self.last_card(players):
+        #     self.run(room, "Joker", "", self.find_player_with_joker(players))
+        #     room_stats.player_position = self.winner_table_position(
+        #         self.find_player_with_joker(players), players
+        #     )
 
         if self.total_tricks_completed(players):
             scores = self.update_score(
@@ -400,7 +430,6 @@ class GameController:
             players = self.spread_cards(cards, players)
             room_stats.trump_card = self.find_trump_card(cards)
             self.sort_players_cards(players)
-
 
         if not game_ended:
             self.player_leaves_or_stays(room, choice, player, players)
